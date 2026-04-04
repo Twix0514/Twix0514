@@ -1,7 +1,7 @@
 ﻿import argparse
 import os
 from pathlib import Path
-from flask import Flask, jsonify, render_string
+from flask import Flask, jsonify, request
 import requests
 
 
@@ -104,5 +104,4 @@ def main():
 
 
 if __name__ == "__main__":
-    from flask import request
     main()
