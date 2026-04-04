@@ -10,6 +10,7 @@ app = Flask(__name__)
 # Polymarket API endpoints
 GAMMA_API_BASE = "https://gamma-api.polymarket.com"
 CLOB_API_BASE = "https://clob.polymarket.com"
+DATA_API_BASE = "https://data.polymarket.com"
 
 
 def fetch_markets(limit=10):
@@ -32,6 +33,36 @@ def fetch_events(limit=5):
         return {"error": str(e)}
 
 
+def fetch_user_positions(user_address):
+    """Fetch user positions from Polymarket Data API"""
+    try:
+        response = requests.get(f"{DATA_API_BASE}/positions", params={"user": user_address}, timeout=5)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def fetch_user_trades(user_address):
+    """Fetch user trades from Polymarket Data API"""
+    try:
+        response = requests.get(f"{DATA_API_BASE}/trades", params={"user": user_address}, timeout=5)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def fetch_user_activity(user_address):
+    """Fetch user activity from Polymarket Data API"""
+    try:
+        response = requests.get(f"{DATA_API_BASE}/activity", params={"user": user_address}, timeout=5)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @app.route("/")
 def home():
     admin_path = os.getenv("ADMIN_PATH", "not set")
@@ -44,6 +75,7 @@ def home():
         .info-box {{ background: white; padding: 15px; border-radius: 5px; margin: 10px 0; }}
         a {{ color: #007bff; text-decoration: none; margin-right: 15px; }}
         a:hover {{ text-decoration: underline; }}
+        .code {{ font-family: monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 3px; }}
     </style>
     </head>
     <body>
@@ -53,9 +85,19 @@ def home():
             <p><strong>Working Directory:</strong> {Path.cwd()}</p>
         </div>
         <div class="info-box">
-            <h2>API Endpoints</h2>
+            <h2>Market Data Endpoints</h2>
             <a href="/api/markets">Markets</a>
             <a href="/api/events">Events</a>
+        </div>
+        <div class="info-box">
+            <h2>User Data Endpoints</h2>
+            <p>Use query parameter: <span class="code">?user=0x...</span></p>
+            <a href="/api/user/positions?user=0x1a4197EdA8Ea1d684C0B8924ce672cc3e45AD7B5">User Positions</a>
+            <a href="/api/user/trades?user=0x1a4197EdA8Ea1d684C0B8924ce672cc3e45AD7B5">User Trades</a>
+            <a href="/api/user/activity?user=0x1a4197EdA8Ea1d684C0B8924ce672cc3e45AD7B5">User Activity</a>
+        </div>
+        <div class="info-box">
+            <h2>System Endpoints</h2>
             <a href="/status">Status</a>
         </div>
     </body>
@@ -79,13 +121,50 @@ def api_events():
     return jsonify(events)
 
 
+@app.route("/api/user/positions")
+def api_user_positions():
+    """Fetch and return user positions"""
+    user_address = request.args.get("user")
+    if not user_address:
+        return jsonify({"error": "user parameter is required"}), 400
+    positions = fetch_user_positions(user_address)
+    return jsonify(positions)
+
+
+@app.route("/api/user/trades")
+def api_user_trades():
+    """Fetch and return user trades"""
+    user_address = request.args.get("user")
+    if not user_address:
+        return jsonify({"error": "user parameter is required"}), 400
+    trades = fetch_user_trades(user_address)
+    return jsonify(trades)
+
+
+@app.route("/api/user/activity")
+def api_user_activity():
+    """Fetch and return user activity"""
+    user_address = request.args.get("user")
+    if not user_address:
+        return jsonify({"error": "user parameter is required"}), 400
+    activity = fetch_user_activity(user_address)
+    return jsonify(activity)
+
+
 @app.route("/status")
 def status():
     return {
         "status": "ok",
         "admin_path": os.getenv("ADMIN_PATH", "not set"),
         "working_directory": str(Path.cwd()),
-        "polymarket_integration": "enabled"
+        "polymarket_integration": "enabled",
+        "endpoints": {
+            "markets": "/api/markets",
+            "events": "/api/events",
+            "user_positions": "/api/user/positions?user=0x...",
+            "user_trades": "/api/user/trades?user=0x...",
+            "user_activity": "/api/user/activity?user=0x..."
+        }
     }
 
 
