@@ -124,7 +124,11 @@ def generate_report():
     price_spreads = []
     price_labels = []
     for m in markets:
-        prices = [float(p) for p in m.get("outcomePrices", [0, 0])]
+        outcome_prices = m.get("outcomePrices", [0, 0])
+        if isinstance(outcome_prices, str):
+            import json
+            outcome_prices = json.loads(outcome_prices)
+        prices = [float(p) for p in outcome_prices]
         if prices and len(prices) >= 2:
             spread = abs(prices[0] - prices[1])
             price_spreads.append(spread)
@@ -396,3 +400,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
