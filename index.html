@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POLY//TERMINAL — Twix0514</title>
+  <!-- credentials loaded from gitignored config.js -->
+  <script src="config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --g:       #00ff41;
+      --g2:      #00cc33;
+      --gdim:    #007a1e;
+      --gdark:   #002d0b;
+      --gmuted:  #005514;
+      --cyan:    #00e5ff;
+      --red:     #ff3b3b;
+      --yellow:  #ffe033;
+      --bg:      #040804;
+      --bgp:     #060d06;
+      --brd:     rgba(0,255,65,.18);
+      --brdbrt:  rgba(0,255,65,.55);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--g);
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-size: 12px;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* CRT scanlines overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,255,65,.012) 3px, rgba(0,255,65,.012) 4px
+      );
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* CRT vignette */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+      pointer-events: none;
+      z-index: 9997;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────── */
+    .hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 14px;
+      border-bottom: 1px solid var(--brdbrt);
+      background: var(--bgp);
+      flex-shrink: 0;
+      gap: 10px;
+    }
+
+    .logo {
+      font-size: 17px; letter-spacing: 3px; font-weight: bold;
+      color: var(--g);
+      text-shadow: 0 0 12px var(--g), 0 0 24px var(--g);
+      white-space: nowrap;
+    }
+
+    .hdr-stats { display: flex; gap: 18px; align-items: center; }
+
+    .stat { display: flex; flex-direction: column; align-items: center; }
+    .stat-lbl { font-size: 9px; color: var(--gmuted); letter-spacing: 1px; text-transform: uppercase; }
+    .stat-val { font-size: 13px; font-weight: bold; text-shadow: 0 0 8px currentColor; }
+    .pos { color: var(--g); }
+    .neg { color: var(--red); }
+    .neu { color: var(--cyan); }
+
+    .hdr-right { display: flex; align-items: center; gap: 14px; }
+
+    .badge {
+      padding: 2px 9px; border: 1px solid var(--brd);
+      font-size: 10px; letter-spacing: 1px; color: var(--g); white-space: nowrap;
+    }
+    .badge.live {
+      border-color: var(--g);
+      animation: brd-pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes brd-pulse {
+      0%,100% { border-color: var(--g); box-shadow: 0 0 6px var(--g); }
+      50%      { border-color: var(--gdim); box-shadow: none; }
+    }
+
+    .clock { font-size: 10px; color: var(--gdim); letter-spacing: 1px; white-space: nowrap; }
+
+    .acct-badge {
+      padding: 2px 9px; border: 1px solid var(--cyan);
+      font-size: 10px; letter-spacing: 1px; color: var(--cyan); white-space: nowrap;
+      cursor: pointer; transition: all .12s;
+    }
+    .acct-badge:hover { background: var(--cyan); color: var(--bg); }
+
+    .loading-row {
+      padding: 12px 10px; font-size: 10px; color: var(--gmuted);
+      border-bottom: 1px solid var(--brd);
+    }
+
+    /* ─── MAIN GRID ───────────────────────────────────── */
+    .main {
+      flex: 1; overflow: hidden;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      grid-template-rows: 1fr 190px;
+    }
+
+    /* ─── PANEL ───────────────────────────────────────── */
+    .panel {
+      border: 1px solid var(--brd);
+      background: var(--bgp);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ph {
+      padding: 5px 10px;
+      border-bottom: 1px solid var(--brd);
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,255,65,.03);
+      flex-shrink: 0;
+    }
+    .ph-title { font-size: 11px; letter-spacing: 1px; color: var(--g); text-shadow: 0 0 6px var(--g); }
+    .ph-meta  { font-size: 9px; color: var(--gmuted); }
+
+    .pc { flex: 1; overflow-y: auto; overflow-x: hidden; }
+    .pc::-webkit-scrollbar { width: 2px; }
+    .pc::-webkit-scrollbar-thumb { background: var(--gdark); }
+
+    /* ─── WALLET TRACKER ──────────────────────────────── */
+    .we {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--brd);
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .we:hover { background: rgba(0,255,65,.05); }
+    .we.active { background: rgba(0,255,65,.08); border-left: 2px solid var(--g); }
+
+    .we-market { font-size: 11px; color: var(--cyan); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .we-addr   { font-size: 9px; color: var(--gmuted); margin-bottom: 5px; }
+
+    .we-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .we-price { font-size: 15px; font-weight: bold; color: var(--g); text-shadow: 0 0 8px var(--g); }
+    .we-avg   { font-size: 9px; color: var(--gdim); }
+    .we-vol   { font-size: 10px; color: var(--g); margin-left: auto; }
+
+    .we-btns { display: flex; gap: 5px; }
+
+    .btn {
+      padding: 2px 9px; border: 1px solid;
+      background: transparent; font-family: inherit; font-size: 9px;
+      cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+      transition: all .12s;
+    }
+    .btn-y { border-color: var(--g); color: var(--g); }
+    .btn-y:hover { background: var(--g); color: var(--bg); box-shadow: 0 0 8px var(--g); }
+    .btn-c { border-color: var(--cyan); color: var(--cyan); }
+    .btn-c:hover { background: var(--cyan); color: var(--bg); }
+
+    /* ─── LIVE MARKETS ────────────────────────────────── */
+    .mt { width: 100%; border-collapse: collapse; }
+    .mt th {
+      padding: 4px 8px; text-align: left; font-size: 9px;
+      color: var(--gmuted); border-bottom: 1px solid var(--brd);
+      text-transform: uppercase; letter-spacing: 1px;
+      position: sticky; top: 0; background: var(--bgp);
+    }
+    .mt td { padding: 6px 8px; border-bottom: 1px solid rgba(0,255,65,.06); vertical-align: middle; }
+    .mt tr:hover td { background: rgba(0,255,65,.04); }
+
+    .m-name { font-size: 11px; color: var(--g); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    .m-cat  { font-size: 8px; color: var(--gmuted); margin-top: 1px; }
+
+    .pyes { font-size: 13px; font-weight: bold; color: var(--g); text-shadow: 0 0 5px var(--g); }
+    .pno  { font-size: 13px; color: var(--gdim); }
+
+    .vol-cell { font-size: 10px; color: var(--cyan); }
+    .ch-pos { color: var(--g); font-size: 10px; }
+    .ch-neg { color: var(--red); font-size: 10px; }
+
+    .win-wrap { display: flex; align-items: center; gap: 5px; }
+    .win-track { width: 54px; height: 3px; background: var(--gdark); }
+    .win-fill  { height: 100%; background: var(--g); box-shadow: 0 0 4px var(--g); }
+    .win-pct   { font-size: 10px; color: var(--g); }
+
+    /* ─── COPYTRADE ENGINE ────────────────────────────── */
+    .ct { width: 100%; border-collapse: collapse; font-size: 10px; }
+    .ct th { padding: 3px 8px; font-size: 9px; color: var(--gmuted); border-bottom: 1px solid var(--brd); text-transform: uppercase; letter-spacing: 1px; }
+    .ct td { padding: 4px 8px; border-bottom: 1px solid rgba(0,255,65,.04); }
+    .ct tr:hover td { background: rgba(0,255,65,.04); }
+
+    .t-name { color: var(--cyan); }
+    .t-hi   { color: var(--g); text-shadow: 0 0 6px var(--g); font-weight: bold; }
+
+    /* ─── ORDER LEADERBOARD ───────────────────────────── */
+    .le {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 10px; border-bottom: 1px solid var(--brd);
+    }
+    .le-rank   { font-size: 9px; color: var(--gmuted); width: 18px; flex-shrink: 0; }
+    .le-trader { font-size: 10px; color: var(--cyan); width: 80px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .le-market { font-size: 9px; color: var(--gmuted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .le-profit { font-size: 12px; font-weight: bold; color: var(--g); text-shadow: 0 0 6px var(--g); width: 75px; text-align: right; flex-shrink: 0; }
+
+    /* ─── BOTTOM BAR ──────────────────────────────────── */
+    .bot {
+      display: flex; align-items: center; gap: 12px;
+      padding: 5px 14px;
+      border-top: 1px solid var(--brdbrt);
+      background: var(--bgp);
+      flex-shrink: 0;
+    }
+
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--g); box-shadow: 0 0 8px var(--g);
+      animation: dot-pulse 2s ease-in-out infinite; flex-shrink: 0;
+    }
+    @keyframes dot-pulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 8px var(--g); }
+      50%      { opacity: .5; box-shadow: none; }
+    }
+
+    .prog-track { width: 110px; height: 2px; background: var(--gdark); flex-shrink: 0; }
+    .prog-fill  { height: 100%; background: var(--g); box-shadow: 0 0 4px var(--g); }
+
+    .bot-lbl { font-size: 10px; color: var(--gdim); white-space: nowrap; }
+    .sep-v   { width: 1px; height: 18px; background: var(--brd); flex-shrink: 0; }
+
+    /* ticker */
+    .ticker { flex: 1; overflow: hidden; white-space: nowrap; }
+    .ticker-inner { display: inline-block; animation: tick 35s linear infinite; }
+    @keyframes tick {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ti { display: inline-block; margin-right: 28px; font-size: 10px; }
+    .ti .lbl { color: var(--gmuted); }
+    .ti .up  { color: var(--g); }
+    .ti .dn  { color: var(--red); }
+
+    .blink { animation: blk .9s step-end infinite; }
+    @keyframes blk { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    .ver { font-size: 10px; color: var(--gdim); white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ═══════════════════════════════════════════════════════════════ -->
+<div class="hdr">
+  <div class="logo">POLY//TERMINAL</div>
+
+  <div class="hdr-stats">
+    <div class="stat">
+      <span class="stat-lbl">PORTFOLIO</span>
+      <span class="stat-val neu" id="portfolio-val">...</span>
+    </div>
+    <div class="stat">
+      <span class="stat-lbl">P&amp;L</span>
+      <span class="stat-val pos" id="pnl">...</span>
+    </div>
+    <div class="stat">
+      <span class="stat-lbl">ROI</span>
+      <span class="stat-val pos" id="roi">...</span>
+    </div>
+    <div class="stat">
+      <span class="stat-lbl">OPEN POS</span>
+      <span class="stat-val neu" id="open-pos">...</span>
+    </div>
+    <div class="stat">
+      <span class="stat-lbl">VOLUME</span>
+      <span class="stat-val neu" id="poly-vol">$48.2M</span>
+    </div>
+  </div>
+
+  <div class="hdr-right">
+    <div class="badge live">● LIVE MARKETS</div>
+    <div class="badge">WATCHING <span id="watching">11</span></div>
+    <div class="acct-badge" onclick="window.open('https://polymarket.com/profile/0x1a4197EdA8Ea1d684C0B8924ce672cc3e45AD7B5','_blank')" title="0x1a4197EdA8Ea1d684C0B8924ce672cc3e45AD7B5">⬡ 0x1a41...AD7B5</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- ══ MAIN GRID ══════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- ── MY PORTFOLIO ──────────────────────────────────── -->
+  <div class="panel" style="grid-column:1; grid-row:1;">
+    <div class="ph">
+      <span class="ph-title">// MY PORTFOLIO</span>
+      <span class="ph-meta" id="pos-meta">LOADING...</span>
+    </div>
+    <div class="pc" id="wallet-list"><div class="loading-row"><span class="blink">▋</span> FETCHING POSITIONS...</div></div>
+  </div>
+
+  <!-- ── LIVE MARKETS ───────────────────────────────────── -->
+  <div class="panel" style="grid-column:2; grid-row:1;">
+    <div class="ph">
+      <span class="ph-title">// LIVE MARKETS</span>
+      <span class="ph-meta" id="mkt-meta">SORTED: VOLUME ▼</span>
+    </div>
+    <div class="pc">
+      <table class="mt">
+        <thead>
+          <tr>
+            <th>MARKET</th>
+            <th>YES</th>
+            <th>NO</th>
+            <th>VOL</th>
+            <th>24H VOL</th>
+            <th>ODDS</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="market-list"><tr><td colspan="7" style="padding:12px 10px;color:var(--gmuted);font-size:10px;"><span class="blink">▋</span> FETCHING MARKETS...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── COPYTRADE ENGINE ───────────────────────────────── -->
+  <div class="panel" style="grid-column:1; grid-row:2;">
+    <div class="ph">
+      <span class="ph-title">// COPYTRADE ENGINE</span>
+      <span class="ph-meta"><span class="blink">●</span> LIVE MODE</span>
+    </div>
+    <div class="pc">
+      <table class="ct">
+        <thead>
+          <tr>
+            <th>TRADER</th>
+            <th>MKTS</th>
+            <th>Y/N</th>
+            <th>WIN%</th>
+            <th>ROI</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="copytrade-list"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── ORDER LEADERBOARD ─────────────────────────────── -->
+  <div class="panel" style="grid-column:2; grid-row:2;">
+    <div class="ph">
+      <span class="ph-title">// ORDER LEADERBOARD</span>
+      <span class="ph-meta">TOP PROFITS TODAY</span>
+    </div>
+    <div class="pc" id="leaderboard-list"></div>
+  </div>
+
+</div>
+
+<!-- ══ BOTTOM BAR ═════════════════════════════════════════════════════════════ -->
+<div class="bot">
+  <div class="dot"></div>
+  <span class="bot-lbl">POLY//STREAM</span>
+  <div class="prog-track"><div class="prog-fill" id="prog" style="width:94%"></div></div>
+  <span class="bot-lbl" id="stream-time">0:16 / 0:17</span>
+  <div class="sep-v"></div>
+
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+
+  <div class="sep-v"></div>
+  <span class="bot-lbl"><span class="blink">■</span> REC</span>
+  <div class="sep-v"></div>
+  <span class="ver">POLY//TERMINAL v2.4.1</span>
+</div>
+
+<script>
+// ── ACCOUNT (loaded from gitignored config.js) ───────────────────────────────
+const CFG       = window.POLY_CONFIG || {};
+const MY_ADDR   = CFG.address       || '0x1a4197EdA8Ea1d684C0B8924ce672cc3e45AD7B5';
+const API_KEY   = CFG.apiKey        || '';
+const KEY_ADDR  = CFG.apiKeyAddress || '';
+
+const DATA_API  = 'https://data-api.polymarket.com';
+const GAMMA_API = 'https://gamma-api.polymarket.com';
+const CLOB_API  = 'https://clob.polymarket.com';
+const POLY_URL  = 'https://polymarket.com';
+
+// ── STATIC FALLBACK ──────────────────────────────────────────────────────────
+const TRADERS = [
+  { name:"0xShFa", mkts:15, yn:"N", win:84, roi:"+$322.0" },
+  { name:"0xDrFa", mkts:12, yn:"Y", win:79, roi:"+$184.2" },
+  { name:"0x1nfa", mkts:8,  yn:"Y", win:77, roi:"+$97.4"  },
+  { name:"0xAlph", mkts:6,  yn:"Y", win:72, roi:"+$58.1"  },
+  { name:"0xBeta", mkts:9,  yn:"Y", win:68, roi:"+$44.6"  },
+  { name:"0xGamm", mkts:11, yn:"N", win:65, roi:"+$29.3"  },
+];
+
+const TICKER_ITEMS = [
+  { lbl:"BTC",      val:"$94,210", up:true  },
+  { lbl:"ETH",      val:"$3,412",  up:true  },
+  { lbl:"FED RATE", val:"5.25%",   up:false },
+  { lbl:"S&P500",   val:"5,948",   up:true  },
+  { lbl:"GOLD",     val:"$2,381",  up:true  },
+  { lbl:"POLY VOL", val:"$48.2M",  up:true  },
+  { lbl:"OPEN INT", val:"11,420",  up:true  },
+  { lbl:"DXY",      val:"104.2",   up:false },
+  { lbl:"USDT DOM", val:"4.82%",   up:false },
+  { lbl:"VIX",      val:"18.3",    up:false },
+];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const fmt$ = v => (v >= 0 ? '+$' : '-$') + Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtVol = v => { if(v>=1e6) return '$'+(v/1e6).toFixed(1)+'M'; if(v>=1e3) return '$'+(v/1e3).toFixed(1)+'K'; return '$'+Number(v).toFixed(0); };
+const shortAddr = a => a ? a.slice(0,6)+'...'+a.slice(-4) : '—';
+
+// CLOB auth headers (read-only GET requests only need POLY_API_KEY)
+const clobHeaders = () => API_KEY
+  ? { 'POLY_API_KEY': API_KEY }
+  : {};
+
+// ── FETCH: PORTFOLIO ──────────────────────────────────────────────────────────
+async function loadPortfolio() {
+  try {
+    const [posRes, valRes] = await Promise.all([
+      fetch(`${DATA_API}/positions?user=${MY_ADDR}&limit=50`, { signal: AbortSignal.timeout(8000) }),
+      fetch(`${DATA_API}/value?user=${MY_ADDR}`,             { signal: AbortSignal.timeout(8000) }),
+    ]);
+    if (!posRes.ok || !valRes.ok) throw new Error('non-OK');
+
+    const positions = await posRes.json();
+    const value     = await valRes.json();
+
+    const portVal = value.portfolioValue ?? value.portfolio_value ?? 0;
+    const pnl     = value.pnl ?? value.realizedPnl ?? 0;
+    const roi     = value.pnlPercentage ?? value.roi ?? 0;
+
+    document.getElementById('portfolio-val').textContent = fmtVol(portVal);
+    const pnlEl = document.getElementById('pnl');
+    pnlEl.textContent = fmt$(pnl);
+    pnlEl.className = 'stat-val ' + (pnl >= 0 ? 'pos' : 'neg');
+    const roiEl = document.getElementById('roi');
+    roiEl.textContent = (roi >= 0 ? '+' : '') + Number(roi).toFixed(1) + '%';
+    roiEl.className = 'stat-val ' + (roi >= 0 ? 'pos' : 'neg');
+
+    const posArr = Array.isArray(positions) ? positions : [];
+    document.getElementById('open-pos').textContent = posArr.filter(p=>!p.closed).length || posArr.length;
+    document.getElementById('pos-meta').textContent = posArr.length + ' POSITIONS';
+
+    renderPositions(posArr);
+  } catch(e) {
+    console.warn('Portfolio API:', e.message);
+    document.getElementById('pos-meta').textContent = 'OFFLINE — STATIC DATA';
+    renderFallbackPositions();
+  }
+}
+
+function renderPositions(positions) {
+  if (!positions.length) { renderFallbackPositions(); return; }
+  const sorted = [...positions].sort((a,b) => {
+    if (a.closed !== b.closed) return a.closed ? 1 : -1;
+    return ((b.unrealizedPnl??0)-(a.unrealizedPnl??0));
+  });
+  document.getElementById('wallet-list').innerHTML = sorted.map((p, i) => {
+    const title  = p.title ?? p.question ?? 'Unknown Market';
+    const slug   = p.slug ?? '';
+    const isYes  = (p.outcome==='Yes' || p.outcomeIndex===0 || p.outcome_index===0);
+    const raw    = p.percentageOdds ?? p.currentPrice ?? p.price ?? 0;
+    const price  = Math.round(raw <= 1 ? raw*100 : raw);
+    const avgRaw = p.avgPrice ?? p.avg_price ?? 0;
+    const avg    = (avgRaw <= 1 ? avgRaw*100 : avgRaw).toFixed(1);
+    const size   = p.size ?? p.shares ?? 0;
+    const pnl    = (p.unrealizedPnl??0) + (p.realizedPnl??0);
+    return `
+      <div class="we ${i===0?'active':''}" onclick="selectWallet(this)">
+        <div class="we-market">${title}${p.closed?' <span style="color:var(--gdim);font-size:8px;">[CLOSED]</span>':''}</div>
+        <div class="we-addr">${shortAddr(MY_ADDR)} · ${isYes?'YES':'NO'} · ${Number(size).toLocaleString()} shares</div>
+        <div class="we-row">
+          <span class="we-price">${price}¢</span>
+          <span class="we-avg">avg ${avg}¢</span>
+          <span class="we-vol" style="color:${pnl>=0?'var(--g)':'var(--red)'}">${fmt$(pnl)}</span>
+        </div>
+        <div class="we-btns">
+          <button class="btn btn-y" onclick="window.open('${POLY_URL}/event/${slug}','_blank')">TRADE</button>
+          <button class="btn btn-c" onclick="window.open('${POLY_URL}/profile/${MY_ADDR}','_blank')">PROFILE</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderFallbackPositions() {
+  const fb = [
+    { market:"Fed cuts rates in 2025?", price:"67¢", avg:"54.2¢", pnl:"+$124.40", pos:"YES" },
+    { market:"BTC above $120k by EOY?", price:"54¢", avg:"39.3¢", pnl:"+$88.20",  pos:"YES" },
+    { market:"SpaceX Starship orbit?",  price:"70¢", avg:"84.7¢", pnl:"-$32.10",  pos:"NO"  },
+    { market:"Apple Siri v2 ships?",    price:"42¢", avg:"65.9¢", pnl:"+$41.60",  pos:"YES" },
+    { market:"US recession Q3 2025?",   price:"29¢", avg:"21.4¢", pnl:"+$19.80",  pos:"YES" },
+  ];
+  document.getElementById('wallet-list').innerHTML = fb.map((w,i) => `
+    <div class="we ${i===0?'active':''}" onclick="selectWallet(this)">
+      <div class="we-market">${w.market}</div>
+      <div class="we-addr">${shortAddr(MY_ADDR)}</div>
+      <div class="we-row">
+        <span class="we-price">${w.price}</span>
+        <span class="we-avg">avg ${w.avg}</span>
+        <span class="we-vol" style="color:${w.pnl.startsWith('+')?'var(--g)':'var(--red)'}">${w.pnl}</span>
+      </div>
+      <div class="we-btns">
+        <button class="btn btn-y">BUY ${w.pos}</button>
+        <button class="btn btn-c" onclick="window.open('${POLY_URL}/profile/${MY_ADDR}','_blank')">PROFILE</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('portfolio-val').textContent = 'N/A';
+  document.getElementById('pnl').textContent = 'OFFLINE';
+  document.getElementById('roi').textContent = '—';
+  document.getElementById('open-pos').textContent = '5';
+}
+
+// ── FETCH: CLOB ORDERS ────────────────────────────────────────────────────────
+async function loadOrders() {
+  if (!API_KEY) { renderFallbackLeaderboard(); return; }
+  try {
+    // Fetch open orders using the API key address
+    const res = await fetch(
+      `${CLOB_API}/orders?maker_address=${KEY_ADDR}&status=LIVE`,
+      { headers: clobHeaders(), signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) throw new Error(`CLOB ${res.status}`);
+    const data = await res.json();
+    const orders = Array.isArray(data) ? data : (data.orders ?? data.data ?? []);
+    if (orders.length) { renderOrders(orders); return; }
+    // Fallback: try activity
+    await loadActivity();
+  } catch(e) {
+    console.warn('CLOB orders:', e.message);
+    await loadActivity();
+  }
+}
+
+function renderOrders(orders) {
+  const sorted = [...orders]
+    .sort((a,b) => Number(b.original_size??b.size??0) - Number(a.original_size??a.size??0))
+    .slice(0, 8);
+  document.getElementById('leaderboard-list').innerHTML = sorted.map((o, i) => {
+    const side    = o.side === 'BUY' ? 'BUY' : 'SELL';
+    const outcome = o.outcome ?? (o.side === 'BUY' ? 'YES' : 'NO');
+    const price   = o.price ? Math.round(parseFloat(o.price)*100)+'¢' : '—';
+    const size    = Number(o.original_size ?? o.size ?? 0);
+    const tokenId = o.token_id ?? o.asset_id ?? '';
+    return `
+      <div class="le">
+        <span class="le-rank">#${i+1}</span>
+        <span class="le-trader" style="color:${side==='BUY'?'var(--g)':'var(--red)'}">${side} ${outcome}</span>
+        <span class="le-market">${tokenId ? tokenId.slice(0,12)+'...' : 'OPEN ORDER'}</span>
+        <span class="le-profit">${price} · ${fmtVol(size)}</span>
+      </div>`;
+  }).join('');
+}
+
+// ── FETCH: ACTIVITY ───────────────────────────────────────────────────────────
+async function loadActivity() {
+  try {
+    const res = await fetch(
+      `${DATA_API}/activity?user=${MY_ADDR}&limit=20`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) throw new Error('non-OK');
+    const data = await res.json();
+    const acts = Array.isArray(data) ? data : (data.history ?? data.trades ?? []);
+    if (acts.length) { renderActivity(acts); return; }
+  } catch(e) {
+    console.warn('Activity API:', e.message);
+  }
+  renderFallbackLeaderboard();
+}
+
+function renderActivity(acts) {
+  const sorted = [...acts]
+    .filter(a => (a.amount??a.size??0) > 0)
+    .sort((a,b) => (b.amount??b.size??0)-(a.amount??a.size??0))
+    .slice(0, 8);
+  document.getElementById('leaderboard-list').innerHTML = sorted.map((a,i) => {
+    const market = a.title ?? a.question ?? a.market ?? 'Unknown';
+    const side   = (a.side ?? a.outcome ?? 'BUY').toString().toUpperCase();
+    const amt    = a.amount ?? a.size ?? 0;
+    const slug   = a.slug ?? '';
+    return `
+      <div class="le">
+        <span class="le-rank">#${i+1}</span>
+        <span class="le-trader" style="color:${side.includes('YES')||side==='BUY'?'var(--g)':'var(--red)'}">${side}</span>
+        <span class="le-market" style="cursor:pointer" onclick="window.open('${POLY_URL}/event/${slug}','_blank')">${market}</span>
+        <span class="le-profit">${fmtVol(amt)}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderFallbackLeaderboard() {
+  const LDRS = [
+    { rank:1, side:"BUY YES", market:"SpaceX Starship orbit 2025?", profit:"+$322.0" },
+    { rank:2, side:"BUY YES", market:"Fed cuts rates in 2025?",     profit:"+$184.2" },
+    { rank:3, side:"BUY NO",  market:"BTC above $120k by EOY?",     profit:"+$97.4"  },
+    { rank:4, side:"BUY YES", market:"Trump 2nd term ends early?",  profit:"+$58.1"  },
+    { rank:5, side:"BUY YES", market:"AI passes bar exam 2025?",    profit:"+$44.6"  },
+    { rank:6, side:"BUY NO",  market:"S&P 500 above 6000 EOY?",    profit:"+$29.3"  },
+    { rank:7, side:"BUY YES", market:"Elon Musk leaves DOGE?",      profit:"+$18.1"  },
+  ];
+  document.getElementById('leaderboard-list').innerHTML = LDRS.map(l => `
+    <div class="le">
+      <span class="le-rank">#${l.rank}</span>
+      <span class="le-trader">${l.side}</span>
+      <span class="le-market">${l.market}</span>
+      <span class="le-profit">${l.profit}</span>
+    </div>`).join('');
+}
+
+// ── FETCH: LIVE MARKETS ───────────────────────────────────────────────────────
+async function loadMarkets() {
+  try {
+    const res = await fetch(
+      `${GAMMA_API}/markets?active=true&limit=20&sort=volume&ascending=false`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) throw new Error('non-OK');
+    const raw = await res.json();
+    const markets = Array.isArray(raw) ? raw : (raw.markets ?? []);
+    document.getElementById('mkt-meta').textContent = `${markets.length} LIVE · VOLUME ▼`;
+    renderLiveMarkets(markets);
+  } catch(e) {
+    console.warn('Markets API:', e.message);
+    document.getElementById('mkt-meta').textContent = 'OFFLINE — STATIC DATA';
+    renderFallbackMarkets();
+  }
+}
+
+function renderLiveMarkets(markets) {
+  if (!markets.length) { renderFallbackMarkets(); return; }
+  document.getElementById('market-list').innerHTML = markets.map(m => {
+    let yesV=50, noV=50;
+    try {
+      const p = typeof m.outcomePrices==='string' ? JSON.parse(m.outcomePrices) : (m.outcomePrices??[]);
+      yesV = Math.round(parseFloat(p[0]??0.5)*100);
+      noV  = Math.round(parseFloat(p[1]??0.5)*100);
+    } catch(_){}
+    const question = m.question ?? m.title ?? 'Unknown';
+    const cat      = (m.tags?.[0]??m.category??'MARKET').toString().toUpperCase().slice(0,10);
+    const vol      = fmtVol(m.volume??0);
+    const vol24    = m.volume24hr!=null ? fmtVol(m.volume24hr) : '—';
+    const slug     = m.slug ?? m.conditionId ?? '';
+    return `
+      <tr>
+        <td>
+          <div class="m-name">${question}</div>
+          <div class="m-cat">${cat}</div>
+        </td>
+        <td><span class="pyes" data-base="${yesV}">${yesV}¢</span></td>
+        <td><span class="pno">${noV}¢</span></td>
+        <td><span class="vol-cell">${vol}</span></td>
+        <td><span class="ch-pos">${vol24}</span></td>
+        <td>
+          <div class="win-wrap">
+            <div class="win-track"><div class="win-fill" style="width:${yesV}%"></div></div>
+            <span class="win-pct">${yesV}%</span>
+          </div>
+        </td>
+        <td><button class="btn btn-y" style="font-size:8px;padding:2px 6px;"
+          onclick="window.open('${POLY_URL}/event/${slug}','_blank')">TRADE</button></td>
+      </tr>`;
+  }).join('');
+}
+
+function renderFallbackMarkets() {
+  const MKTS = [
+    { name:"Trump 2nd term ends early?",  cat:"POLITICS", yes:"10¢", no:"90¢", yv:10, vol:"$9.2M", ch:"$1.4M" },
+    { name:"Fed cuts rates in 2025?",     cat:"FINANCE",  yes:"67¢", no:"33¢", yv:67, vol:"$5.4M", ch:"$1.1M" },
+    { name:"BTC above $120k by EOY?",     cat:"CRYPTO",   yes:"54¢", no:"46¢", yv:54, vol:"$8.9M", ch:"$2.6M" },
+    { name:"Gaza ceasefire holds 30d?",   cat:"WORLD",    yes:"42¢", no:"58¢", yv:42, vol:"$3.1M", ch:"$1.6M" },
+    { name:"SpaceX Starship orbit 2025?", cat:"TECH",     yes:"77¢", no:"23¢", yv:77, vol:"$4.8M", ch:"$1.0M" },
+    { name:"NFL QB MVP non-Kansas?",      cat:"SPORTS",   yes:"33¢", no:"67¢", yv:33, vol:"$2.2M", ch:"$1.4M" },
+    { name:"Apple AI Siri v2 ships?",     cat:"TECH",     yes:"42¢", no:"58¢", yv:42, vol:"$1.8M", ch:"$1.4M" },
+    { name:"US recession by Q3 2025?",    cat:"FINANCE",  yes:"29¢", no:"71¢", yv:29, vol:"$6.1M", ch:"$0.3M" },
+    { name:"Elon Musk leaves DOGE?",      cat:"POLITICS", yes:"61¢", no:"39¢", yv:61, vol:"$3.4M", ch:"$0.8M" },
+    { name:"AI passes bar exam 2025?",    cat:"TECH",     yes:"88¢", no:"12¢", yv:88, vol:"$1.2M", ch:"$0.2M" },
+    { name:"S&P 500 above 6000 EOY?",     cat:"FINANCE",  yes:"71¢", no:"29¢", yv:71, vol:"$7.3M", ch:"$1.9M" },
+  ];
+  document.getElementById('market-list').innerHTML = MKTS.map(m => `
+    <tr>
+      <td>
+        <div class="m-name">${m.name}</div>
+        <div class="m-cat">${m.cat}</div>
+      </td>
+      <td><span class="pyes" data-base="${m.yv}">${m.yes}</span></td>
+      <td><span class="pno">${m.no}</span></td>
+      <td><span class="vol-cell">${m.vol}</span></td>
+      <td><span class="ch-pos">${m.ch}</span></td>
+      <td>
+        <div class="win-wrap">
+          <div class="win-track"><div class="win-fill" style="width:${m.yv}%"></div></div>
+          <span class="win-pct">${m.yv}%</span>
+        </div>
+      </td>
+      <td><button class="btn btn-y" style="font-size:8px;padding:2px 6px;">TRADE</button></td>
+    </tr>`).join('');
+}
+
+// ── STATIC RENDERS ────────────────────────────────────────────────────────────
+function selectWallet(el) {
+  document.querySelectorAll('.we').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function renderCopytrade() {
+  document.getElementById('copytrade-list').innerHTML = TRADERS.map(t => `
+    <tr>
+      <td class="t-name">${t.name}</td>
+      <td style="color:var(--gdim)">${t.mkts}</td>
+      <td style="color:${t.yn==='Y'?'var(--g)':'var(--red)'}">${t.yn}</td>
+      <td class="${t.win>=80?'t-hi':''}" style="color:var(--g)">${t.win}%</td>
+      <td style="color:var(--cyan)">${t.roi}</td>
+      <td><button class="btn btn-c" style="font-size:8px;padding:2px 6px;">COPY</button></td>
+    </tr>`).join('');
+}
+
+function renderTicker() {
+  const html = [...TICKER_ITEMS, ...TICKER_ITEMS].map(t => `
+    <span class="ti">
+      <span class="lbl">${t.lbl}: </span>
+      <span class="${t.up?'up':'dn'}">${t.val}</span>
+    </span>`).join('  ·  ');
+  document.getElementById('ticker').innerHTML = html;
+}
+
+// ── LIVE UPDATES ──────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toISOString().slice(11,19) + ' UTC';
+}
+
+function flickerPrices() {
+  document.querySelectorAll('.pyes').forEach(el => {
+    const base = parseInt(el.dataset.base, 10);
+    if (!base) return;
+    const v = Math.max(1, Math.min(99, Math.round(base + (Math.random()-0.5)*2)));
+    el.textContent = v + '¢';
+  });
+}
+
+let progVal = 10;
+function tickProg() {
+  progVal = (progVal + 0.4) % 100;
+  document.getElementById('prog').style.width = progVal + '%';
+  const secs = Math.round(progVal/100*60);
+  document.getElementById('stream-time').textContent =
+    '0:' + String(secs).padStart(2,'0') + ' / 1:00';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderCopytrade();
+renderTicker();
+updateClock();
+
+// Parallel API fetches
+Promise.all([ loadPortfolio(), loadMarkets(), loadOrders() ]);
+
+// Refresh schedule
+setInterval(loadPortfolio, 60_000);
+setInterval(loadMarkets,   30_000);
+setInterval(loadOrders,    60_000);
+
+setInterval(updateClock,   1000);
+setInterval(flickerPrices, 2000);
+setInterval(tickProg,       400);
+</script>
+</body>
+</html>
