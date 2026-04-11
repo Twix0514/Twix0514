@@ -464,13 +464,32 @@ async function loadPortfolio() {
     renderPositions(posArr);
   } catch(e) {
     console.warn('Portfolio API:', e.message);
-    document.getElementById('pos-meta').textContent = 'OFFLINE — STATIC DATA';
-    renderFallbackPositions();
+    document.getElementById('pos-meta').textContent = 'API UNAVAILABLE';
+    document.getElementById('wallet-list').innerHTML = `
+      <div class="we active" style="text-align:center;padding:18px 10px;color:var(--gdim);">
+        <div style="font-size:11px;letter-spacing:1px;">UNABLE TO LOAD POSITIONS</div>
+        <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">${e.message}</div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-y" onclick="window.open('https://polymarket.com/profile/${MY_ADDR}','_blank')">VIEW ON POLYMARKET</button>
+        </div>
+      </div>`;
   }
 }
 
 function renderPositions(positions) {
-  if (!positions.length) { renderFallbackPositions(); return; }
+  if (!positions.length) {
+    document.getElementById('wallet-list').innerHTML = `
+      <div class="we active" style="text-align:center;padding:18px 10px;color:var(--gdim);">
+        <div style="font-size:11px;letter-spacing:1px;">NO ACTIVE POSITIONS</div>
+        <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">Deposit USDC on Polygon to start trading</div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-y" onclick="window.open('https://polymarket.com/profile/${MY_ADDR}','_blank')">VIEW PROFILE</button>
+        </div>
+      </div>`;
+    document.getElementById('portfolio-val').textContent = '$0.00';
+    document.getElementById('open-pos').textContent = '0';
+    return;
+  }
   const sorted = [...positions].sort((a,b) => {
     if (a.closed !== b.closed) return a.closed ? 1 : -1;
     return ((b.unrealizedPnl??0)-(a.unrealizedPnl??0));
