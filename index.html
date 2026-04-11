@@ -345,11 +345,10 @@
       <table class="ct">
         <thead>
           <tr>
-            <th>TRADER</th>
-            <th>MKTS</th>
-            <th>Y/N</th>
-            <th>WIN%</th>
-            <th>ROI</th>
+            <th>WALLET</th>
+            <th>POS</th>
+            <th>PORTFOLIO</th>
+            <th>P&amp;L</th>
             <th></th>
           </tr>
         </thead>
@@ -399,14 +398,13 @@ const GAMMA_API = 'https://gamma-api.polymarket.com';
 const CLOB_API  = 'https://clob.polymarket.com';
 const POLY_URL  = 'https://polymarket.com';
 
-// ── STATIC FALLBACK ──────────────────────────────────────────────────────────
-const TRADERS = [
-  { name:"0xShFa", mkts:15, yn:"N", win:84, roi:"+$322.0" },
-  { name:"0xDrFa", mkts:12, yn:"Y", win:79, roi:"+$184.2" },
-  { name:"0x1nfa", mkts:8,  yn:"Y", win:77, roi:"+$97.4"  },
-  { name:"0xAlph", mkts:6,  yn:"Y", win:72, roi:"+$58.1"  },
-  { name:"0xBeta", mkts:9,  yn:"Y", win:68, roi:"+$44.6"  },
-  { name:"0xGamm", mkts:11, yn:"N", win:65, roi:"+$29.3"  },
+// ── WATCHED WALLETS (COPYTRADE ENGINE) ───────────────────────────────────────
+const WATCHED_WALLETS = [
+  { addr:"0x751a2b86cab503496efd325c8344e10159349ea1", portfolio: 52805.82, mkts:20 },
+  { addr:"0xde17f7144fbd0eddb2679132c10ff5e74b120988", portfolio: 0,        mkts:50 },
+  { addr:"0x1979ae6b7e6534de9c4539d0c205e582ca637c9d", portfolio: 0,        mkts:6  },
+  { addr:"0x59a0744db1f39ff3afccd175f80e6e8dfc239a09", portfolio: 0,        mkts:14 },
+  { addr:"0x0afc7ce56285bde1fbe3a75efaffdfc86d6530b2", portfolio: 0,        mkts:0  },
 ];
 
 const TICKER_ITEMS = [
@@ -724,17 +722,53 @@ function selectWallet(el) {
   el.classList.add('active');
 }
 
-function renderCopytrade() {
-  document.getElementById('copytrade-list').innerHTML = TRADERS.map(t => `
-    <tr>
-      <td class="t-name">${t.name}</td>
-      <td style="color:var(--gdim)">${t.mkts}</td>
-      <td style="color:${t.yn==='Y'?'var(--g)':'var(--red)'}">${t.yn}</td>
-      <td class="${t.win>=80?'t-hi':''}" style="color:var(--g)">${t.win}%</td>
-      <td style="color:var(--cyan)">${t.roi}</td>
-      <td><button class="btn btn-c" style="font-size:8px;padding:2px 6px;">COPY</button></td>
-    </tr>`).join('');
+async function loadCopytrade() {
+  const tbody = document.getElementById('copytrade-list');
+  tbody.innerHTML = `<tr><td colspan="6" style="padding:8px 10px;color:var(--gmuted);font-size:10px;"><span class="blink">▋</span> FETCHING WALLETS...</td></tr>`;
+
+  const rows = await Promise.all(WATCHED_WALLETS.map(async (w) => {
+    let portfolio = w.portfolio;
+    let mkts      = w.mkts;
+    let pnl       = 0;
+    try {
+      const [vRes, pRes] = await Promise.all([
+        fetch(`${DATA_API}/value?user=${w.addr}`, { signal: AbortSignal.timeout(6000) }),
+        fetch(`${DATA_API}/positions?user=${w.addr}&limit=50`, { signal: AbortSignal.timeout(6000) }),
+      ]);
+      if (vRes.ok) {
+        let v = await vRes.json();
+        if (Array.isArray(v)) v = v[0] ?? {};
+        portfolio = parseFloat(v.portfolioValue ?? v.value ?? portfolio ?? 0);
+        pnl       = parseFloat(v.pnl ?? v.realizedPnl ?? 0);
+      }
+      if (pRes.ok) {
+        const pos = await pRes.json();
+        mkts = Array.isArray(pos) ? pos.length : mkts;
+      }
+    } catch(_) {}
+
+    const short = w.addr.slice(0,6) + '...' + w.addr.slice(-4);
+    const portStr = portfolio >= 1000
+      ? '$' + (portfolio/1000).toFixed(1) + 'K'
+      : '$' + portfolio.toFixed(2);
+    const pnlStr  = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toFixed(2);
+    const pnlCol  = pnl >= 0 ? 'var(--g)' : 'var(--red)';
+
+    return `
+      <tr style="cursor:pointer" onclick="window.open('${POLY_URL}/profile/${w.addr}','_blank')">
+        <td class="t-name">${short}</td>
+        <td style="color:var(--gdim)">${mkts}</td>
+        <td style="color:var(--cyan)">${portStr}</td>
+        <td style="color:${pnlCol}">${pnlStr}</td>
+        <td><button class="btn btn-c" style="font-size:8px;padding:2px 6px;"
+          onclick="event.stopPropagation();window.open('${POLY_URL}/profile/${w.addr}','_blank')">COPY</button></td>
+      </tr>`;
+  }));
+
+  tbody.innerHTML = rows.join('');
 }
+
+function renderCopytrade() { loadCopytrade(); }
 
 function renderTicker() {
   const html = [...TICKER_ITEMS, ...TICKER_ITEMS].map(t => `
