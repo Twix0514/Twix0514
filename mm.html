@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POLY//MM — Bayesian Market Making Engine</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --g:      #00ff41;
+      --g2:     #00cc33;
+      --gdim:   #007a1e;
+      --gdark:  #002d0b;
+      --gmuted: #005514;
+      --cyan:   #00e5ff;
+      --red:    #ff3b3b;
+      --yellow: #ffe033;
+      --bg:     #040804;
+      --bgp:    #060d06;
+      --brd:    rgba(0,255,65,.18);
+      --brdbrt: rgba(0,255,65,.55);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--g);
+      font-family: 'Share Tech Mono','Courier New',monospace;
+      font-size: 12px;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content:'';
+      position:fixed; inset:0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,255,65,.01) 3px, rgba(0,255,65,.01) 4px
+      );
+      pointer-events:none; z-index:9998;
+    }
+    body::after {
+      content:'';
+      position:fixed; inset:0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+      pointer-events:none; z-index:9997;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────── */
+    .hdr {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:6px 14px;
+      border-bottom:1px solid var(--brdbrt);
+      background:var(--bgp); flex-shrink:0; gap:10px;
+    }
+    .logo {
+      font-size:16px; letter-spacing:3px; font-weight:bold;
+      color:var(--g); text-shadow:0 0 12px var(--g), 0 0 24px var(--g);
+      white-space:nowrap;
+    }
+    .mkt-info { flex:1; min-width:0; padding:0 16px; }
+    .mkt-name { font-size:11px; color:var(--cyan); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.5px; }
+    .mkt-meta { font-size:9px; color:var(--gmuted); margin-top:2px; letter-spacing:1px; }
+
+    .hdr-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+    .badge { padding:2px 9px; border:1px solid var(--brd); font-size:10px; letter-spacing:1px; white-space:nowrap; }
+    .badge.live { border-color:var(--g); animation:brd-pulse 1.6s ease-in-out infinite; }
+    @keyframes brd-pulse {
+      0%,100% { border-color:var(--g); box-shadow:0 0 6px var(--g); }
+      50%     { border-color:var(--gdim); box-shadow:none; }
+    }
+    .back-btn { padding:3px 10px; border:1px solid var(--brd); font-family:inherit; font-size:9px; letter-spacing:1px; background:transparent; color:var(--gdim); cursor:pointer; }
+    .back-btn:hover { color:var(--g); border-color:var(--g); }
+
+    /* ─── MAIN GRID ──────────────────────────────────── */
+    .main {
+      flex:1; overflow:hidden;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 130px;
+      gap:0;
+    }
+
+    /* ─── PANEL ──────────────────────────────────────── */
+    .panel {
+      border:1px solid var(--brd);
+      background:var(--bgp);
+      display:flex; flex-direction:column;
+      overflow:hidden;
+    }
+    .ph {
+      padding:5px 10px;
+      border-bottom:1px solid var(--brd);
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(0,255,65,.03); flex-shrink:0;
+    }
+    .ph-title { font-size:11px; letter-spacing:1px; color:var(--g); text-shadow:0 0 6px var(--g); }
+    .ph-meta  { font-size:9px; color:var(--gmuted); }
+
+    .pc { flex:1; overflow-y:auto; overflow-x:hidden; padding:10px; }
+    .pc::-webkit-scrollbar { width:2px; }
+    .pc::-webkit-scrollbar-thumb { background:var(--gdark); }
+
+    /* ─── STAT ROWS ──────────────────────────────────── */
+    .stat-row {
+      display:flex; align-items:baseline; justify-content:space-between;
+      padding:4px 0; border-bottom:1px solid rgba(0,255,65,.06);
+    }
+    .stat-row:last-child { border-bottom:none; }
+    .sr-lbl { font-size:9px; color:var(--gmuted); letter-spacing:1px; text-transform:uppercase; }
+    .sr-val { font-size:13px; font-weight:bold; }
+    .sr-sub { font-size:9px; color:var(--gdim); margin-left:6px; }
+
+    .val-g    { color:var(--g);      text-shadow:0 0 8px var(--g); }
+    .val-c    { color:var(--cyan);   text-shadow:0 0 6px var(--cyan); }
+    .val-y    { color:var(--yellow); }
+    .val-r    { color:var(--red); }
+    .val-dim  { color:var(--gdim); }
+
+    /* ─── DISTRIBUTION BAR ───────────────────────────── */
+    .dist-wrap { margin:8px 0; }
+    .dist-lbl  { font-size:9px; color:var(--gmuted); margin-bottom:4px; }
+    .dist-bar  {
+      position:relative; height:18px; background:var(--gdark);
+      overflow:hidden;
+    }
+    .dist-fill {
+      position:absolute; top:0; bottom:0; left:0;
+      background:linear-gradient(90deg, var(--gdark), var(--g));
+      transition:width .4s ease;
+    }
+    .dist-ci {
+      position:absolute; top:0; bottom:0;
+      background:rgba(0,255,65,.15);
+      transition:all .4s ease;
+    }
+    .dist-ptr {
+      position:absolute; top:0; bottom:0; width:1px;
+      background:var(--yellow);
+    }
+    .dist-pct { position:absolute; top:2px; right:4px; font-size:9px; color:var(--g); }
+
+    /* ─── BOOK DEPTH VIZ ─────────────────────────────── */
+    .depth-wrap { margin:8px 0; }
+    .depth-lbl  { font-size:9px; color:var(--gmuted); margin-bottom:4px; }
+    .depth-row  { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+    .depth-side { font-size:9px; width:26px; text-align:right; flex-shrink:0; }
+    .depth-track { flex:1; height:8px; background:var(--gdark); }
+    .depth-fill-bid { height:100%; background:var(--g); box-shadow:0 0 4px var(--g); transition:width .3s; }
+    .depth-fill-ask { height:100%; background:var(--red); }
+    .depth-price { font-size:9px; width:28px; text-align:right; flex-shrink:0; }
+
+    /* ─── BIG PRICE DISPLAY ─────────────────────────── */
+    .price-big {
+      font-size:28px; font-weight:bold; letter-spacing:2px;
+      text-align:center; padding:6px 0;
+      text-shadow:0 0 20px currentColor;
+    }
+    .price-row { display:flex; gap:10px; justify-content:center; margin-bottom:6px; }
+    .price-chip {
+      padding:4px 12px; font-size:13px; font-weight:bold;
+      border:1px solid; text-align:center; min-width:70px;
+      letter-spacing:1px;
+    }
+    .chip-bid { border-color:var(--g);   color:var(--g);   text-shadow:0 0 8px var(--g); }
+    .chip-ask { border-color:var(--red); color:var(--red); }
+    .chip-r   { border-color:var(--yellow); color:var(--yellow); }
+
+    /* ─── FORMULA DISPLAY ────────────────────────────── */
+    .formula {
+      font-size:9px; color:var(--gmuted);
+      padding:4px 6px; border-left:2px solid var(--gdark);
+      margin:4px 0; line-height:1.6;
+    }
+    .formula span { color:var(--gdim); }
+    .formula em   { color:var(--cyan); font-style:normal; }
+
+    /* ─── KELLY METER ────────────────────────────────── */
+    .kelly-wrap { margin:8px 0; }
+    .kelly-track {
+      position:relative; height:12px; background:var(--gdark);
+      margin:4px 0;
+    }
+    .kelly-zero {
+      position:absolute; top:0; bottom:0; left:50%; width:1px;
+      background:var(--gmuted);
+    }
+    .kelly-fill {
+      position:absolute; top:1px; bottom:1px;
+      transition:all .4s ease;
+    }
+    .kelly-fill.long  { background:var(--g); box-shadow:0 0 6px var(--g); }
+    .kelly-fill.short { background:var(--red); }
+    .kelly-labels { display:flex; justify-content:space-between; font-size:8px; color:var(--gmuted); }
+
+    /* ─── SIGNAL LOG ─────────────────────────────────── */
+    .log-entry {
+      padding:3px 0; border-bottom:1px solid rgba(0,255,65,.04);
+      display:flex; gap:8px; align-items:baseline;
+    }
+    .log-ts    { font-size:8px; color:var(--gmuted); flex-shrink:0; width:58px; }
+    .log-tag   { font-size:8px; flex-shrink:0; width:60px; letter-spacing:1px; }
+    .log-msg   { font-size:9px; color:var(--gdim); flex:1; }
+
+    /* ─── PARAM BAR ──────────────────────────────────── */
+    .params {
+      grid-column:1/-1;
+      display:flex; align-items:center; gap:16px;
+      padding:6px 14px;
+      border-top:1px solid var(--brd);
+      background:var(--bgp); flex-shrink:0;
+      flex-wrap:wrap;
+    }
+    .param-group { display:flex; align-items:center; gap:8px; }
+    .param-lbl   { font-size:9px; color:var(--gmuted); letter-spacing:1px; white-space:nowrap; }
+    .param-val   { font-size:11px; color:var(--cyan); min-width:36px; text-align:right; }
+    input[type=range] {
+      -webkit-appearance:none; width:80px; height:3px;
+      background:var(--gdark); outline:none; cursor:pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none; width:10px; height:10px;
+      border-radius:50%; background:var(--g); box-shadow:0 0 6px var(--g);
+    }
+    input[type=number] {
+      background:var(--gdark); border:1px solid var(--brd); color:var(--g);
+      font-family:inherit; font-size:10px; padding:2px 6px; width:70px; outline:none;
+    }
+    .pctl-btn {
+      padding:3px 10px; border:1px solid var(--brd);
+      background:transparent; font-family:inherit; font-size:9px;
+      letter-spacing:1px; color:var(--gdim); cursor:pointer;
+      text-transform:uppercase;
+    }
+    .pctl-btn:hover { color:var(--g); border-color:var(--g); }
+    .pctl-btn.active { color:var(--g); border-color:var(--g); box-shadow:0 0 6px var(--g); }
+
+    .sep-v { width:1px; height:20px; background:var(--brd); flex-shrink:0; }
+
+    .blink { animation:blk .9s step-end infinite; }
+    @keyframes blk { 0%,100%{opacity:1;} 50%{opacity:0;} }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
+<div class="hdr">
+  <div class="logo">POLY//MM</div>
+
+  <div class="mkt-info">
+    <div class="mkt-name" id="mkt-title"><span class="blink">▋</span> LOADING MARKET...</div>
+    <div class="mkt-meta">
+      COND: <span id="mkt-cond" style="color:var(--gdim)">0x0006af12...8c63</span>
+      &nbsp;·&nbsp;
+      YES: <span id="mkt-token" style="color:var(--gdim)">—</span>
+      &nbsp;·&nbsp;
+      T-t: <span id="mkt-ttm" style="color:var(--yellow)">—</span>
+      &nbsp;·&nbsp;
+      σ: <span id="mkt-sigma" style="color:var(--cyan)">—</span>
+    </div>
+  </div>
+
+  <div class="hdr-right">
+    <div class="badge live"><span class="blink">●</span> LIVE FEED</div>
+    <div class="badge" id="tick-badge">TICK 0</div>
+    <button class="back-btn" onclick="window.location='index.html'">← TERMINAL</button>
+  </div>
+</div>
+
+<!-- ══ MAIN GRID ═════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- ── BAYESIAN ENGINE ──────────────────────────────────────────── -->
+  <div class="panel" style="grid-column:1; grid-row:1;">
+    <div class="ph">
+      <span class="ph-title">// BAYESIAN ENGINE</span>
+      <span class="ph-meta">P(H|D) = P(D|H)·P(H)/P(D)</span>
+    </div>
+    <div class="pc" id="bayes-panel">
+      <div class="dist-wrap">
+        <div class="dist-lbl">POSTERIOR DISTRIBUTION  Beta(α, β)</div>
+        <div class="dist-bar">
+          <div class="dist-ci"  id="dist-ci"></div>
+          <div class="dist-fill" id="dist-fill"></div>
+          <div class="dist-ptr" id="dist-mkt"></div>
+          <div class="dist-pct" id="dist-pct">50%</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--gmuted);margin-top:2px;">
+          <span>NO &nbsp;0¢</span>
+          <span style="color:var(--gdim)" id="dist-ci-lbl">95% CI</span>
+          <span>100¢ &nbsp;YES</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span class="sr-lbl">Prior (market)</span>
+        <span><span class="sr-val val-dim" id="b-prior">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">α (buy signals)</span>
+        <span><span class="sr-val val-g" id="b-alpha">—</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">β (sell signals)</span>
+        <span><span class="sr-val val-r" id="b-beta">—</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Posterior mean</span>
+        <span><span class="sr-val val-c" id="b-post">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Posterior std</span>
+        <span><span class="sr-val val-dim" id="b-std">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">95% CI</span>
+        <span><span class="sr-val val-dim" id="b-ci">—</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Edge vs market</span>
+        <span><span class="sr-val" id="b-edge">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Observations n</span>
+        <span><span class="sr-val val-dim" id="b-n">—</span></span>
+      </div>
+
+      <div class="formula">
+        P(YES|data) = Beta(α, β)<br/>
+        <em>α</em> = prior·n + buy_flow<br/>
+        <em>β</em> = (1−prior)·n + sell_flow
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STOIKOV PRICER ────────────────────────────────────────────── -->
+  <div class="panel" style="grid-column:2; grid-row:1;">
+    <div class="ph">
+      <span class="ph-title">// STOIKOV PRICER</span>
+      <span class="ph-meta">r = s − qγσ²(T−t)</span>
+    </div>
+    <div class="pc">
+      <div class="price-row">
+        <div class="price-chip chip-bid" id="s-bid">—¢</div>
+        <div class="price-chip chip-r"   id="s-r">—¢</div>
+        <div class="price-chip chip-ask" id="s-ask">—¢</div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:20px;margin-bottom:8px;font-size:9px;color:var(--gmuted);">
+        <span>BID</span>
+        <span>RESERVATION</span>
+        <span>ASK</span>
+      </div>
+
+      <div class="stat-row">
+        <span class="sr-lbl">Mid price (s)</span>
+        <span><span class="sr-val val-c" id="s-mid">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Inventory (q)</span>
+        <span><span class="sr-val" id="s-inv">0</span><span class="sr-sub"> shares</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Reservation (r)</span>
+        <span><span class="sr-val val-y" id="s-res">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Half-spread (δ/2)</span>
+        <span><span class="sr-val val-dim" id="s-hspread">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Full spread (δ)</span>
+        <span><span class="sr-val val-dim" id="s-spread">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">CLOB best bid</span>
+        <span><span class="sr-val val-g" id="s-cbid">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">CLOB best ask</span>
+        <span><span class="sr-val val-r" id="s-cask">—</span><span class="sr-sub">¢</span></span>
+      </div>
+
+      <div class="depth-wrap">
+        <div class="depth-lbl">ORDER BOOK IMBALANCE</div>
+        <div id="depth-bids"></div>
+        <div id="depth-asks"></div>
+      </div>
+
+      <div class="formula">
+        δ/2 = <em>γσ²(T−t)/2</em> + (1/<em>γ</em>)·ln(1+<em>γ/κ</em>)<br/>
+        bid = r − δ/2 &nbsp;&nbsp; ask = r + δ/2
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KELLY SIZER ───────────────────────────────────────────────── -->
+  <div class="panel" style="grid-column:3; grid-row:1;">
+    <div class="ph">
+      <span class="ph-title">// KELLY SIZER</span>
+      <span class="ph-meta">f = (bp − q) / b</span>
+    </div>
+    <div class="pc">
+      <div class="price-big val-c" id="k-frac">0.0%</div>
+      <div style="text-align:center;font-size:9px;color:var(--gmuted);margin-bottom:8px;">OPTIMAL FRACTION</div>
+
+      <div class="kelly-wrap">
+        <div class="kelly-track">
+          <div class="kelly-zero"></div>
+          <div class="kelly-fill" id="k-fill"></div>
+        </div>
+        <div class="kelly-labels">
+          <span>← SHORT NO</span>
+          <span>NEUTRAL</span>
+          <span>LONG YES →</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span class="sr-lbl">P_bayesian</span>
+        <span><span class="sr-val val-c" id="k-pb">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">P_market (ask)</span>
+        <span><span class="sr-val val-dim" id="k-pm">—</span><span class="sr-sub">¢</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Implied odds (b)</span>
+        <span><span class="sr-val val-dim" id="k-b">—</span><span class="sr-sub">x</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Kelly f (raw)</span>
+        <span><span class="sr-val" id="k-raw">—</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Kelly f (½ Kelly)</span>
+        <span><span class="sr-val val-y" id="k-half">—</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Bankroll</span>
+        <span><span class="sr-val val-dim">$</span><span class="sr-val val-c" id="k-bank">1000</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Suggested bet (½K)</span>
+        <span><span class="sr-val val-g" id="k-bet">—</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="sr-lbl">Direction</span>
+        <span><span class="sr-val" id="k-dir">—</span></span>
+      </div>
+
+      <div class="formula">
+        b = (1−p_ask)/p_ask<br/>
+        f = (<em>b·p_b</em> − (1−p_b)) / b<br/>
+        use ½f for fractional Kelly
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIGNAL LOG ────────────────────────────────────────────────── -->
+  <div class="panel" style="grid-column:1/-1; grid-row:2;">
+    <div class="ph">
+      <span class="ph-title">// SIGNAL LOG</span>
+      <span class="ph-meta" id="log-meta">INITIALIZING...</span>
+    </div>
+    <div class="pc" id="log-panel" style="padding:4px 10px; display:flex; flex-direction:column-reverse;"></div>
+  </div>
+
+</div>
+
+<!-- ══ PARAM BAR ═════════════════════════════════════════════════════════════ -->
+<div class="params">
+  <div class="param-group">
+    <span class="param-lbl">γ RISK</span>
+    <input type="range" id="sl-gamma" min="0.001" max="1" step="0.001" value="0.1"
+      oninput="onParam('gamma', this.value)"/>
+    <span class="param-val" id="pv-gamma">0.100</span>
+  </div>
+  <div class="sep-v"></div>
+  <div class="param-group">
+    <span class="param-lbl">κ ARRIVAL</span>
+    <input type="range" id="sl-kappa" min="0.1" max="10" step="0.1" value="1.5"
+      oninput="onParam('kappa', this.value)"/>
+    <span class="param-val" id="pv-kappa">1.50</span>
+  </div>
+  <div class="sep-v"></div>
+  <div class="param-group">
+    <span class="param-lbl">q INV</span>
+    <input type="range" id="sl-inv" min="-500" max="500" step="1" value="0"
+      oninput="onParam('q', this.value)"/>
+    <span class="param-val" id="pv-inv">0</span>
+  </div>
+  <div class="sep-v"></div>
+  <div class="param-group">
+    <span class="param-lbl">BANKROLL $</span>
+    <input type="number" id="in-bank" value="1000" min="1" step="100"
+      oninput="onParam('bankroll', this.value)"/>
+  </div>
+  <div class="sep-v"></div>
+  <div class="param-group">
+    <button class="pctl-btn" onclick="resetBayes()">RESET α/β</button>
+    <button class="pctl-btn" id="sim-btn" onclick="toggleSim()">SIMULATE FLOW</button>
+  </div>
+  <div class="sep-v"></div>
+  <div style="font-size:9px; color:var(--gmuted); margin-left:auto;">
+    PRIOR n=<span id="pv-n">4</span> &nbsp;·&nbsp;
+    σ est=<span id="pv-sigma">—</span> &nbsp;·&nbsp;
+    T-t=<span id="pv-ttm">—</span>yr
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ────────────────────────────────────────────────────────────────
+const DEFAULT_CONDITION_ID = '0x0006af12cd4dacc450836a0e1ec6ce47365d8c63';
+
+function getConditionIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const market = params.get('market');
+  return /^0x[a-fA-F0-9]{40,64}$/.test(market || '') ? market : DEFAULT_CONDITION_ID;
+}
+
+const CONDITION_ID = getConditionIdFromUrl();
+const CLOB_API   = 'https://clob.polymarket.com';
+const GAMMA_API  = 'https://gamma-api.polymarket.com';
+const DATA_API   = 'https://data-api.polymarket.com';
+
+// ── MODEL STATE ──────────────────────────────────────────────────────────────
+const M = {
+  // Bayesian (Beta conjugate prior)
+  alpha:     2,       // pseudo-counts for YES
+  beta_:     2,       // pseudo-counts for NO
+  prior:     0.50,    // initialized from market price
+  priorN:    4,       // prior strength (total pseudo-count)
+
+  // Stoikov
+  gamma:     0.10,    // risk aversion
+  kappa:     1.50,    // order arrival rate
+  q:         0,       // inventory
+  s:         0.50,    // current mid price
+  sigma:     0.04,    // price volatility (annualized)
+  T_t:       0.25,    // time to expiry (in years)
+
+  // Kelly
+  bankroll:  1000,
+
+  // Market data
+  yesTokenId: null,
+  noTokenId:  null,
+  endDate:    null,
+
+  // History
+  priceHistory: [],
+  prevBook:     null,
+  tickCount:    0,
+  simActive:    false,
+  simInterval:  null,
+  logLines:     0,
+};
+
+const shortAddr = a => a ? a.slice(0,6)+'...'+a.slice(-4) : '—';
+const pc  = v => (v*100).toFixed(1) + '¢';
+const pct = v => (v*100).toFixed(2) + '%';
+
+// ── SIGNAL LOG ───────────────────────────────────────────────────────────────
+function log(tag, msg, color) {
+  const ts  = new Date().toISOString().slice(11,19);
+  const col = color || 'var(--gdim)';
+  const el  = document.createElement('div');
+  el.className = 'log-entry';
+  el.innerHTML = `
+    <span class="log-ts">${ts}</span>
+    <span class="log-tag" style="color:${col}">${tag}</span>
+    <span class="log-msg">${msg}</span>`;
+  const panel = document.getElementById('log-panel');
+  panel.prepend(el);
+  M.logLines++;
+  if (M.logLines > 80) {
+    while (panel.children.length > 60) panel.removeChild(panel.lastChild);
+    M.logLines = 60;
+  }
+  document.getElementById('log-meta').textContent = `${M.logLines} events · last ${ts}`;
+}
+
+// ── BAYESIAN CORE ─────────────────────────────────────────────────────────────
+function bayesUpdate(signal, strength=1.0, reason='') {
+  if (signal > 0) M.alpha  += strength;
+  else            M.beta_  += strength;
+  const post = posteriorMean();
+  const std  = posteriorStd();
+  const edge = post - M.s;
+  log(
+    signal>0 ? 'BUY SIG' : 'SELL SIG',
+    `α=${M.alpha.toFixed(1)} β=${M.beta_.toFixed(1)} → p=${pc(post)} edge=${(edge*100>0?'+':'')}${(edge*100).toFixed(1)}¢` + (reason ? `  [${reason}]` : ''),
+    signal>0 ? 'var(--g)' : 'var(--red)'
+  );
+  renderBayes();
+  renderKelly();
+  return post;
+}
+
+function posteriorMean() {
+  return M.alpha / (M.alpha + M.beta_);
+}
+
+function posteriorStd() {
+  const a=M.alpha, b=M.beta_, n=a+b;
+  return Math.sqrt(a*b / (n*n*(n+1)));
+}
+
+// Wilson interval approximation for Beta CI
+function betaCI(alpha, beta_, z=1.96) {
+  const n = alpha + beta_;
+  const p = alpha / n;
+  const margin = z * Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
+  const denom  = 1 + z*z/n;
+  const lo = Math.max(0,   (p + z*z/(2*n) - margin) / denom);
+  const hi = Math.min(1.0, (p + z*z/(2*n) + margin) / denom);
+  return [lo, hi];
+}
+
+function resetBayes() {
+  const p = M.prior;
+  M.alpha  = p * M.priorN + 1;
+  M.beta_  = (1-p) * M.priorN + 1;
+  log('RESET', `α/β reset to prior p=${pc(p)} n=${M.priorN}`, 'var(--yellow)');
+  renderBayes(); renderKelly();
+}
+
+// ── VOLATILITY ────────────────────────────────────────────────────────────────
+function updateSigma(price) {
+  M.priceHistory.push(price);
+  if (M.priceHistory.length > 120) M.priceHistory.shift();
+  if (M.priceHistory.length < 4) return;
+  const px = M.priceHistory;
+  const rets = [];
+  for (let i=1; i<px.length; i++) {
+    if (px[i-1]>0.005 && px[i]>0.005)
+      rets.push(Math.log(px[i]/px[i-1]));
+  }
+  if (rets.length < 3) return;
+  const mu  = rets.reduce((a,b)=>a+b,0)/rets.length;
+  const sv  = rets.reduce((s,r)=>s+(r-mu)**2,0)/(rets.length-1);
+  // annualize: ~288 5-min intervals per day, 365 days
+  const sigma_ann = Math.sqrt(sv) * Math.sqrt(288*365);
+  M.sigma = Math.max(0.005, Math.min(5.0, sigma_ann));
+  document.getElementById('mkt-sigma').textContent = M.sigma.toFixed(4);
+  document.getElementById('pv-sigma').textContent  = M.sigma.toFixed(4);
+}
+
+// ── STOIKOV PRICER ────────────────────────────────────────────────────────────
+function stoikov() {
+  const { s, q, gamma, sigma, T_t, kappa } = M;
+  const r = s - q * gamma * sigma * sigma * T_t;
+  const hs = (gamma * sigma * sigma * T_t) / 2
+           + (1 / gamma) * Math.log(1 + gamma / kappa);
+  const bid = Math.max(0.01, r - hs);
+  const ask = Math.min(0.99, r + hs);
+  return { r: clamp(r,0.01,0.99), bid, ask, hs, spread: 2*hs };
+}
+
+const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+
+// ── KELLY CRITERION ───────────────────────────────────────────────────────────
+function kelly(p_b, ask_price) {
+  // YES bet: b = (1 - ask) / ask
+  if (ask_price <= 0.001 || ask_price >= 0.999) return 0;
+  const b  = (1 - ask_price) / ask_price;
+  const f  = (b * p_b - (1 - p_b)) / b;
+  return f; // can be negative (sell YES)
+}
+
+function kellyNo(p_b, bid_price) {
+  // NO bet: price of NO = 1 - bid_price
+  const p_no     = 1 - p_b;
+  const no_price = 1 - bid_price;
+  if (no_price <= 0.001 || no_price >= 0.999) return 0;
+  const b = (1 - no_price) / no_price;
+  return (b * p_no - (1 - p_no)) / b;
+}
+
+// ── RENDER: BAYESIAN ──────────────────────────────────────────────────────────
+function renderBayes() {
+  const post = posteriorMean();
+  const std  = posteriorStd();
+  const edge = post - M.s;
+  const [lo, hi] = betaCI(M.alpha, M.beta_);
+  const n    = M.alpha + M.beta_;
+
+  // Distribution bar
+  const distFill = document.getElementById('dist-fill');
+  const distCI   = document.getElementById('dist-ci');
+  const distMkt  = document.getElementById('dist-mkt');
+  const distPct  = document.getElementById('dist-pct');
+  const distCIlbl= document.getElementById('dist-ci-lbl');
+
+  distFill.style.width = (post * 100).toFixed(1) + '%';
+  distCI.style.left    = (lo * 100).toFixed(1) + '%';
+  distCI.style.width   = ((hi - lo) * 100).toFixed(1) + '%';
+  distMkt.style.left   = (M.s * 100).toFixed(1) + '%';
+  distPct.textContent  = pc(post);
+  distCIlbl.textContent= `95% CI [${pc(lo)}–${pc(hi)}]`;
+
+  document.getElementById('b-prior').textContent = pc(M.prior);
+  document.getElementById('b-alpha').textContent = M.alpha.toFixed(1);
+  document.getElementById('b-beta').textContent  = M.beta_.toFixed(1);
+  document.getElementById('b-post').textContent  = pc(post);
+  document.getElementById('b-std').textContent   = pc(std);
+  document.getElementById('b-ci').textContent    = `[${pc(lo)} – ${pc(hi)}]`;
+  document.getElementById('b-n').textContent     = n.toFixed(1);
+
+  const edgeEl = document.getElementById('b-edge');
+  edgeEl.textContent  = (edge*100 >= 0 ? '+' : '') + (edge*100).toFixed(2);
+  edgeEl.className    = 'sr-val ' + (edge > 0.01 ? 'val-g' : edge < -0.01 ? 'val-r' : 'val-dim');
+}
+
+// ── RENDER: STOIKOV ───────────────────────────────────────────────────────────
+function renderStoikov(clobBid, clobAsk) {
+  const { r, bid, ask, hs, spread } = stoikov();
+
+  document.getElementById('s-bid').textContent     = pc(bid);
+  document.getElementById('s-r').textContent       = pc(r);
+  document.getElementById('s-ask').textContent     = pc(ask);
+  document.getElementById('s-mid').textContent     = pc(M.s);
+  document.getElementById('s-inv').textContent     = M.q.toFixed(0);
+  document.getElementById('s-inv').className       = 'sr-val ' + (M.q>0?'val-g':M.q<0?'val-r':'val-dim');
+  document.getElementById('s-res').textContent     = pc(r);
+  document.getElementById('s-hspread').textContent = pc(hs);
+  document.getElementById('s-spread').textContent  = pc(spread);
+
+  if (clobBid != null) document.getElementById('s-cbid').textContent = pc(clobBid);
+  if (clobAsk != null) document.getElementById('s-cask').textContent = pc(clobAsk);
+}
+
+function renderDepth(bids, asks) {
+  if (!bids || !asks) return;
+  const maxSz = Math.max(
+    ...bids.slice(0,4).map(b=>parseFloat(b.size??0)),
+    ...asks.slice(0,4).map(a=>parseFloat(a.size??0)),
+    1
+  );
+  let bidHtml = '', askHtml = '';
+  for (let i=0; i<Math.min(3,bids.length); i++) {
+    const p = parseFloat(bids[i].price??0);
+    const s = parseFloat(bids[i].size??0);
+    const w = (s/maxSz*100).toFixed(0);
+    bidHtml += `<div class="depth-row">
+      <span class="depth-side" style="color:var(--g)">${pc(p)}</span>
+      <div class="depth-track"><div class="depth-fill-bid" style="width:${w}%"></div></div>
+      <span class="depth-price" style="color:var(--gdim)">${s.toFixed(0)}</span>
+    </div>`;
+  }
+  for (let i=0; i<Math.min(3,asks.length); i++) {
+    const p = parseFloat(asks[i].price??0);
+    const s = parseFloat(asks[i].size??0);
+    const w = (s/maxSz*100).toFixed(0);
+    askHtml += `<div class="depth-row">
+      <span class="depth-side" style="color:var(--red)">${pc(p)}</span>
+      <div class="depth-track"><div class="depth-fill-ask" style="width:${w}%"></div></div>
+      <span class="depth-price" style="color:var(--gdim)">${s.toFixed(0)}</span>
+    </div>`;
+  }
+  document.getElementById('depth-bids').innerHTML = bidHtml;
+  document.getElementById('depth-asks').innerHTML = askHtml;
+}
+
+// ── RENDER: KELLY ─────────────────────────────────────────────────────────────
+function renderKelly() {
+  const post = posteriorMean();
+  const {ask, bid} = stoikov();
+
+  // Evaluate both sides
+  const f_yes = kelly(post, ask);
+  const f_no  = kellyNo(post, bid);
+  const f_raw = f_yes >= 0 ? f_yes : -f_no;
+  const f_half = f_raw / 2;
+  const f_cap  = clamp(f_half, -0.25, 0.25);
+
+  const betAmt = (Math.abs(f_cap) * M.bankroll).toFixed(2);
+  const dir    = f_raw > 0.005  ? 'LONG YES'
+               : f_raw < -0.005 ? 'LONG NO'
+               : 'NEUTRAL';
+  const b_odds  = ask > 0.001 ? (1-ask)/ask : 0;
+
+  // Update DOM
+  document.getElementById('k-frac').textContent = (f_cap*100).toFixed(2) + '%';
+  document.getElementById('k-frac').className   = 'price-big ' + (f_cap>0?'val-g':f_cap<0?'val-r':'val-c');
+
+  document.getElementById('k-pb').textContent   = pc(post);
+  document.getElementById('k-pm').textContent   = pc(ask);
+  document.getElementById('k-b').textContent    = b_odds.toFixed(3);
+  document.getElementById('k-raw').textContent  = (f_raw*100).toFixed(2)+'%';
+  document.getElementById('k-raw').className    = 'sr-val ' + (f_raw>0.01?'val-g':f_raw<-0.01?'val-r':'val-dim');
+  document.getElementById('k-half').textContent = (f_half*100).toFixed(2)+'%';
+  document.getElementById('k-half').className   = 'sr-val ' + (f_half>0.01?'val-y':f_half<-0.01?'val-y':'val-dim');
+  document.getElementById('k-bank').textContent = M.bankroll.toLocaleString();
+  document.getElementById('k-bet').textContent  = (f_cap<0?'SELL $':'BUY $') + betAmt;
+  document.getElementById('k-bet').className    = 'sr-val ' + (Math.abs(f_cap)>0.02?'val-g':'val-dim');
+  document.getElementById('k-dir').textContent  = dir;
+  document.getElementById('k-dir').className    = 'sr-val ' + (dir==='LONG YES'?'val-g':dir==='LONG NO'?'val-r':'val-dim');
+
+  // Kelly meter
+  const fill = document.getElementById('k-fill');
+  const pct50 = 50;
+  if (f_cap >= 0) {
+    fill.style.left  = pct50 + '%';
+    fill.style.width = (f_cap * 2 * 100).toFixed(1) + '%';
+    fill.className   = 'kelly-fill long';
+  } else {
+    const w = (Math.abs(f_cap) * 2 * 100).toFixed(1);
+    fill.style.left  = (50 - Math.abs(f_cap)*200).toFixed(1) + '%';
+    fill.style.width = w + '%';
+    fill.className   = 'kelly-fill short';
+  }
+}
+
+// ── TICK HANDLER ─────────────────────────────────────────────────────────────
+async function tick() {
+  if (!M.yesTokenId) return;
+  M.tickCount++;
+  document.getElementById('tick-badge').textContent = `TICK ${M.tickCount}`;
+
+  try {
+    const [bookRes, priceRes] = await Promise.allSettled([
+      fetch(`${CLOB_API}/book?token_id=${M.yesTokenId}`, {signal:AbortSignal.timeout(5000)}),
+      fetch(`${CLOB_API}/last-trade-price?token_id=${M.yesTokenId}`, {signal:AbortSignal.timeout(5000)}),
+    ]);
+
+    let newMid = M.s;
+    let clobBid = null, clobAsk = null;
+
+    // Parse orderbook
+    if (bookRes.status === 'fulfilled' && bookRes.value.ok) {
+      const book = await bookRes.value.json();
+      const bids = book.bids ?? [];
+      const asks = book.asks ?? [];
+
+      if (bids.length && asks.length) {
+        clobBid = parseFloat(bids[0]?.price ?? 0);
+        clobAsk = parseFloat(asks[0]?.price ?? 1);
+        newMid  = (clobBid + clobAsk) / 2;
+
+        // Book imbalance → Bayesian signal
+        const bidSz = bids.slice(0,5).reduce((s,b)=>s+parseFloat(b.size??0),0);
+        const askSz = asks.slice(0,5).reduce((s,a)=>s+parseFloat(a.size??0),0);
+        const total = bidSz + askSz;
+        if (total > 0) {
+          const imbal = (bidSz - askSz) / total;
+          if (Math.abs(imbal) > 0.05) {
+            const strength = Math.abs(imbal) * 0.5;
+            bayesUpdate(Math.sign(imbal), strength,
+              `imbal=${(imbal*100).toFixed(1)}% bids=${bidSz.toFixed(0)} asks=${askSz.toFixed(0)}`);
+          }
+        }
+
+        renderDepth(bids, asks);
+        M.prevBook = book;
+      }
+    }
+
+    // Last trade price
+    if (priceRes.status === 'fulfilled' && priceRes.value.ok) {
+      const tp = await priceRes.value.json();
+      const price = parseFloat(tp?.price ?? tp?.[0]?.price ?? 0);
+      if (price > 0.001 && price < 0.999) {
+        const wasUp = price > M.s;
+        if (Math.abs(price - M.s) > 0.002) {
+          bayesUpdate(wasUp?1:-1, 0.3,
+            `trade @ ${pc(price)} (${wasUp?'+':'-'}${Math.abs((price-M.s)*100).toFixed(1)}¢)`);
+        }
+        newMid = price;
+        updateSigma(price);
+      }
+    }
+
+    // Update mid, re-run pricers
+    if (newMid !== M.s && newMid > 0.001 && newMid < 0.999) {
+      M.s = newMid;
+    }
+    updateTTM();
+    renderBayes();
+    renderStoikov(clobBid, clobAsk);
+    renderKelly();
+
+    // Log stoikov output every 5 ticks
+    if (M.tickCount % 5 === 0) {
+      const { r, bid, ask, spread } = stoikov();
+      log('STOIKOV', `s=${pc(M.s)} r=${pc(r)} bid=${pc(bid)} ask=${pc(ask)} δ=${pc(spread)} q=${M.q} σ=${M.sigma.toFixed(4)}`, 'var(--yellow)');
+    }
+
+  } catch(e) {
+    log('ERROR', e.message, 'var(--red)');
+  }
+}
+
+// ── TTM UPDATE ────────────────────────────────────────────────────────────────
+function updateTTM() {
+  if (!M.endDate) return;
+  const now = new Date();
+  const daysLeft = (M.endDate - now) / (1000*60*60*24);
+  M.T_t = Math.max(0.001, daysLeft / 365);
+  const ttmStr = daysLeft > 0
+    ? daysLeft.toFixed(1) + 'd (' + M.T_t.toFixed(4) + 'yr)'
+    : 'EXPIRED';
+  document.getElementById('mkt-ttm').textContent = ttmStr;
+  document.getElementById('pv-ttm').textContent  = M.T_t.toFixed(4);
+}
+
+// ── INIT MARKET ───────────────────────────────────────────────────────────────
+async function initMarket() {
+  log('INIT', `fetching market ${CONDITION_ID.slice(0,10)}...`, 'var(--cyan)');
+
+  // Try CLOB first
+  try {
+    const res = await fetch(`${CLOB_API}/markets/${CONDITION_ID}`, {signal:AbortSignal.timeout(8000)});
+    if (!res.ok) throw new Error(`CLOB ${res.status}`);
+    const data = await res.json();
+
+    const tokens = data.tokens ?? [];
+    M.yesTokenId = tokens.find(t=>t.outcome==='Yes')?.token_id
+                ?? tokens.find(t=>t.outcome_index===0)?.token_id
+                ?? tokens[0]?.token_id;
+    M.noTokenId  = tokens.find(t=>t.outcome==='No')?.token_id
+                ?? tokens.find(t=>t.outcome_index===1)?.token_id
+                ?? tokens[1]?.token_id;
+
+    // Parse end date
+    const edf = data.end_date_iso ?? data.end_date ?? data.endDate;
+    if (edf) {
+      M.endDate = new Date(edf);
+      updateTTM();
+    }
+
+    // Set prior from token prices
+    const yTok = tokens.find(t=>t.outcome==='Yes') ?? tokens[0];
+    if (yTok?.price) {
+      const p = parseFloat(yTok.price);
+      if (p > 0 && p < 1) {
+        M.prior = p;
+        M.s     = p;
+        M.alpha = p * M.priorN + 1;
+        M.beta_ = (1-p) * M.priorN + 1;
+      }
+    }
+
+    document.getElementById('mkt-title').textContent =
+      data.question ?? data.title ?? 'Unknown Market';
+    document.getElementById('mkt-token').textContent =
+      M.yesTokenId ? shortAddr(M.yesTokenId) : '—';
+
+    log('INIT', `loaded "${(data.question??'').slice(0,50)}"  YES=${shortAddr(M.yesTokenId??'')}`, 'var(--g)');
+    log('INIT', `prior set to p=${pc(M.prior)} α=${M.alpha.toFixed(1)} β=${M.beta_.toFixed(1)}`, 'var(--cyan)');
+
+    renderBayes(); renderStoikov(null,null); renderKelly();
+    return true;
+
+  } catch(e) {
+    log('INIT', `CLOB failed: ${e.message} — trying Gamma API`, 'var(--yellow)');
+  }
+
+  // Fallback: Gamma API
+  try {
+    const res = await fetch(
+      `${GAMMA_API}/markets?conditionId=${CONDITION_ID}&limit=1`,
+      {signal:AbortSignal.timeout(8000)}
+    );
+    const raw = await res.json();
+    const mkt = Array.isArray(raw) ? raw[0] : (raw.markets?.[0] ?? raw);
+    if (!mkt) throw new Error('no market data');
+
+    document.getElementById('mkt-title').textContent = mkt.question ?? 'Unknown Market';
+
+    const prices = typeof mkt.outcomePrices==='string'
+      ? JSON.parse(mkt.outcomePrices)
+      : (mkt.outcomePrices ?? []);
+    if (prices.length >= 1) {
+      const p = parseFloat(prices[0] ?? 0.5);
+      if (p > 0 && p < 1) {
+        M.prior = p; M.s = p;
+        M.alpha = p * M.priorN + 1;
+        M.beta_ = (1-p) * M.priorN + 1;
+      }
+    }
+
+    log('INIT', `Gamma fallback OK  p=${pc(M.prior)}`, 'var(--yellow)');
+    log('WARN', 'No YES token ID — orderbook polling disabled', 'var(--red)');
+    renderBayes(); renderStoikov(null,null); renderKelly();
+    return false;
+
+  } catch(e) {
+    log('ERROR', `init failed: ${e.message}`, 'var(--red)');
+    document.getElementById('mkt-title').textContent = `CONDITION: ${CONDITION_ID}`;
+    return false;
+  }
+}
+
+// ── PARAM CONTROLS ────────────────────────────────────────────────────────────
+function onParam(key, rawVal) {
+  const v = parseFloat(rawVal);
+  if (isNaN(v)) return;
+
+  if (key === 'gamma') {
+    M.gamma = v;
+    document.getElementById('pv-gamma').textContent = v.toFixed(3);
+  } else if (key === 'kappa') {
+    M.kappa = v;
+    document.getElementById('pv-kappa').textContent = v.toFixed(2);
+  } else if (key === 'q') {
+    M.q = v;
+    document.getElementById('pv-inv').textContent = v.toFixed(0);
+  } else if (key === 'bankroll') {
+    M.bankroll = Math.max(1, v);
+    document.getElementById('k-bank').textContent = M.bankroll.toLocaleString();
+  }
+
+  renderStoikov(null, null);
+  renderKelly();
+  const { r, bid, ask, spread } = stoikov();
+  log('PARAM', `γ=${M.gamma.toFixed(3)} κ=${M.kappa.toFixed(2)} q=${M.q.toFixed(0)}  → r=${pc(r)} bid=${pc(bid)} ask=${pc(ask)} δ=${pc(spread)}`, 'var(--yellow)');
+}
+
+// ── SIMULATION MODE ───────────────────────────────────────────────────────────
+function toggleSim() {
+  const btn = document.getElementById('sim-btn');
+  if (M.simActive) {
+    clearInterval(M.simInterval);
+    M.simActive = false;
+    btn.classList.remove('active');
+    btn.textContent = 'SIMULATE FLOW';
+    log('SIM', 'simulation stopped', 'var(--gdim)');
+  } else {
+    M.simActive = true;
+    btn.classList.add('active');
+    btn.textContent = 'STOP SIMULATION';
+    log('SIM', 'simulating order flow (random walk)', 'var(--yellow)');
+    M.simInterval = setInterval(() => {
+      // Random walk on price
+      const drift = (Math.random() - 0.5) * 0.008;
+      M.s = clamp(M.s + drift, 0.02, 0.98);
+      updateSigma(M.s);
+
+      // Random order flow signal
+      const r = Math.random();
+      const signal = r < 0.45 ? 1 : r < 0.90 ? -1 : 0;
+      if (signal !== 0) {
+        const str = 0.1 + Math.random() * 0.4;
+        bayesUpdate(signal, str, 'sim');
+      } else {
+        renderBayes();
+      }
+      renderStoikov(null, null);
+      renderKelly();
+    }, 1200);
+  }
+}
+
+// ── MAIN LOOP ─────────────────────────────────────────────────────────────────
+async function main() {
+  const ok = await initMarket();
+
+  if (ok && M.yesTokenId) {
+    // Live CLOB polling
+    await tick(); // immediate first tick
+    setInterval(tick, 8000);
+    log('LIVE', `polling CLOB every 8s  token=${shortAddr(M.yesTokenId)}`, 'var(--g)');
+  } else {
+    log('INFO', 'no token ID — start simulation for live model demo', 'var(--cyan)');
+    // Auto-render static state
+    renderBayes(); renderStoikov(null,null); renderKelly();
+  }
+}
+
+main();
+</script>
+</body>
+</html>

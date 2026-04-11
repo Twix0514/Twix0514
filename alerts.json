@@ -1,0 +1,17 @@
+[
+  {
+    "time": "00:53:31",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Hyperliquid dip to $20 by December 31, 2026?\nPrice: 0.6504\nStatus: matched"
+  },
+  {
+    "time": "00:41:47",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Hyperliquid dip to $20 by December 31, 2026?\nPrice: 0.6504\nStatus: matched"
+  },
+  {
+    "time": "00:26:02",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Hyperliquid dip to $20 by December 31, 2026?\nPrice: 0.6504\nStatus: matched"
+  }
+]

@@ -294,7 +294,26 @@
   <div class="hdr-right">
     <div class="badge live">● LIVE MARKETS</div>
     <div class="badge">WATCHING <span id="watching">11</span></div>
-    <div class="acct-badge" onclick="window.open('https://polymarket.com/profile/0x367a9C287B9970b26Fa9ad787b3c27921dc6D1CE','_blank')" title="0x367a9C287B9970b26Fa9ad787b3c27921dc6D1CE">⬡ 0x367a...D1CE</div>
+    <div class="acct-badge" onclick="window.location='mm.html'" title="Bayesian + Stoikov MM Engine">⬡ MM ENGINE</div>
+    <div class="acct-badge" id="acct-badge">⬡ ACCOUNT</div>
+    <script>
+      (function () {
+        var acctBadge = document.getElementById('acct-badge');
+        if (!acctBadge || typeof MY_ADDR !== 'string' || !MY_ADDR) {
+          return;
+        }
+
+        var shortAddr = MY_ADDR.length > 10
+          ? MY_ADDR.slice(0, 6) + '...' + MY_ADDR.slice(-4)
+          : MY_ADDR;
+
+        acctBadge.title = MY_ADDR;
+        acctBadge.textContent = '⬡ ' + shortAddr;
+        acctBadge.onclick = function () {
+          window.open('https://polymarket.com/profile/' + encodeURIComponent(MY_ADDR), '_blank');
+        };
+      })();
+    </script>
     <div class="clock" id="clock">--:--:--</div>
   </div>
 </div>
@@ -326,6 +345,7 @@
             <th>NO</th>
             <th>VOL</th>
             <th>24H VOL</th>
+            <th>CHART</th>
             <th>ODDS</th>
             <th></th>
           </tr>
@@ -358,12 +378,21 @@
   </div>
 
   <!-- ── ORDER LEADERBOARD ─────────────────────────────── -->
-  <div class="panel" style="grid-column:2; grid-row:2;">
+  <div class="panel" style="grid-column:2; grid-row:2; display:flex; flex-direction:column; min-height:0;">
     <div class="ph">
       <span class="ph-title">// ORDER LEADERBOARD</span>
       <span class="ph-meta">TOP PROFITS TODAY</span>
     </div>
-    <div class="pc" id="leaderboard-list"></div>
+    <div class="pc" id="leaderboard-list" style="flex:1;overflow-y:auto;"></div>
+
+    <!-- BOT ALERTS sub-panel -->
+    <div style="border-top:1px solid var(--brd); flex-shrink:0;">
+      <div class="ph" style="padding:4px 10px;">
+        <span class="ph-title">// BOT ALERTS</span>
+        <span class="ph-meta" id="alert-meta">LIVE</span>
+      </div>
+      <div id="alert-list" style="max-height:110px;overflow-y:auto;padding:2px 0;"></div>
+    </div>
   </div>
 
 </div>
@@ -407,18 +436,43 @@ const WATCHED_WALLETS = [
   { addr:"0x0afc7ce56285bde1fbe3a75efaffdfc86d6530b2", portfolio: 0,        mkts:0  },
 ];
 
-const TICKER_ITEMS = [
-  { lbl:"BTC",      val:"$94,210", up:true  },
-  { lbl:"ETH",      val:"$3,412",  up:true  },
-  { lbl:"FED RATE", val:"5.25%",   up:false },
-  { lbl:"S&P500",   val:"5,948",   up:true  },
-  { lbl:"GOLD",     val:"$2,381",  up:true  },
+let TICKER_ITEMS = [
+  { lbl:"BTC",      val:"...",     up:true  },
+  { lbl:"ETH",      val:"...",     up:true  },
+  { lbl:"SOL",      val:"...",     up:true  },
+  { lbl:"DOGE",     val:"...",     up:true  },
+  { lbl:"MATIC",    val:"...",     up:true  },
   { lbl:"POLY VOL", val:"$48.2M",  up:true  },
-  { lbl:"OPEN INT", val:"11,420",  up:true  },
-  { lbl:"DXY",      val:"104.2",   up:false },
+  { lbl:"FED RATE", val:"4.50%",   up:false },
   { lbl:"USDT DOM", val:"4.82%",   up:false },
   { lbl:"VIX",      val:"18.3",    up:false },
 ];
+
+async function loadTicker() {
+  try {
+    const data = await fetchWithProxy(
+      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,matic-network&vs_currencies=usd&include_24hr_change=true'
+    );
+    const map = {
+      BTC:   { id:'bitcoin',       sym:'$' },
+      ETH:   { id:'ethereum',      sym:'$' },
+      SOL:   { id:'solana',        sym:'$' },
+      DOGE:  { id:'dogecoin',      sym:'$' },
+      MATIC: { id:'matic-network', sym:'$' },
+    };
+    TICKER_ITEMS = TICKER_ITEMS.map(t => {
+      const m = map[t.lbl];
+      if (!m || !data[m.id]) return t;
+      const price = data[m.id].usd;
+      const chg   = data[m.id].usd_24h_change ?? 0;
+      const val   = price >= 1000 ? '$' + price.toLocaleString('en-US',{maximumFractionDigits:0})
+                  : price >= 1    ? '$' + price.toFixed(2)
+                  :                 '$' + price.toFixed(4);
+      return { lbl: t.lbl, val, up: chg >= 0 };
+    });
+    renderTicker();
+  } catch(_) {}
+}
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 const fmt$ = v => (v >= 0 ? '+$' : '-$') + Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -464,13 +518,32 @@ async function loadPortfolio() {
     renderPositions(posArr);
   } catch(e) {
     console.warn('Portfolio API:', e.message);
-    document.getElementById('pos-meta').textContent = 'OFFLINE — STATIC DATA';
-    renderFallbackPositions();
+    document.getElementById('pos-meta').textContent = 'API UNAVAILABLE';
+    document.getElementById('wallet-list').innerHTML = `
+      <div class="we active" style="text-align:center;padding:18px 10px;color:var(--gdim);">
+        <div style="font-size:11px;letter-spacing:1px;">UNABLE TO LOAD POSITIONS</div>
+        <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">${e.message}</div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-y" onclick="window.open('https://polymarket.com/profile/${MY_ADDR}','_blank')">VIEW ON POLYMARKET</button>
+        </div>
+      </div>`;
   }
 }
 
 function renderPositions(positions) {
-  if (!positions.length) { renderFallbackPositions(); return; }
+  if (!positions.length) {
+    document.getElementById('wallet-list').innerHTML = `
+      <div class="we active" style="text-align:center;padding:18px 10px;color:var(--gdim);">
+        <div style="font-size:11px;letter-spacing:1px;">NO ACTIVE POSITIONS</div>
+        <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">Deposit USDC on Polygon to start trading</div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-y" onclick="window.open('https://polymarket.com/profile/${MY_ADDR}','_blank')">VIEW PROFILE</button>
+        </div>
+      </div>`;
+    document.getElementById('portfolio-val').textContent = '$0.00';
+    document.getElementById('open-pos').textContent = '0';
+    return;
+  }
   const sorted = [...positions].sort((a,b) => {
     if (a.closed !== b.closed) return a.closed ? 1 : -1;
     return ((b.unrealizedPnl??0)-(a.unrealizedPnl??0));
@@ -607,47 +680,108 @@ function renderActivity(acts) {
       </div>`;
   }).join('');
 }
-
-function renderFallbackLeaderboard() {
-  const LDRS = [
-    { rank:1, side:"BUY YES", market:"SpaceX Starship orbit 2025?", profit:"+$322.0" },
-    { rank:2, side:"BUY YES", market:"Fed cuts rates in 2025?",     profit:"+$184.2" },
-    { rank:3, side:"BUY NO",  market:"BTC above $120k by EOY?",     profit:"+$97.4"  },
-    { rank:4, side:"BUY YES", market:"Trump 2nd term ends early?",  profit:"+$58.1"  },
-    { rank:5, side:"BUY YES", market:"AI passes bar exam 2025?",    profit:"+$44.6"  },
-    { rank:6, side:"BUY NO",  market:"S&P 500 above 6000 EOY?",    profit:"+$29.3"  },
-    { rank:7, side:"BUY YES", market:"Elon Musk leaves DOGE?",      profit:"+$18.1"  },
-  ];
-  document.getElementById('leaderboard-list').innerHTML = LDRS.map(l => `
-    <div class="le">
-      <span class="le-rank">#${l.rank}</span>
-      <span class="le-trader">${l.side}</span>
-      <span class="le-market">${l.market}</span>
-      <span class="le-profit">${l.profit}</span>
-    </div>`).join('');
+  const errors = [];
+  // Try local proxy first (server.py — adds polymarket.com Origin header)
+  try {
+    const local = `/proxy?url=${encodeURIComponent(url)}`;
+    const r = await fetch(local, { signal: AbortSignal.timeout(8000) });
+    if (r.ok) return r.json();
+    errors.push(`local proxy returned ${r.status} ${r.statusText || 'unknown status'}`);
+  } catch (e) {
+    errors.push(`local proxy error: ${e && e.message ? e.message : String(e)}`);
+  }
+  // Fallback: direct fetch (may work if CORS not enforced)
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(7000) });
+    if (r.ok) return r.json();
+    errors.push(`direct fetch returned ${r.status} ${r.statusText || 'unknown status'}`);
+  } catch (e) {
+    errors.push(`direct fetch error: ${e && e.message ? e.message : String(e)}`);
+  }
+  throw new Error(`all fetch methods failed: ${errors.join('; ')}`);
+      </div>
+    </div>`;
 }
 
 // ── FETCH: LIVE MARKETS ───────────────────────────────────────────────────────
+async function fetchWithProxy(url) {
+  // Try local proxy first (server.py — adds polymarket.com Origin header)
+  try {
+    const local = `/proxy?url=${encodeURIComponent(url)}`;
+    const r = await fetch(local, { signal: AbortSignal.timeout(8000) });
+    if (r.ok) return r.json();
+  } catch(_) {}
+  // Fallback: direct fetch (may work if CORS not enforced)
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(7000) });
+    if (r.ok) return r.json();
+  } catch(_) {}
+  throw new Error('all fetch methods failed');
+}
+
 async function loadMarkets() {
   try {
-    const res = await fetch(
-      `${GAMMA_API}/markets?active=true&limit=20&sort=volume&ascending=false`,
-      { signal: AbortSignal.timeout(8000) }
+    const raw = await fetchWithProxy(
+      `${GAMMA_API}/markets?active=true&limit=20&sort=volume&ascending=false`
     );
-    if (!res.ok) throw new Error('non-OK');
-    const raw = await res.json();
     const markets = Array.isArray(raw) ? raw : (raw.markets ?? []);
-    document.getElementById('mkt-meta').textContent = `${markets.length} LIVE · VOLUME ▼`;
+    document.getElementById('mkt-meta').textContent = `ONLINE · ${markets.length} LIVE · VOLUME ▼`;
     renderLiveMarkets(markets);
+    // Load sparklines after render
+    setTimeout(() => fetchAllSparklines(markets), 300);
   } catch(e) {
     console.warn('Markets API:', e.message);
-    document.getElementById('mkt-meta').textContent = 'OFFLINE — STATIC DATA';
-    renderFallbackMarkets();
+    document.getElementById('mkt-meta').textContent = 'OFFLINE — NO DATA';
+    renderOfflineMarkets(e.message);
+  }
+}
+
+// ── SPARKLINES ────────────────────────────────────────────────────────────────
+function drawSparkline(canvas, points, up) {
+  if (!canvas || !points || points.length < 2) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const min = Math.min(...points), max = Math.max(...points);
+  const range = max - min || 0.01;
+  const xs = points.map((_, i) => (i / (points.length - 1)) * W);
+  const ys = points.map(p => H - ((p - min) / range) * (H - 2) - 1);
+  ctx.beginPath();
+  xs.forEach((x, i) => i === 0 ? ctx.moveTo(x, ys[i]) : ctx.lineTo(x, ys[i]));
+  ctx.strokeStyle = up ? '#00ff41' : '#ff3b3b';
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = up ? '#00ff41' : '#ff3b3b';
+  ctx.shadowBlur = 3;
+  ctx.stroke();
+}
+
+async function fetchAllSparklines(markets) {
+  for (const m of markets.slice(0, 12)) {
+    const condId = m.conditionId ?? m.condition_id ?? '';
+    let tokenId = '';
+    try {
+      const toks = typeof m.clobTokenIds === 'string' ? JSON.parse(m.clobTokenIds) : (m.clobTokenIds ?? []);
+      tokenId = toks[0] ?? '';
+    } catch(_) {}
+    if (!tokenId) continue;
+    const canvas = document.getElementById(`spark-${condId}`);
+    if (!canvas) continue;
+    try {
+      const data = await fetchWithProxy(
+        `${CLOB_API}/prices-history?market=${tokenId}&interval=1d&fidelity=60`
+      );
+      const hist = data.history ?? [];
+      if (hist.length < 3) continue;
+      const pts = hist.slice(-40).map(h => parseFloat(h.p ?? h.price ?? 0.5));
+      const first = pts[0], last = pts[pts.length - 1];
+      drawSparkline(canvas, pts, last >= first);
+    } catch(_) {}
+    await new Promise(r => setTimeout(r, 120)); // stagger requests
   }
 }
 
 function renderLiveMarkets(markets) {
-  if (!markets.length) { renderFallbackMarkets(); return; }
+  if (!markets.length) { renderOfflineMarkets('empty response'); return; }
   document.getElementById('market-list').innerHTML = markets.map(m => {
     let yesV=50, noV=50;
     try {
@@ -660,6 +794,7 @@ function renderLiveMarkets(markets) {
     const vol      = fmtVol(m.volume??0);
     const vol24    = m.volume24hr!=null ? fmtVol(m.volume24hr) : '—';
     const slug     = m.slug ?? m.conditionId ?? '';
+    const condId   = m.conditionId ?? m.condition_id ?? slug;
     return `
       <tr>
         <td>
@@ -670,6 +805,7 @@ function renderLiveMarkets(markets) {
         <td><span class="pno">${noV}¢</span></td>
         <td><span class="vol-cell">${vol}</span></td>
         <td><span class="ch-pos">${vol24}</span></td>
+        <td><canvas id="spark-${condId}" width="70" height="24" style="display:block;"></canvas></td>
         <td>
           <div class="win-wrap">
             <div class="win-track"><div class="win-fill" style="width:${yesV}%"></div></div>
@@ -682,38 +818,17 @@ function renderLiveMarkets(markets) {
   }).join('');
 }
 
-function renderFallbackMarkets() {
-  const MKTS = [
-    { name:"Trump 2nd term ends early?",  cat:"POLITICS", yes:"10¢", no:"90¢", yv:10, vol:"$9.2M", ch:"$1.4M" },
-    { name:"Fed cuts rates in 2025?",     cat:"FINANCE",  yes:"67¢", no:"33¢", yv:67, vol:"$5.4M", ch:"$1.1M" },
-    { name:"BTC above $120k by EOY?",     cat:"CRYPTO",   yes:"54¢", no:"46¢", yv:54, vol:"$8.9M", ch:"$2.6M" },
-    { name:"Gaza ceasefire holds 30d?",   cat:"WORLD",    yes:"42¢", no:"58¢", yv:42, vol:"$3.1M", ch:"$1.6M" },
-    { name:"SpaceX Starship orbit 2025?", cat:"TECH",     yes:"77¢", no:"23¢", yv:77, vol:"$4.8M", ch:"$1.0M" },
-    { name:"NFL QB MVP non-Kansas?",      cat:"SPORTS",   yes:"33¢", no:"67¢", yv:33, vol:"$2.2M", ch:"$1.4M" },
-    { name:"Apple AI Siri v2 ships?",     cat:"TECH",     yes:"42¢", no:"58¢", yv:42, vol:"$1.8M", ch:"$1.4M" },
-    { name:"US recession by Q3 2025?",    cat:"FINANCE",  yes:"29¢", no:"71¢", yv:29, vol:"$6.1M", ch:"$0.3M" },
-    { name:"Elon Musk leaves DOGE?",      cat:"POLITICS", yes:"61¢", no:"39¢", yv:61, vol:"$3.4M", ch:"$0.8M" },
-    { name:"AI passes bar exam 2025?",    cat:"TECH",     yes:"88¢", no:"12¢", yv:88, vol:"$1.2M", ch:"$0.2M" },
-    { name:"S&P 500 above 6000 EOY?",     cat:"FINANCE",  yes:"71¢", no:"29¢", yv:71, vol:"$7.3M", ch:"$1.9M" },
-  ];
-  document.getElementById('market-list').innerHTML = MKTS.map(m => `
-    <tr>
-      <td>
-        <div class="m-name">${m.name}</div>
-        <div class="m-cat">${m.cat}</div>
-      </td>
-      <td><span class="pyes" data-base="${m.yv}">${m.yes}</span></td>
-      <td><span class="pno">${m.no}</span></td>
-      <td><span class="vol-cell">${m.vol}</span></td>
-      <td><span class="ch-pos">${m.ch}</span></td>
-      <td>
-        <div class="win-wrap">
-          <div class="win-track"><div class="win-fill" style="width:${m.yv}%"></div></div>
-          <span class="win-pct">${m.yv}%</span>
-        </div>
-      </td>
-      <td><button class="btn btn-y" style="font-size:8px;padding:2px 6px;">TRADE</button></td>
-    </tr>`).join('');
+function renderOfflineMarkets(reason) {
+  document.getElementById('market-list').innerHTML = `
+    <tr><td colspan="7" style="padding:28px 10px;text-align:center;color:var(--gdim);">
+      <div style="font-size:11px;letter-spacing:1px;">MARKETS UNAVAILABLE</div>
+      <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">${reason ?? 'API unreachable'}</div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-y" onclick="loadMarkets()">RETRY</button>
+        &nbsp;
+        <button class="btn btn-c" onclick="window.open('https://polymarket.com','_blank')">OPEN POLYMARKET</button>
+      </div>
+    </td></tr>`;
 }
 
 // ── STATIC RENDERS ────────────────────────────────────────────────────────────
@@ -803,18 +918,38 @@ function tickProg() {
     '0:' + String(secs).padStart(2,'0') + ' / 1:00';
 }
 
+// ── BOT ALERTS ────────────────────────────────────────────────────────────────
+async function loadAlerts() {
+  try {
+    const res = await fetch('alerts.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const alerts = await res.json();
+    if (!Array.isArray(alerts) || !alerts.length) return;
+    document.getElementById('alert-meta').textContent = `${alerts.length} ALERTS`;
+    const colors = { INFO: 'var(--g)', WARN: 'var(--yellow)', ERROR: 'var(--red)', HALT: 'var(--red)' };
+    document.getElementById('alert-list').innerHTML = alerts.slice(0, 12).map(a => `
+      <div style="display:flex;gap:8px;padding:3px 10px;border-bottom:1px solid rgba(0,255,65,.04);align-items:baseline;">
+        <span style="font-size:9px;color:var(--gmuted);white-space:nowrap;">${a.time}</span>
+        <span style="font-size:9px;color:${colors[a.level]||'var(--g)'};font-weight:bold;">${a.level}</span>
+        <span style="font-size:10px;color:var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.msg}</span>
+      </div>`).join('');
+  } catch(_) {}
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 renderCopytrade();
 renderTicker();
 updateClock();
 
 // Parallel API fetches
-Promise.all([ loadPortfolio(), loadMarkets(), loadOrders() ]);
+Promise.all([ loadPortfolio(), loadMarkets(), loadOrders(), loadTicker(), loadAlerts() ]);
 
 // Refresh schedule
 setInterval(loadPortfolio, 60_000);
 setInterval(loadMarkets,   30_000);
 setInterval(loadOrders,    60_000);
+setInterval(loadTicker,   120_000);  // crypto prices every 2 min
+setInterval(loadAlerts,    5_000);   // bot alerts every 5s
 
 setInterval(updateClock,   1000);
 setInterval(flickerPrices, 2000);
