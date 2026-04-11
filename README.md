@@ -5,12 +5,12 @@ This repository contains a simple Python application entrypoint in `app.py`.
 Usage:
 
 ```powershell
-python app.py --greet YourName
+python app.py --greet Twix0514
 ```
 
 You can also override or set `ADMIN_PATH`:
 
 ```powershell
-setx ADMIN_PATH "your_custom_admin_path"
+setx ADMIN_PATH "your_custom_Twix0514_path"
 python app.py --status
 ```
