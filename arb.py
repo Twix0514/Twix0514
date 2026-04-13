@@ -9,7 +9,11 @@ Finds:
 import urllib.request, json, time
 from datetime import datetime
 
+<<<<<<< HEAD
 # -- HELPERS -------------------------------------------------------------------
+=======
+# ── HELPERS ───────────────────────────────────────────────────────────────────
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 
 def fetch(url, retries=2):
     headers = {"User-Agent": "Mozilla/5.0", "Accept": "application/json"}
@@ -26,7 +30,11 @@ def fetch(url, retries=2):
 def fmt(v): return f"${v:,.2f}"
 def pct(v):  return f"{v*100:.1f}¢"
 
+<<<<<<< HEAD
 # -- 1. FETCH TOP MARKETS ------------------------------------------------------
+=======
+# ── 1. FETCH TOP MARKETS ──────────────────────────────────────────────────────
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 
 print("\n" + "="*70)
 print("  POLY//ARB SCANNER  —  " + datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"))
@@ -47,9 +55,15 @@ for offset in range(0, 300, 100):
 
 print(f"    Loaded {len(markets)} markets")
 
+<<<<<<< HEAD
 # -- 2. MISPRICE SCAN ---------------------------------------------------------
 
 print("\n[2/3] Scanning for mispriced markets (YES + NO != 100¢)...")
+=======
+# ── 2. MISPRICE SCAN ─────────────────────────────────────────────────────────
+
+print("\n[2/3] Scanning for mispriced markets (YES + NO ≠ 100¢)...")
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 
 mispriced = []
 no_arb    = []  # sum < 1 = can buy both and guarantee profit
@@ -104,6 +118,7 @@ no_arb.sort(key=lambda x: -x['edge'])
 over_arb.sort(key=lambda x: -x['edge'])
 mispriced.sort(key=lambda x: -x['edge'])
 
+<<<<<<< HEAD
 print(f"\n  +- RISK-FREE ARB (YES+NO < $1.00) — buy both sides, profit guaranteed -+")
 if no_arb:
     for m in no_arb[:8]:
@@ -127,6 +142,31 @@ if over_arb:
         print(f"  |")
 else:
     print("  |  None found (market is efficient)")
+=======
+print(f"\n  ┌─ RISK-FREE ARB (YES+NO < $1.00) — buy both sides, profit guaranteed ─┐")
+if no_arb:
+    for m in no_arb[:8]:
+        profit_per_dollar = 1.0 - m['total']
+        print(f"  │  YES={pct(m['yes'])} + NO={pct(m['no'])} = {pct(m['total'])}  "
+              f"PROFIT={pct(profit_per_dollar)}/share  VOL24={fmt(m['vol24'])}")
+        print(f"  │  → {m['question']}")
+        print(f"  │    https://polymarket.com/event/{m['slug']}")
+        print(f"  │")
+else:
+    print("  │  None found")
+
+print(f"  └─ OVERPRICED MARKETS (YES+NO > $1.00) — sell both sides ─────────────┐")
+if over_arb:
+    for m in over_arb[:8]:
+        profit_per_dollar = m['total'] - 1.0
+        print(f"  │  YES={pct(m['yes'])} + NO={pct(m['no'])} = {pct(m['total'])}  "
+              f"EDGE={pct(profit_per_dollar)}/share  VOL24={fmt(m['vol24'])}")
+        print(f"  │  → {m['question']}")
+        print(f"  │    https://polymarket.com/event/{m['slug']}")
+        print(f"  │")
+else:
+    print("  │  None found (market is efficient)")
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 
 print(f"\n  MINOR MISPRICINGS (0.5¢–2¢ edge, {len(mispriced)} found):")
 for m in mispriced[:5]:
@@ -135,7 +175,11 @@ for m in mispriced[:5]:
           f"edge={m['edge']*100:.2f}¢  vol={fmt(m['vol'])}")
     print(f"    → {m['question']}")
 
+<<<<<<< HEAD
 # -- 3. FIND EXPLOITER WALLETS -------------------------------------------------
+=======
+# ── 3. FIND EXPLOITER WALLETS ─────────────────────────────────────────────────
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 
 print("\n[3/3] Finding wallets exploiting mispriced markets...")
 
@@ -182,7 +226,11 @@ known = [
     '0x59a0744db1f39ff3afccd175f80e6e8dfc239a09',
 ]
 
+<<<<<<< HEAD
 print(f"\n  +- KNOWN WHALE WALLET POSITIONS ON MISPRICED MARKETS ------------------+")
+=======
+print(f"\n  ┌─ KNOWN WHALE WALLET POSITIONS ON MISPRICED MARKETS ──────────────────┐")
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 for addr in known:
     data = fetch(f"https://data-api.polymarket.com/positions?user={addr}&limit=50")
     if not data:
@@ -203,6 +251,7 @@ for addr in known:
 
     if port > 0 or hits:
         short = addr[:8] + '...' + addr[-4:]
+<<<<<<< HEAD
         print(f"  |  {short}  portfolio={fmt(port)}  arb_positions={len(hits)}")
         for h in hits[:2]:
             print(f"  |    {h.get('outcome','?')} {h.get('size',0):.0f} shares — {h.get('title','')[:40]}")
@@ -210,6 +259,15 @@ for addr in known:
 print(f"  +-----------------------------------------------------------------------+")
 
 # -- 4. SUMMARY ----------------------------------------------------------------
+=======
+        print(f"  │  {short}  portfolio={fmt(port)}  arb_positions={len(hits)}")
+        for h in hits[:2]:
+            print(f"  │    {h.get('outcome','?')} {h.get('size',0):.0f} shares — {h.get('title','')[:40]}")
+
+print(f"  └───────────────────────────────────────────────────────────────────────┘")
+
+# ── 4. SUMMARY ────────────────────────────────────────────────────────────────
+>>>>>>> 17eb9c02ef5228ab21726c08e305190dfbac2e5d
 
 print("\n" + "="*70)
 print("  SUMMARY")
