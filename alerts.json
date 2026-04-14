@@ -1,5 +1,105 @@
 [
   {
+    "time": "15:13:40",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Claude 5 released by\u2026?\nEdge: 34.1pp\nLegs: 3 | Per leg: $2.00"
+  },
+  {
+    "time": "15:13:39",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Netanyahu out by...?\nEdge: 48.8pp\nLegs: 3 | Per leg: $2.00"
+  },
+  {
+    "time": "15:13:38",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Will Russia capture Lyman by...?\nEdge: 15.9pp\nLegs: 3 | Per leg: $2.00"
+  },
+  {
+    "time": "15:13:37",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 24.7pp\nLegs: 17 | Per leg: $2.00"
+  },
+  {
+    "time": "15:13:36",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 20.5pp\nLegs: 22 | Per leg: $2.00"
+  },
+  {
+    "time": "15:13:36",
+    "level": "INFO",
+    "msg": "POLY//BOT HALTED\nDaily loss: -64.1%\nLimit: -50%\nResumes next UTC midnight."
+  },
+  {
+    "time": "15:13:35",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 47.31 shares\nMarket: Will France win the 2026 FIFA World Cup?\nPrice: 0.1645\nStatus: live"
+  },
+  {
+    "time": "15:13:30",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 61.74 shares\nMarket: Will England win the 2026 FIFA World Cup?\nPrice: 0.1125\nStatus: live"
+  },
+  {
+    "time": "15:13:25",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 36.24 shares\nMarket: Will Spain win the 2026 FIFA World Cup?\nPrice: 0.1735\nStatus: matched"
+  },
+  {
+    "time": "15:13:20",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 11.1pp\nLegs: 15 | Per leg: $1.59"
+  },
+  {
+    "time": "15:13:12",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 174.03 shares\nMarket: Will Harvey Weinstein be sentenced to less than 5 years in p\nPrice: 0.0355\nStatus: live"
+  },
+  {
+    "time": "15:13:06",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Harvey Weinstein prison time?\nEdge: 4.8pp\nLegs: 6 | Per leg: $1.28"
+  },
+  {
+    "time": "15:13:05",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 362.35 shares\nMarket: Starmer out by April 30, 2026?\nPrice: 0.014\nStatus: live"
+  },
+  {
+    "time": "15:12:58",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 13.35 shares\nMarket: Starmer out by June 30, 2026?\nPrice: 0.23\nStatus: live"
+  },
+  {
+    "time": "15:12:53",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Starmer out by...?\nEdge: 26.1pp\nLegs: 3 | Per leg: $0.88"
+  },
+  {
+    "time": "14:54:54",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Bitcoin dip to $65,000 in April?\nPrice: 0.6836\nStatus: matched"
+  },
+  {
+    "time": "14:51:06",
+    "level": "INFO",
+    "msg": "POLY//BOT HALTED\nDaily loss: -59.7%\nLimit: -50%\nResumes next UTC midnight."
+  },
+  {
+    "time": "14:51:00",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Solana reach $110 in April?\nPrice: 0.8532\nStatus: matched"
+  },
+  {
+    "time": "14:50:55",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Hyperliquid dip to $20 by December 31, 2026?\nPrice: 0.6504\nStatus: matched"
+  },
+  {
+    "time": "14:50:48",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Bitcoin dip to $65,000 in April?\nPrice: 0.6836\nStatus: matched"
+  },
+  {
     "time": "01:17:23",
     "level": "INFO",
     "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Hyperliquid dip to $20 by December 31, 2026?\nPrice: 0.6504\nStatus: matched"
