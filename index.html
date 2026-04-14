@@ -680,28 +680,6 @@ function renderActivity(acts) {
       </div>`;
   }).join('');
 }
-  const errors = [];
-  // Try local proxy first (server.py — adds polymarket.com Origin header)
-  try {
-    const local = `/proxy?url=${encodeURIComponent(url)}`;
-    const r = await fetch(local, { signal: AbortSignal.timeout(8000) });
-    if (r.ok) return r.json();
-    errors.push(`local proxy returned ${r.status} ${r.statusText || 'unknown status'}`);
-  } catch (e) {
-    errors.push(`local proxy error: ${e && e.message ? e.message : String(e)}`);
-  }
-  // Fallback: direct fetch (may work if CORS not enforced)
-  try {
-    const r = await fetch(url, { signal: AbortSignal.timeout(7000) });
-    if (r.ok) return r.json();
-    errors.push(`direct fetch returned ${r.status} ${r.statusText || 'unknown status'}`);
-  } catch (e) {
-    errors.push(`direct fetch error: ${e && e.message ? e.message : String(e)}`);
-  }
-  throw new Error(`all fetch methods failed: ${errors.join('; ')}`);
-      </div>
-    </div>`;
-}
 
 // ── FETCH: LIVE MARKETS ───────────────────────────────────────────────────────
 async function fetchWithProxy(url) {
