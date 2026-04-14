@@ -1,5 +1,6 @@
 [
   {
+<<<<<<< HEAD
     "time": "15:13:40",
     "level": "INFO",
     "msg": "POLY//BOT MULTI-ARB\nEvent: Claude 5 released by\u2026?\nEdge: 34.1pp\nLegs: 3 | Per leg: $2.00"
@@ -100,6 +101,8 @@
     "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Bitcoin dip to $65,000 in April?\nPrice: 0.6836\nStatus: matched"
   },
   {
+=======
+>>>>>>> 64fb25d0ec351e629a2a90633574b8034381c73d
     "time": "01:17:23",
     "level": "INFO",
     "msg": "POLY//BOT ORDER\nCOPY: BUY 5.0 shares\nMarket: Will Hyperliquid dip to $20 by December 31, 2026?\nPrice: 0.6504\nStatus: matched"
