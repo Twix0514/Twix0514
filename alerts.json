@@ -1,5 +1,25 @@
 [
   {
+    "time": "10:49:20",
+    "level": "UPDN",
+    "msg": "5MIN XRP: -0.318% \u2192 Down @ 49% +104.1% | 1.0min left"
+  },
+  {
+    "time": "10:49:17",
+    "level": "UPDN",
+    "msg": "5MIN DOGE: +0.136% \u2192 Up @ 50% +98.0% | 1.0min left"
+  },
+  {
+    "time": "10:49:13",
+    "level": "UPDN",
+    "msg": "5MIN ETH: -0.136% \u2192 Down @ 46% +115.1% | 1.0min left"
+  },
+  {
+    "time": "10:49:05",
+    "level": "UPDN",
+    "msg": "5MIN BTC: -0.125% \u2192 Down @ 50% +102.0% | 1.0min left"
+  },
+  {
     "time": "10:48:51",
     "level": "UPDN",
     "msg": "5MIN XRP: -0.340% \u2192 Down @ 49% +104.1% | 1.4min left"
@@ -226,26 +246,6 @@
   },
   {
     "time": "03:28:37",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $2.00"
-  },
-  {
-    "time": "03:28:37",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.6pp\nLegs: 21 | Per leg: $2.00"
-  },
-  {
-    "time": "03:28:37",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $2.00"
-  },
-  {
-    "time": "03:23:36",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: La Liga - Top Goalscorer \nEdge: 4.2pp\nLegs: 3 | Per leg: $2.00"
-  },
-  {
-    "time": "03:23:36",
     "level": "INFO",
     "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $2.00"
   }
