@@ -1,0 +1,127 @@
+06:48:31 [WARNING] [PROXY] No proxy set — orders may be geoblocked. Set PROXY in secrets_local.py
+06:48:31 [INFO] POLY//BOT v3 — LIVE TRADING
+06:48:31 [INFO] Engines: MOMENTUM | ARB | UPDOWN | CERT | COPY | MARB | 4MIN | 3-AGENT
+06:48:31 [INFO] Max pos: $5.0 (30% portfolio)
+06:48:31 [INFO] CopyTrade: 0x751a2b86ca... ratio=15%
+06:48:31 [INFO] Arb: exec when gap >= 1.5%
+06:48:31 [INFO] UpDown: scan every 10s | min move 0.1%
+06:48:31 [INFO] 4MIN: scan every 15s | window \u22644min | leader \u226582%
+06:48:33 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:33 [INFO] Thread [status] started
+06:48:33 [INFO] [COPY] Watching whale 0x751a2b86ca... every 30s
+06:48:33 [INFO] Thread [copytrade] started
+06:48:33 [INFO] [ARB] Scanner started — scanning every 45s
+06:48:33 [INFO] Thread [arb] started
+06:48:33 [INFO] [UPDN] 5-min crypto engine started (4-min rule) — every 10s
+06:48:33 [INFO] [UPDN] Markets: BTC ETH SOL XRP DOGE BNB HYPE | window: 0.5-4.5min remaining
+06:48:33 [INFO] Thread [updown] started
+06:48:33 [INFO] [CERT] Near-certainty scalper started — every 120s
+06:48:33 [INFO] Thread [certainty] started
+06:48:33 [INFO] [FOUR] 4-minute rule engine started — scanning every 15s
+06:48:33 [INFO] Thread [4min-rule] started
+06:48:33 [INFO] Thread [3-agent] started
+06:48:33 [INFO] [MARB] Multi-outcome arb scanner started
+06:48:33 [INFO] Thread [multi-arb] started
+06:48:33 [INFO] Thread [day-reset] started
+06:48:33 [INFO] [TRACKER] Position tracker started — checking every 30s
+06:48:33 [INFO] [TRACKER] Exit rules: 80% target | 3.0x vol spike | 24h stale
+06:48:33 [INFO] [AGENT] Position tracker started
+06:48:33 [INFO] [AGENT] Wallet scanner background refresh started
+06:48:33 [INFO] [AGENT] 3-Agent market scanner started — every 10 min
+06:48:33 [INFO] [AGENT] Loaded 1 elite wallets (>70% WR)
+06:48:34 [INFO] Websocket connected
+06:48:34 [INFO] WebSocket connected — subscribing to markets...
+06:48:36 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
+06:48:36 [INFO] [MARB] Event: 2026 FIFA World Cup Winner 
+06:48:36 [INFO] [MARB] Sum of YES prices: 0.8910 \u2192 edge: 10.9pp
+06:48:36 [INFO] [MARB]   YES=0.172  liq=$1,546,225  | Will Spain win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.111  liq=$1,372,151  | Will England win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.164  liq=$899,171  | Will France win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.086  liq=$1,342,764  | Will Brazil win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.088  liq=$1,221,830  | Will Argentina win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.052  liq=$1,093,440  | Will Germany win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.017  liq=$2,001,149  | Will Colombia win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.073  liq=$781,970  | Will Portugal win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.033  liq=$1,298,422  | Will Netherlands win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.013  liq=$2,711,679  | Will USA win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$1,416,474  | Will Mexico win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.018  liq=$1,453,765  | Will Japan win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.021  liq=$1,576,158  | Will Norway win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.017  liq=$951,299  | Will Morocco win the 2026 FIFA World Cup?
+06:48:36 [INFO] [MARB]   YES=0.018  liq=$1,426,674  | Will Belgium win the 2026 FIFA World Cup?
+06:48:36 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:36 [INFO] [UPDN] BTC -0.141% (4min) \u2192 Down @ 0.49 | 1.4min left | +102.0% ROI | Bitcoin Up or Down - April 16, 6:45AM-6:50AM 
+06:48:36 [WARNING] [MARB] Skipping — portfolio $0.00 too low
+06:48:36 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
+06:48:36 [INFO] [MARB] Event: Democratic Presidential Nominee 2028
+06:48:36 [INFO] [MARB] Sum of YES prices: 0.7820 \u2192 edge: 21.8pp
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$497,239  | Will Stephen A. Smith win the 2028 Democratic presidential n
+06:48:36 [INFO] [MARB]   YES=0.013  liq=$574,027  | Will Gretchen Whitmer win the 2028 Democratic presidential n
+06:48:36 [INFO] [MARB]   YES=0.026  liq=$543,793  | Will Andy Beshear win the 2028 Democratic presidential nomin
+06:48:36 [INFO] [MARB]   YES=0.021  liq=$386,708  | Will James Talarico win the 2028 Democratic presidential nom
+06:48:36 [INFO] [MARB]   YES=0.038  liq=$435,004  | Will Pete Buttigieg win the 2028 Democratic presidential nom
+06:48:36 [INFO] [MARB]   YES=0.059  liq=$284,467  | Will Jon Ossoff win the 2028 Democratic presidential nominat
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$1,385,481  | Will Cory Booker win the 2028 Democratic presidential nomina
+06:48:36 [INFO] [MARB]   YES=0.021  liq=$1,002,878  | Will Jon Stewart win the 2028 Democratic presidential nomina
+06:48:36 [INFO] [MARB]   YES=0.026  liq=$304,204  | Will Mark Kelly win the 2028 Democratic presidential nominat
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$1,585,469  | Will Michelle Obama win the 2028 Democratic presidential nom
+06:48:36 [INFO] [MARB]   YES=0.083  liq=$478,061  | Will Alexandria Ocasio-Cortez win the 2028 Democratic presid
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$542,315  | Will Rahm Emanuel win the 2028 Democratic presidential nomin
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$2,083,797  | Will John Fetterman win the 2028 Democratic presidential nom
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$572,725  | Will Wes Moore win the 2028 Democratic presidential nominati
+06:48:36 [INFO] [MARB]   YES=0.019  liq=$415,981  | Will J.B. Pritzker win the 2028 Democratic presidential nomi
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$349,277  | Will Dwayne 'The Rock' Johnson win the 2028 Democratic presi
+06:48:36 [INFO] [MARB]   YES=0.019  liq=$438,283  | Will Ro Khanna win the 2028 Democratic presidential nominati
+06:48:36 [INFO] [MARB]   YES=0.041  liq=$443,745  | Will Josh Shapiro win the 2028 Democratic presidential nomin
+06:48:36 [INFO] [MARB]   YES=0.065  liq=$274,974  | Will Kamala Harris win the 2028 Democratic presidential nomi
+06:48:36 [INFO] [MARB]   YES=0.271  liq=$416,152  | Will Gavin Newsom win the 2028 Democratic presidential nomin
+06:48:36 [INFO] [ALERT] 5MIN BTC: -0.141% \u2192 Down @ 50% +102.0% | 1.4min left
+06:48:36 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:36 [WARNING] [MARB] Skipping — portfolio $0.00 too low
+06:48:36 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
+06:48:36 [INFO] [MARB] Event: Presidential Election Winner 2028
+06:48:36 [INFO] [MARB] Sum of YES prices: 0.7805 \u2192 edge: 22.0pp
+06:48:36 [INFO] [MARB]   YES=0.186  liq=$674,951  | Will JD Vance win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.172  liq=$374,156  | Will Gavin Newsom win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.018  liq=$398,023  | Will Pete Buttigieg win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.036  liq=$396,416  | Will Jon Ossoff win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.021  liq=$364,822  | Will Josh Shapiro win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$886,897  | Will Gretchen Whitmer win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.117  liq=$224,294  | Will Marco Rubio win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.051  liq=$475,362  | Will Alexandria Ocasio-Cortez win the 2028 US Presidential E
+06:48:36 [INFO] [MARB]   YES=0.013  liq=$197,384  | Will Ron DeSantis win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.013  liq=$420,063  | Will Andy Beshear win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$928,887  | Will Glenn Youngkin win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.018  liq=$310,229  | Will Tucker Carlson win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.045  liq=$192,514  | Will Kamala Harris win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$411,924  | Will JB Pritzker win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.021  liq=$486,271  | Will Donald Trump win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.015  liq=$239,123  | Will Dwayne 'The Rock' Johnson win the 2028 US Presidential 
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$949,219  | Will Thomas Massie win the 2028 US Presidential Election?
+06:48:36 [INFO] [MARB]   YES=0.011  liq=$436,626  | Will James Talarico win the 2028 US Presidential Election?
+06:48:36 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:37 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:37 [WARNING] [MARB] Skipping — portfolio $0.00 too low
+06:48:37 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
+06:48:37 [INFO] [MARB] Event: Ligue 1 - Top Goalscorer 
+06:48:37 [INFO] [MARB] Sum of YES prices: 0.9205 \u2192 edge: 8.0pp
+06:48:37 [INFO] [MARB]   YES=0.400  liq=$904  | Will Mason Greenwood be the top goal scorer in the 2025-26 L
+06:48:37 [INFO] [MARB]   YES=0.510  liq=$665  | Will Esteban Lepaul be the top goal scorer in the 2025-26 Li
+06:48:37 [INFO] [MARB]   YES=0.011  liq=$2,337  | Will Ludovic Ajorque be the top goal scorer in the 2025-26 L
+06:48:37 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:37 [WARNING] [MARB] Skipping — portfolio $0.00 too low
+06:48:39 [INFO] [ML] Model loaded successfully
+06:48:39 [INFO] [AGENT] Scan done: 0 candidates, 0 voted, 0 executed
+06:48:40 [INFO] [UPDN] SOL -0.176% (4min) \u2192 Down @ 0.48 | 1.4min left | +106.2% ROI | Solana Up or Down - April 16, 6:45AM-6:50AM E
+06:48:40 [INFO] [ALERT] 5MIN SOL: -0.176% \u2192 Down @ 48% +106.2% | 1.4min left
+06:48:41 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:48:42 [INFO] [SCAN] Selected 26 tokens across 12 markets:
+06:48:42 [INFO] [SCAN]  score=993 yes=0.34 vol24=$779,861 edge=0.0pp ML:NO+29pp | Will Bayern Munich win the 2025–26 Champions League?
+06:48:42 [INFO] [SCAN]  score=481 yes=0.27 vol24=$247,989 edge=0.0pp ML:NO+27pp | Will Gavin Newsom win the 2028 Democratic presidential nomin
+06:48:42 [INFO] [SCAN]  score=480 yes=0.48 vol24=$10,796 edge=0.0pp ML:NO+48pp | Will Jesus Christ return before GTA VI?
+06:48:42 [INFO] [SCAN]  score=413 yes=0.41 vol24=$26,719 edge=0.0pp ML:NO+40pp | Will Manchester City win the 2025–26 English Premier League?
+06:48:42 [INFO] [SCAN]  score=395 yes=0.28 vol24=$152,509 edge=0.0pp ML:NO+26pp | Will Arsenal win the 2025–26 Champions League?
+06:48:42 [INFO] [SCAN]  score=367 yes=0.43 vol24=$177,172 edge=0.0pp ML:NO+33pp | Will the Oklahoma City Thunder win the 2026 NBA Finals?
+06:48:42 [INFO] [SCAN]  score=322 yes=0.39 vol24=$910 edge=0.0pp ML:NO+38pp | Will the Republicans win the 2028 US Presidential Election?
+06:48:42 [INFO] [SCAN]  score=317 yes=0.26 vol24=$145,065 edge=0.0pp ML:NO+21pp | Will PSG win the 2025–26 Champions League?
+06:48:42 [INFO] Subscribed to 25 tokens

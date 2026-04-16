@@ -1,5 +1,30 @@
 [
   {
+    "time": "10:48:51",
+    "level": "UPDN",
+    "msg": "5MIN XRP: -0.340% \u2192 Down @ 49% +104.1% | 1.4min left"
+  },
+  {
+    "time": "10:48:48",
+    "level": "UPDN",
+    "msg": "5MIN DOGE: +0.147% \u2192 Up @ 50% +98.0% | 1.4min left"
+  },
+  {
+    "time": "10:48:44",
+    "level": "UPDN",
+    "msg": "5MIN ETH: -0.162% \u2192 Down @ 46% +115.1% | 1.4min left"
+  },
+  {
+    "time": "10:48:40",
+    "level": "UPDN",
+    "msg": "5MIN SOL: -0.176% \u2192 Down @ 48% +106.2% | 1.4min left"
+  },
+  {
+    "time": "10:48:36",
+    "level": "UPDN",
+    "msg": "5MIN BTC: -0.141% \u2192 Down @ 50% +102.0% | 1.4min left"
+  },
+  {
     "time": "05:58:02",
     "level": "INFO",
     "msg": "POLY//BOT ORDER\nMARB: BUY 47.2 shares\nMarket: Will Argentina win the 2026 FIFA World Cup?\nPrice: 0.0885\nStatus: live"
@@ -223,30 +248,5 @@
     "time": "03:23:36",
     "level": "INFO",
     "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $2.00"
-  },
-  {
-    "time": "03:23:36",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.6pp\nLegs: 21 | Per leg: $2.00"
-  },
-  {
-    "time": "03:23:36",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $2.00"
-  },
-  {
-    "time": "03:18:34",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: La Liga - Top Goalscorer \nEdge: 4.3pp\nLegs: 3 | Per leg: $2.00"
-  },
-  {
-    "time": "03:18:34",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.9pp\nLegs: 17 | Per leg: $2.00"
-  },
-  {
-    "time": "03:18:34",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.5pp\nLegs: 21 | Per leg: $2.00"
   }
 ]
