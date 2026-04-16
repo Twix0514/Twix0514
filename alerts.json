@@ -1,5 +1,15 @@
 [
   {
+    "time": "11:09:41",
+    "level": "UPDN",
+    "msg": "5MIN SOL: -0.106% \u2192 Down @ 50% +100.0% | 0.7min left"
+  },
+  {
+    "time": "11:09:37",
+    "level": "UPDN",
+    "msg": "5MIN XRP: -0.135% \u2192 Down @ 50% +100.0% | 0.7min left"
+  },
+  {
     "time": "10:55:58",
     "level": "UPDN",
     "msg": "5MIN ETH: +0.111% \u2192 Up @ 16% +506.1% | 4.3min left"
@@ -238,15 +248,5 @@
     "time": "03:38:17",
     "level": "INFO",
     "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $0.35"
-  },
-  {
-    "time": "03:33:39",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: La Liga - Top Goalscorer \nEdge: 4.1pp\nLegs: 3 | Per leg: $2.00"
-  },
-  {
-    "time": "03:33:39",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $2.00"
   }
 ]

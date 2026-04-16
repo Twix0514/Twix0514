@@ -456,3 +456,25 @@
 07:08:31 [INFO] [SCAN]  score=323 yes=0.39 vol24=$910 edge=0.0pp ML:NO+38pp | Will the Republicans win the 2028 US Presidential Election?
 07:08:31 [INFO] [SCAN]  score=322 yes=0.26 vol24=$144,832 edge=0.0pp ML:NO+21pp | Will PSG win the 2025–26 Champions League?
 07:08:31 [INFO] Subscribed to 25 tokens
+07:08:55 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+07:08:55 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:09:04 [INFO] [COPY] Whale portfolio: $20,776.82 | positions: 15
+07:09:31 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+07:09:31 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:09:35 [INFO] [COPY] Whale portfolio: $20,776.82 | positions: 15
+07:09:37 [INFO] [UPDN] XRP -0.135% (4min) \u2192 Down @ 0.50 | 0.7min left | +100.0% ROI | XRP Up or Down - April 16, 7:05AM-7:10AM ET
+07:09:37 [INFO] [ALERT] 5MIN XRP: -0.135% \u2192 Down @ 50% +100.0% | 0.7min left
+07:09:39 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+07:09:41 [INFO] [UPDN] SOL -0.106% (4min) \u2192 Down @ 0.50 | 0.7min left | +100.0% ROI | Solana Up or Down - April 16, 7:05AM-7:10AM E
+07:09:41 [INFO] [ALERT] 5MIN SOL: -0.106% \u2192 Down @ 50% +100.0% | 0.7min left
+07:09:46 [INFO] [AGENT] Loaded 1 elite wallets (>70% WR)
+07:09:58 [WARNING] [AGENT] No markets returned
+07:10:06 [ERROR] WebSocket error: [WinError 10054] An existing connection was forcibly closed by the remote host
+07:10:06 [ERROR] [WinError 10054] An existing connection was forcibly closed by the remote host - goodbye
+07:10:06 [WARNING] WebSocket closed — will reconnect
+07:10:06 [INFO] Reconnecting in 5s...
+07:10:23 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:10:23 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:10:23 [WARNING] WebSocket closed — will reconnect
+07:10:23 [INFO] Reconnecting in 5s...
+07:10:29 [INFO] [COPY] Whale portfolio: $20,776.82 | positions: 15
