@@ -368,3 +368,91 @@
 07:02:07 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
 07:02:07 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
 07:02:09 [INFO] [COPY] Whale portfolio: $20,775.00 | positions: 15
+07:03:14 [ERROR] WebSocket error: [WinError 10054] An existing connection was forcibly closed by the remote host
+07:03:14 [ERROR] [WinError 10054] An existing connection was forcibly closed by the remote host - goodbye
+07:03:14 [WARNING] WebSocket closed — will reconnect
+07:03:14 [INFO] Reconnecting in 5s...
+07:03:16 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:03:40 [ERROR] WebSocket error: [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+07:03:40 [ERROR] [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond - goodbye
+07:03:40 [WARNING] WebSocket closed — will reconnect
+07:03:40 [INFO] Reconnecting in 5s...
+07:04:06 [ERROR] WebSocket error: [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+07:04:06 [ERROR] [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond - goodbye
+07:04:06 [WARNING] WebSocket closed — will reconnect
+07:04:06 [INFO] Reconnecting in 5s...
+07:04:23 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:04:23 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:04:23 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:04:23 [WARNING] WebSocket closed — will reconnect
+07:04:23 [INFO] Reconnecting in 5s...
+07:04:40 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:04:40 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:04:40 [WARNING] WebSocket closed — will reconnect
+07:04:40 [INFO] Reconnecting in 5s...
+07:04:57 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:04:57 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:04:57 [WARNING] WebSocket closed — will reconnect
+07:04:57 [INFO] Reconnecting in 5s...
+07:05:14 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:05:14 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:05:14 [WARNING] WebSocket closed — will reconnect
+07:05:14 [INFO] Reconnecting in 5s...
+07:05:19 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:05:31 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:05:31 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:05:31 [WARNING] WebSocket closed — will reconnect
+07:05:31 [INFO] Reconnecting in 5s...
+07:05:48 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:05:48 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:05:48 [WARNING] WebSocket closed — will reconnect
+07:05:48 [INFO] Reconnecting in 5s...
+07:06:05 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:06:05 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:06:05 [WARNING] WebSocket closed — will reconnect
+07:06:05 [INFO] Reconnecting in 5s...
+07:06:22 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:06:22 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:06:22 [WARNING] WebSocket closed — will reconnect
+07:06:22 [INFO] Reconnecting in 5s...
+07:06:23 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:06:39 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:06:39 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:06:39 [WARNING] WebSocket closed — will reconnect
+07:06:39 [INFO] Reconnecting in 5s...
+07:06:56 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:06:56 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:06:56 [WARNING] WebSocket closed — will reconnect
+07:06:56 [INFO] Reconnecting in 5s...
+07:07:13 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:07:13 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:07:13 [WARNING] WebSocket closed — will reconnect
+07:07:13 [INFO] Reconnecting in 5s...
+07:07:25 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:07:30 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:07:30 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:07:30 [WARNING] WebSocket closed — will reconnect
+07:07:30 [INFO] Reconnecting in 5s...
+07:07:48 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:07:48 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:07:48 [WARNING] WebSocket closed — will reconnect
+07:07:48 [INFO] Reconnecting in 5s...
+07:08:05 [ERROR] WebSocket error: [Errno 11001] getaddrinfo failed
+07:08:05 [ERROR] [Errno 11001] getaddrinfo failed - goodbye
+07:08:05 [WARNING] WebSocket closed — will reconnect
+07:08:05 [INFO] Reconnecting in 5s...
+07:08:14 [INFO] Websocket connected
+07:08:14 [INFO] WebSocket connected — subscribing to markets...
+07:08:17 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+07:08:17 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:08:29 [INFO] [COPY] Whale portfolio: $20,776.51 | positions: 15
+07:08:31 [INFO] [SCAN] Selected 26 tokens across 12 markets:
+07:08:31 [INFO] [SCAN]  score=993 yes=0.34 vol24=$779,650 edge=0.0pp ML:NO+29pp | Will Bayern Munich win the 2025–26 Champions League?
+07:08:31 [INFO] [SCAN]  score=487 yes=0.27 vol24=$253,868 edge=0.0pp ML:NO+27pp | Will Gavin Newsom win the 2028 Democratic presidential nomin
+07:08:31 [INFO] [SCAN]  score=482 yes=0.48 vol24=$11,264 edge=0.0pp ML:NO+48pp | Will Jesus Christ return before GTA VI?
+07:08:31 [INFO] [SCAN]  score=412 yes=0.41 vol24=$26,744 edge=0.0pp ML:NO+40pp | Will Manchester City win the 2025–26 English Premier League?
+07:08:31 [INFO] [SCAN]  score=395 yes=0.28 vol24=$151,932 edge=0.0pp ML:NO+26pp | Will Arsenal win the 2025–26 Champions League?
+07:08:31 [INFO] [SCAN]  score=361 yes=0.43 vol24=$177,646 edge=0.0pp ML:NO+30pp | Will the Oklahoma City Thunder win the 2026 NBA Finals?
+07:08:31 [INFO] [SCAN]  score=323 yes=0.39 vol24=$910 edge=0.0pp ML:NO+38pp | Will the Republicans win the 2028 US Presidential Election?
+07:08:31 [INFO] [SCAN]  score=322 yes=0.26 vol24=$144,832 edge=0.0pp ML:NO+21pp | Will PSG win the 2025–26 Champions League?
+07:08:31 [INFO] Subscribed to 25 tokens
