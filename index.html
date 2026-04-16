@@ -535,12 +535,19 @@ function renderPositions(positions) {
     document.getElementById('wallet-list').innerHTML = `
       <div class="we active" style="text-align:center;padding:18px 10px;color:var(--gdim);">
         <div style="font-size:11px;letter-spacing:1px;">NO ACTIVE POSITIONS</div>
-        <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">Deposit USDC on Polygon to start trading</div>
+        <div style="font-size:9px;margin-top:6px;color:var(--gmuted);">Bot is scanning — trades will appear here</div>
         <div style="margin-top:10px;">
           <button class="btn btn-y" onclick="window.open('https://polymarket.com/profile/${MY_ADDR}','_blank')">VIEW PROFILE</button>
         </div>
       </div>`;
-    document.getElementById('portfolio-val').textContent = '$0.00';
+    // Fetch real CLOB balance instead of showing $0
+    try {
+      const clob = await fetchWithProxy(`${CLOB_API}/balance-allowance?asset_type=COLLATERAL`);
+      const bal = clob ? parseFloat(clob.balance ?? 0) / 1_000_000 : 0;
+      document.getElementById('portfolio-val').textContent = bal > 0 ? fmtVol(bal) : '$0.00';
+    } catch(_) {
+      document.getElementById('portfolio-val').textContent = '$0.00';
+    }
     document.getElementById('open-pos').textContent = '0';
     return;
   }
@@ -597,7 +604,7 @@ function renderFallbackPositions() {
         <button class="btn btn-c" onclick="window.open('${POLY_URL}/profile/${MY_ADDR}','_blank')">PROFILE</button>
       </div>
     </div>`).join('');
-  document.getElementById('portfolio-val').textContent = '$17.48';
+  document.getElementById('portfolio-val').textContent = '$8.15';
   document.getElementById('pnl').textContent = '$0.00';
   document.getElementById('roi').textContent = '0.0%';
   document.getElementById('open-pos').textContent = '0';

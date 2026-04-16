@@ -47,14 +47,15 @@ logging.basicConfig(
 log = logging.getLogger('POLY//BOT')
 
 # ── CREDENTIALS ───────────────────────────────────────────────────────────────
-PRIVATE_KEY    = "f87dcf8393da4429ffaf11a4b78e6ad37e1a3a0f0aa38e67f6b674e151b45a1f"
-FUNDER         = "0x682Df9cf2638a854a4d69Cc3a3c12fCB2B216d27"
-TRADING_ADDR   = "0x682Df9cf2638a854a4d69Cc3a3c12fCB2B216d27"
+PRIVATE_KEY    = "72f882593b660160169ee4d14165dbd3ad15626b6f45632373dd2774e7294300"
+FUNDER         = "0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07"
+TRADING_ADDR   = "0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07"
 CHAIN_ID       = 137
-API_KEY        = "5a4c71c2-5e4e-a7de-673f-91ddb01b1a9e"
-API_SECRET     = "enoJbF8jNWnUksS90EV6CR4mFxa78ikVQXqrw6pF3UU="
-API_PASSPHRASE = "bc1fb28317849638952b23ea8e30864e7cfb8d979291ae64248dc59f5631cc3c"
+API_KEY        = "308e6706-5190-b8d1-fdbd-fc7078f304f7"
+API_SECRET     = "LeifAlgvBF9XgMCgA_ldD138biDN_CPNEHSoRacmWds="
+API_PASSPHRASE = "fc149edc549a56860ff17e8f14222c497bf05bf56b5df9a7255087ed2a0c4625"
 ANTHROPIC_KEY  = ""   # set in secrets.py (gitignored)
+PROXY          = ""   # e.g. "socks5://127.0.0.1:1080" or "http://user:pass@host:port"
 
 # ── TERMINAL ALERTS ──────────────────────────────────────────────────────────
 import os, pathlib
@@ -128,6 +129,27 @@ CFG = {
     "fourmin_max_leader":  0.96,  # but not yet fully resolved (leave room for edge)
     "fourmin_min_liq":     500,   # minimum $500 liquidity
 }
+
+# ── PROXY (routes all CLOB + HTTP traffic through proxy to bypass geoblock) ───
+_proxy = PROXY
+try:
+    from secrets_local import PROXY as _P
+    if _P: _proxy = _P
+except Exception:
+    pass
+
+if _proxy:
+    import os as _penv
+    _penv.environ["HTTP_PROXY"]  = _proxy
+    _penv.environ["HTTPS_PROXY"] = _proxy
+    _penv.environ["ALL_PROXY"]   = _proxy
+    # patch urllib for fetch_json calls
+    import urllib.request as _ur
+    _ph = urllib.request.ProxyHandler({"http": _proxy, "https": _proxy})
+    _ur.install_opener(_ur.build_opener(_ph))
+    log.info(f"[PROXY] Routing through {_proxy}")
+else:
+    log.warning("[PROXY] No proxy set — orders may be geoblocked. Set PROXY in secrets_local.py")
 
 # ── CLIENT ────────────────────────────────────────────────────────────────────
 creds = ApiCreds(api_key=API_KEY, api_secret=API_SECRET, api_passphrase=API_PASSPHRASE)

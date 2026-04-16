@@ -1,0 +1,16 @@
+{
+  "scanned_at": "2026-04-16T03:43:13.698613+00:00",
+  "total_scanned": 1358,
+  "elite_count": 1,
+  "min_win_rate": 0.7,
+  "wallets": [
+    {
+      "address": "0x5566b7c96220f4f40146a17bb25bcab6c0d37c29",
+      "win_rate": 1.0,
+      "wins": 23,
+      "losses": 0,
+      "total_trades": 23,
+      "profit_usd": 0.16
+    }
+  ]
+}
