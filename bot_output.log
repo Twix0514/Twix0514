@@ -1,6 +1,6 @@
-06:49:36 [WARNING] [PROXY] No proxy set ï¿½ orders may be geoblocked. Set PROXY in secrets_local.py
+06:49:36 [WARNING] [PROXY] No proxy set — orders may be geoblocked. Set PROXY in secrets_local.py
 06:49:36 [INFO] Killed old bot instance (PID 31088)
-06:49:36 [INFO] POLY//BOT v3 ï¿½ LIVE TRADING
+06:49:36 [INFO] POLY//BOT v3 — LIVE TRADING
 06:49:36 [INFO] Engines: MOMENTUM | ARB | UPDOWN | CERT | COPY | MARB | 4MIN | 3-AGENT
 06:49:36 [INFO] Max pos: $5.0 (30% portfolio)
 06:49:36 [INFO] CopyTrade: 0x751a2b86ca... ratio=15%
@@ -11,27 +11,27 @@
 06:49:37 [INFO] Thread [status] started
 06:49:37 [INFO] [COPY] Watching whale 0x751a2b86ca... every 30s
 06:49:37 [INFO] Thread [copytrade] started
-06:49:37 [INFO] [ARB] Scanner started ï¿½ scanning every 45s
+06:49:37 [INFO] [ARB] Scanner started — scanning every 45s
 06:49:37 [INFO] Thread [arb] started
-06:49:37 [INFO] [UPDN] 5-min crypto engine started (4-min rule) ï¿½ every 10s
+06:49:37 [INFO] [UPDN] 5-min crypto engine started (4-min rule) — every 10s
 06:49:37 [INFO] [UPDN] Markets: BTC ETH SOL XRP DOGE BNB HYPE | window: 0.5-4.5min remaining
 06:49:37 [INFO] Thread [updown] started
-06:49:37 [INFO] [CERT] Near-certainty scalper started ï¿½ every 120s
+06:49:37 [INFO] [CERT] Near-certainty scalper started — every 120s
 06:49:37 [INFO] Thread [certainty] started
-06:49:37 [INFO] [FOUR] 4-minute rule engine started ï¿½ scanning every 15s
+06:49:37 [INFO] [FOUR] 4-minute rule engine started — scanning every 15s
 06:49:37 [INFO] Thread [4min-rule] started
 06:49:37 [INFO] Thread [3-agent] started
 06:49:37 [INFO] [MARB] Multi-outcome arb scanner started
 06:49:37 [INFO] Thread [multi-arb] started
 06:49:37 [INFO] Thread [day-reset] started
-06:49:37 [INFO] [TRACKER] Position tracker started ï¿½ checking every 30s
+06:49:37 [INFO] [TRACKER] Position tracker started — checking every 30s
 06:49:37 [INFO] [TRACKER] Exit rules: 80% target | 3.0x vol spike | 24h stale
 06:49:37 [INFO] [AGENT] Position tracker started
 06:49:37 [INFO] [AGENT] Wallet scanner background refresh started
-06:49:37 [INFO] [AGENT] 3-Agent market scanner started ï¿½ every 10 min
+06:49:37 [INFO] [AGENT] 3-Agent market scanner started — every 10 min
 06:49:37 [INFO] [AGENT] Loaded 1 elite wallets (>70% WR)
 06:49:38 [INFO] Websocket connected
-06:49:38 [INFO] WebSocket connected ï¿½ subscribing to markets...
+06:49:38 [INFO] WebSocket connected — subscribing to markets...
 06:49:40 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:49:40 [INFO] [MARB] Event: 2026 FIFA World Cup Winner 
 06:49:40 [INFO] [MARB] Sum of YES prices: 0.8910 \u2192 edge: 10.9pp
@@ -51,7 +51,7 @@
 06:49:40 [INFO] [MARB]   YES=0.017  liq=$951,299  | Will Morocco win the 2026 FIFA World Cup?
 06:49:40 [INFO] [MARB]   YES=0.018  liq=$1,426,674  | Will Belgium win the 2026 FIFA World Cup?
 06:49:40 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:49:40 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:49:40 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:49:40 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:49:40 [INFO] [MARB] Event: Democratic Presidential Nominee 2028
 06:49:40 [INFO] [MARB] Sum of YES prices: 0.7820 \u2192 edge: 21.8pp
@@ -76,7 +76,7 @@
 06:49:40 [INFO] [MARB]   YES=0.065  liq=$274,974  | Will Kamala Harris win the 2028 Democratic presidential nomi
 06:49:40 [INFO] [MARB]   YES=0.271  liq=$416,152  | Will Gavin Newsom win the 2028 Democratic presidential nomin
 06:49:40 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:49:40 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:49:40 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:49:40 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:49:40 [INFO] [MARB] Event: Presidential Election Winner 2028
 06:49:40 [INFO] [MARB] Sum of YES prices: 0.7805 \u2192 edge: 22.0pp
@@ -99,7 +99,7 @@
 06:49:40 [INFO] [MARB]   YES=0.011  liq=$949,219  | Will Thomas Massie win the 2028 US Presidential Election?
 06:49:40 [INFO] [MARB]   YES=0.011  liq=$436,626  | Will James Talarico win the 2028 US Presidential Election?
 06:49:40 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:49:41 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:49:41 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:49:41 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:49:41 [INFO] [MARB] Event: Ligue 1 - Top Goalscorer 
 06:49:41 [INFO] [MARB] Sum of YES prices: 0.9205 \u2192 edge: 8.0pp
@@ -107,41 +107,41 @@
 06:49:41 [INFO] [MARB]   YES=0.510  liq=$665  | Will Esteban Lepaul be the top goal scorer in the 2025-26 Li
 06:49:41 [INFO] [MARB]   YES=0.011  liq=$2,337  | Will Ludovic Ajorque be the top goal scorer in the 2025-26 L
 06:49:41 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:49:41 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:49:41 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:49:42 [INFO] [AGENT] Scan done: 0 candidates, 0 voted, 0 executed
 06:49:42 [INFO] [ML] Model loaded successfully
 06:49:45 [INFO] [SCAN] Selected 26 tokens across 12 markets:
-06:49:45 [INFO] [SCAN]  score=993 yes=0.34 vol24=$779,861 edge=0.0pp ML:NO+29pp | Will Bayern Munich win the 2025ï¿½26 Champions League?
+06:49:45 [INFO] [SCAN]  score=993 yes=0.34 vol24=$779,861 edge=0.0pp ML:NO+29pp | Will Bayern Munich win the 2025–26 Champions League?
 06:49:45 [INFO] [SCAN]  score=481 yes=0.27 vol24=$247,989 edge=0.0pp ML:NO+27pp | Will Gavin Newsom win the 2028 Democratic presidential nomin
 06:49:45 [INFO] [SCAN]  score=480 yes=0.48 vol24=$10,796 edge=0.0pp ML:NO+48pp | Will Jesus Christ return before GTA VI?
-06:49:45 [INFO] [SCAN]  score=413 yes=0.41 vol24=$26,719 edge=0.0pp ML:NO+40pp | Will Manchester City win the 2025ï¿½26 English Premier League?
-06:49:45 [INFO] [SCAN]  score=395 yes=0.28 vol24=$152,509 edge=0.0pp ML:NO+26pp | Will Arsenal win the 2025ï¿½26 Champions League?
+06:49:45 [INFO] [SCAN]  score=413 yes=0.41 vol24=$26,719 edge=0.0pp ML:NO+40pp | Will Manchester City win the 2025–26 English Premier League?
+06:49:45 [INFO] [SCAN]  score=395 yes=0.28 vol24=$152,509 edge=0.0pp ML:NO+26pp | Will Arsenal win the 2025–26 Champions League?
 06:49:45 [INFO] [SCAN]  score=367 yes=0.43 vol24=$177,172 edge=0.0pp ML:NO+33pp | Will the Oklahoma City Thunder win the 2026 NBA Finals?
 06:49:45 [INFO] [SCAN]  score=322 yes=0.39 vol24=$910 edge=0.0pp ML:NO+38pp | Will the Republicans win the 2028 US Presidential Election?
-06:49:45 [INFO] [SCAN]  score=317 yes=0.26 vol24=$145,065 edge=0.0pp ML:NO+21pp | Will PSG win the 2025ï¿½26 Champions League?
+06:49:45 [INFO] [SCAN]  score=317 yes=0.26 vol24=$145,065 edge=0.0pp ML:NO+21pp | Will PSG win the 2025–26 Champions League?
 06:49:45 [INFO] Subscribed to 25 tokens
 06:50:09 [INFO] [COPY] Whale portfolio: $20,745.46 | positions: 14
 06:50:09 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:50:09 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:50:09 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:50:40 [INFO] [COPY] Whale portfolio: $20,745.46 | positions: 14
 06:50:41 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:50:41 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:50:41 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:51:11 [INFO] [COPY] Whale portfolio: $20,745.46 | positions: 14
 06:51:13 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:51:13 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:51:13 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:51:43 [INFO] [COPY] Whale portfolio: $20,745.22 | positions: 14
 06:51:48 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:51:48 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:51:48 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:52:15 [INFO] [COPY] Whale portfolio: $20,745.22 | positions: 14
 06:52:20 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:52:20 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:52:20 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:52:47 [INFO] [COPY] Whale portfolio: $20,746.55 | positions: 14
 06:52:52 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:52:52 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
-06:53:57 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:52:52 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:53:57 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:54:14 [INFO] [COPY] Whale portfolio: $20,746.55 | positions: 14
 06:54:29 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:54:29 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:54:29 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:54:46 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:54:46 [INFO] [MARB] Event: 2026 FIFA World Cup Winner 
 06:54:46 [INFO] [MARB] Sum of YES prices: 0.8910 \u2192 edge: 10.9pp
@@ -162,7 +162,7 @@
 06:54:46 [INFO] [MARB]   YES=0.018  liq=$1,420,631  | Will Belgium win the 2026 FIFA World Cup?
 06:54:47 [INFO] [COPY] Whale portfolio: $20,746.49 | positions: 14
 06:54:47 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:54:47 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:54:47 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:54:47 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:54:47 [INFO] [MARB] Event: Democratic Presidential Nominee 2028
 06:54:47 [INFO] [MARB] Sum of YES prices: 0.7810 \u2192 edge: 21.9pp
@@ -187,7 +187,7 @@
 06:54:47 [INFO] [MARB]   YES=0.065  liq=$273,455  | Will Kamala Harris win the 2028 Democratic presidential nomi
 06:54:47 [INFO] [MARB]   YES=0.271  liq=$415,408  | Will Gavin Newsom win the 2028 Democratic presidential nomin
 06:54:47 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:54:48 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:54:48 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:54:48 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:54:48 [INFO] [MARB] Event: Presidential Election Winner 2028
 06:54:48 [INFO] [MARB] Sum of YES prices: 0.7800 \u2192 edge: 22.0pp
@@ -210,7 +210,7 @@
 06:54:48 [INFO] [MARB]   YES=0.011  liq=$949,711  | Will Thomas Massie win the 2028 US Presidential Election?
 06:54:48 [INFO] [MARB]   YES=0.011  liq=$436,695  | Will James Talarico win the 2028 US Presidential Election?
 06:54:48 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:54:48 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:54:48 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:54:48 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:54:48 [INFO] [MARB] Event: Ligue 1 - Top Goalscorer 
 06:54:48 [INFO] [MARB] Sum of YES prices: 0.9280 \u2192 edge: 7.2pp
@@ -218,12 +218,12 @@
 06:54:48 [INFO] [MARB]   YES=0.018  liq=$2,802  | Will Bradley Barcola be the top goal scorer in the 2025-26 L
 06:54:48 [INFO] [MARB]   YES=0.510  liq=$677  | Will Esteban Lepaul be the top goal scorer in the 2025-26 Li
 06:54:48 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:54:48 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:54:48 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:55:02 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:55:02 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:55:02 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:55:18 [INFO] [COPY] Whale portfolio: $20,746.49 | positions: 14
 06:55:34 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:55:34 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:55:34 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:55:50 [INFO] [COPY] Whale portfolio: $20,746.49 | positions: 14
 06:55:50 [INFO] [UPDN] BTC +0.106% (1min) \u2192 Up @ 0.20 | 4.3min left | +387.8% ROI | Bitcoin Up or Down - April 16, 6:45AM-7:00AM 
 06:55:50 [INFO] [ALERT] 5MIN BTC: +0.106% \u2192 Up @ 20% +387.8% | 4.3min left
@@ -238,34 +238,34 @@
 06:55:58 [INFO] [ALERT] 5MIN ETH: +0.111% \u2192 Up @ 16% +506.1% | 4.3min left
 06:55:59 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
 06:56:06 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:56:06 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:56:06 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:56:21 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
 06:56:38 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:56:38 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:56:38 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:56:53 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
 06:57:10 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:57:10 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:57:10 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:57:25 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
 06:57:42 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:57:42 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:57:42 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:57:56 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
 06:58:15 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:58:15 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:58:15 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:58:28 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
 06:58:46 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:58:46 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:58:46 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:59:00 [INFO] [COPY] Whale portfolio: $20,737.69 | positions: 14
 06:59:18 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:59:18 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:59:18 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:59:31 [INFO] [COPY] Whale portfolio: $20,737.69 | positions: 14
 06:59:42 [INFO] [AGENT] Loaded 1 elite wallets (>70% WR)
 06:59:46 [INFO] [AGENT] Scan done: 0 candidates, 0 voted, 0 executed
 06:59:49 [ERROR] WebSocket error: Connection to remote host was lost.
 06:59:49 [ERROR] Connection to remote host was lost. - goodbye
-06:59:49 [WARNING] WebSocket closed ï¿½ will reconnect
+06:59:49 [WARNING] WebSocket closed — will reconnect
 06:59:49 [INFO] Reconnecting in 5s...
 06:59:50 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:59:50 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:59:50 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:59:51 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:59:51 [INFO] [MARB] Event: 2026 FIFA World Cup Winner 
 06:59:51 [INFO] [MARB] Sum of YES prices: 0.8910 \u2192 edge: 10.9pp
@@ -285,7 +285,7 @@
 06:59:51 [INFO] [MARB]   YES=0.017  liq=$953,832  | Will Morocco win the 2026 FIFA World Cup?
 06:59:51 [INFO] [MARB]   YES=0.018  liq=$1,424,263  | Will Belgium win the 2026 FIFA World Cup?
 06:59:51 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:59:51 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:59:51 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:59:51 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:59:51 [INFO] [MARB] Event: Democratic Presidential Nominee 2028
 06:59:51 [INFO] [MARB] Sum of YES prices: 0.7835 \u2192 edge: 21.7pp
@@ -310,7 +310,7 @@
 06:59:51 [INFO] [MARB]   YES=0.067  liq=$276,616  | Will Kamala Harris win the 2028 Democratic presidential nomi
 06:59:51 [INFO] [MARB]   YES=0.271  liq=$415,141  | Will Gavin Newsom win the 2028 Democratic presidential nomin
 06:59:52 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:59:52 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:59:52 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:59:52 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:59:52 [INFO] [MARB] Event: Presidential Election Winner 2028
 06:59:52 [INFO] [MARB] Sum of YES prices: 0.7805 \u2192 edge: 22.0pp
@@ -333,7 +333,7 @@
 06:59:52 [INFO] [MARB]   YES=0.011  liq=$949,904  | Will Thomas Massie win the 2028 US Presidential Election?
 06:59:52 [INFO] [MARB]   YES=0.011  liq=$439,529  | Will James Talarico win the 2028 US Presidential Election?
 06:59:52 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:59:52 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:59:52 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:59:52 [INFO] [MARB] *** MULTI-OUTCOME ARB FOUND ***
 06:59:52 [INFO] [MARB] Event: Ligue 1 - Top Goalscorer 
 06:59:52 [INFO] [MARB] Sum of YES prices: 0.9400 \u2192 edge: 6.0pp
@@ -342,29 +342,29 @@
 06:59:52 [INFO] [MARB]   YES=0.510  liq=$668  | Will Esteban Lepaul be the top goal scorer in the 2025-26 Li
 06:59:52 [INFO] [MARB]   YES=0.011  liq=$3,146  | Will Ludovic Ajorque be the top goal scorer in the 2025-26 L
 06:59:52 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-06:59:53 [WARNING] [MARB] Skipping ï¿½ portfolio $0.00 too low
+06:59:53 [WARNING] [MARB] Skipping — portfolio $0.00 too low
 06:59:55 [INFO] Websocket connected
-06:59:55 [INFO] WebSocket connected ï¿½ subscribing to markets...
+06:59:55 [INFO] WebSocket connected — subscribing to markets...
 06:59:59 [INFO] [SCAN] Selected 26 tokens across 12 markets:
-06:59:59 [INFO] [SCAN]  score=994 yes=0.34 vol24=$779,878 edge=0.0pp ML:NO+29pp | Will Bayern Munich win the 2025ï¿½26 Champions League?
+06:59:59 [INFO] [SCAN]  score=994 yes=0.34 vol24=$779,878 edge=0.0pp ML:NO+29pp | Will Bayern Munich win the 2025–26 Champions League?
 06:59:59 [INFO] [SCAN]  score=485 yes=0.27 vol24=$252,280 edge=0.0pp ML:NO+27pp | Will Gavin Newsom win the 2028 Democratic presidential nomin
 06:59:59 [INFO] [SCAN]  score=481 yes=0.48 vol24=$11,264 edge=0.0pp ML:NO+48pp | Will Jesus Christ return before GTA VI?
-06:59:59 [INFO] [SCAN]  score=412 yes=0.41 vol24=$26,719 edge=0.0pp ML:NO+40pp | Will Manchester City win the 2025ï¿½26 English Premier League?
-06:59:59 [INFO] [SCAN]  score=395 yes=0.28 vol24=$152,473 edge=0.0pp ML:NO+26pp | Will Arsenal win the 2025ï¿½26 Champions League?
+06:59:59 [INFO] [SCAN]  score=412 yes=0.41 vol24=$26,719 edge=0.0pp ML:NO+40pp | Will Manchester City win the 2025–26 English Premier League?
+06:59:59 [INFO] [SCAN]  score=395 yes=0.28 vol24=$152,473 edge=0.0pp ML:NO+26pp | Will Arsenal win the 2025–26 Champions League?
 06:59:59 [INFO] [SCAN]  score=367 yes=0.43 vol24=$177,286 edge=0.0pp ML:NO+33pp | Will the Oklahoma City Thunder win the 2026 NBA Finals?
 06:59:59 [INFO] [SCAN]  score=322 yes=0.39 vol24=$910 edge=0.0pp ML:NO+38pp | Will the Republicans win the 2028 US Presidential Election?
-06:59:59 [INFO] [SCAN]  score=322 yes=0.26 vol24=$144,810 edge=0.0pp ML:NO+21pp | Will PSG win the 2025ï¿½26 Champions League?
+06:59:59 [INFO] [SCAN]  score=322 yes=0.26 vol24=$144,810 edge=0.0pp ML:NO+21pp | Will PSG win the 2025–26 Champions League?
 06:59:59 [INFO] Subscribed to 25 tokens
 07:00:03 [INFO] [COPY] Whale portfolio: $20,737.69 | positions: 14
 07:00:23 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-07:00:23 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+07:00:23 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 07:00:34 [INFO] [COPY] Whale portfolio: $20,776.17 | positions: 15
 07:00:55 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-07:00:55 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:00:55 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
 07:01:05 [INFO] [COPY] Whale portfolio: $20,776.17 | positions: 15
 07:01:27 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-07:01:27 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:01:27 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
 07:01:37 [INFO] [COPY] Whale portfolio: $20,776.17 | positions: 15
 07:02:07 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
-07:02:07 [INFO] [LIVE] STATUS ï¿½ ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
+07:02:07 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:15
 07:02:09 [INFO] [COPY] Whale portfolio: $20,775.00 | positions: 15
