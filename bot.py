@@ -193,7 +193,10 @@ def get_portfolio_value():
     try:
         from py_clob_client.clob_types import BalanceAllowanceParams, AssetType
         bal = client.get_balance_allowance(BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
-        usdc = int(bal.get('balance', 0) or 0) / 1_000_000
+        raw = bal.get('balance', 0) or 0
+        raw_f = float(raw)
+        # CLOB returns either micro-USDC (>1000) or already-decimal USDC (<1000)
+        usdc = raw_f / 1_000_000 if raw_f > 1000 else raw_f
     except Exception:
         usdc = 0.0
 
