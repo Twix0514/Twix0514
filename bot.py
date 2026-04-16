@@ -61,6 +61,7 @@ PROXY          = ""   # e.g. "socks5://127.0.0.1:1080" or "http://user:pass@host
 import os, pathlib
 
 ALERTS_FILE  = pathlib.Path(__file__).parent / "alerts.json"
+STATUS_FILE  = pathlib.Path(__file__).parent / "status.json"
 COPY_STATE   = pathlib.Path(__file__).parent / "copy_state.json"
 _alert_lock  = threading.Lock()
 _order_lock  = threading.Lock()   # prevents concurrent order submissions
@@ -1519,6 +1520,25 @@ def status_loop():
                  f"trades:{len(trade_log)} | positions:{len(open_positions)} | "
                  f"arb_alerts:{len(arb_alerts)} | copy_pos:{len(copy_positions)}"
                  f"{daily_pnl}{halt_str}")
+        # Write live status for terminal dashboard
+        try:
+            day_pct = 0.0
+            if val is not None and _day_start_portfolio:
+                day_pct = (val - _day_start_portfolio) / _day_start_portfolio * 100
+            status = {
+                "updated":    datetime.now(timezone.utc).strftime("%H:%M:%S"),
+                "balance":    round(val or 0, 2),
+                "day_pnl":    round(day_pct, 2),
+                "trades":     len(trade_log),
+                "positions":  len(open_positions),
+                "halted":     _bot_halted,
+                "halt_reason": _halt_reason,
+                "wallet":     TRADING_ADDR,
+                "mode":       "DRY RUN" if CFG["dry_run"] else "LIVE",
+            }
+            STATUS_FILE.write_text(json.dumps(status, indent=2))
+        except Exception:
+            pass
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 def start_ws():

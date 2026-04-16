@@ -540,11 +540,16 @@ function renderPositions(positions) {
           <button class="btn btn-y" onclick="window.open('https://polymarket.com/profile/${MY_ADDR}','_blank')">VIEW PROFILE</button>
         </div>
       </div>`;
-    // Fetch real CLOB balance instead of showing $0
+    // Read live balance from bot's status.json
     try {
-      const clob = await fetchWithProxy(`${CLOB_API}/balance-allowance?asset_type=COLLATERAL`);
-      const bal = clob ? parseFloat(clob.balance ?? 0) / 1_000_000 : 0;
+      const st = await fetch('/status.json?t=' + Date.now()).then(r => r.ok ? r.json() : null);
+      const bal = st ? parseFloat(st.balance ?? 0) : 0;
       document.getElementById('portfolio-val').textContent = bal > 0 ? fmtVol(bal) : '$0.00';
+      if (st && st.day_pnl !== undefined) {
+        const pnlEl = document.getElementById('pnl');
+        pnlEl.textContent = (st.day_pnl >= 0 ? '+' : '') + st.day_pnl.toFixed(2) + '%';
+        pnlEl.className = 'stat-val ' + (st.day_pnl >= 0 ? 'pos' : 'neg');
+      }
     } catch(_) {
       document.getElementById('portfolio-val').textContent = '$0.00';
     }
@@ -927,7 +932,23 @@ renderTicker();
 updateClock();
 
 // Parallel API fetches
-Promise.all([ loadPortfolio(), loadMarkets(), loadOrders(), loadTicker(), loadAlerts() ]);
+async function loadStatus() {
+  try {
+    const st = await fetch('/status.json?t=' + Date.now()).then(r => r.ok ? r.json() : null);
+    if (!st) return;
+    const bal = parseFloat(st.balance ?? 0);
+    if (bal > 0) {
+      document.getElementById('portfolio-val').textContent = fmtVol(bal);
+      const pnlEl = document.getElementById('pnl');
+      pnlEl.textContent = (st.day_pnl >= 0 ? '+' : '') + Number(st.day_pnl).toFixed(2) + '%';
+      pnlEl.className = 'stat-val ' + (st.day_pnl >= 0 ? 'pos' : 'neg');
+    }
+    const modeEl = document.getElementById('mkt-meta');
+    if (modeEl && st.mode) modeEl.textContent = `${st.mode} · ${st.updated} · ${st.trades} TRADES`;
+  } catch(_) {}
+}
+
+Promise.all([ loadPortfolio(), loadMarkets(), loadOrders(), loadTicker(), loadAlerts(), loadStatus() ]);
 
 // Refresh schedule
 setInterval(loadPortfolio, 60_000);
@@ -935,6 +956,7 @@ setInterval(loadMarkets,   30_000);
 setInterval(loadOrders,    60_000);
 setInterval(loadTicker,   120_000);  // crypto prices every 2 min
 setInterval(loadAlerts,    5_000);   // bot alerts every 5s
+setInterval(loadStatus,   30_000);   // bot balance every 30s
 
 setInterval(updateClock,   1000);
 setInterval(flickerPrices, 2000);
