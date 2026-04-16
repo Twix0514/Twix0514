@@ -54,6 +54,7 @@ CHAIN_ID       = 137
 API_KEY        = "5a4c71c2-5e4e-a7de-673f-91ddb01b1a9e"
 API_SECRET     = "enoJbF8jNWnUksS90EV6CR4mFxa78ikVQXqrw6pF3UU="
 API_PASSPHRASE = "bc1fb28317849638952b23ea8e30864e7cfb8d979291ae64248dc59f5631cc3c"
+ANTHROPIC_KEY  = ""   # set in secrets.py (gitignored)
 
 # ── TERMINAL ALERTS ──────────────────────────────────────────────────────────
 import os, pathlib
@@ -146,10 +147,13 @@ arb_alerts      = []
 
 # ── AGENT SYSTEM + WALLET SCANNER ─────────────────────────────────────────────
 import os as _os
-_ANTHROPIC_KEY = _os.environ.get("ANTHROPIC_API_KEY", "")
-# Inject key into agent_system module before it's imported
-if _ANTHROPIC_KEY:
-    _os.environ["ANTHROPIC_API_KEY"] = _ANTHROPIC_KEY
+try:
+    from secrets_local import ANTHROPIC_KEY as _ANT_KEY
+    ANTHROPIC_KEY = _ANT_KEY
+except ImportError:
+    pass
+if ANTHROPIC_KEY:
+    _os.environ["ANTHROPIC_API_KEY"] = ANTHROPIC_KEY
 
 # Risk management state
 _bot_halted      = False   # set True by daily halt or kill switch

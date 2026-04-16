@@ -2,3 +2,4 @@ config.js
 client.py
 bot.py
 
+secrets_local.py
