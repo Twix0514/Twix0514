@@ -222,3 +222,36 @@
 06:55:02 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
 06:55:02 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
 06:55:18 [INFO] [COPY] Whale portfolio: $20,746.49 | positions: 14
+06:55:34 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:55:34 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:55:50 [INFO] [COPY] Whale portfolio: $20,746.49 | positions: 14
+06:55:50 [INFO] [UPDN] BTC +0.106% (1min) \u2192 Up @ 0.20 | 4.3min left | +387.8% ROI | Bitcoin Up or Down - April 16, 6:45AM-7:00AM 
+06:55:50 [INFO] [ALERT] 5MIN BTC: +0.106% \u2192 Up @ 20% +387.8% | 4.3min left
+06:55:51 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:55:52 [INFO] [UPDN] XRP +0.142% (1min) \u2192 Up @ 0.07 | 4.3min left | +1233.3% ROI | XRP Up or Down - April 16, 6:45AM-7:00AM ET
+06:55:52 [INFO] [ALERT] 5MIN XRP: +0.142% \u2192 Up @ 8% +1233.3% | 4.3min left
+06:55:53 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:55:55 [INFO] [UPDN] SOL +0.129% (1min) \u2192 Up @ 0.42 | 4.3min left | +138.1% ROI | Solana Up or Down - April 16, 6:45AM-7:00AM E
+06:55:55 [INFO] [ALERT] 5MIN SOL: +0.129% \u2192 Up @ 42% +138.1% | 4.3min left
+06:55:56 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:55:58 [INFO] [UPDN] ETH +0.111% (1min) \u2192 Up @ 0.17 | 4.3min left | +506.1% ROI | Ethereum Up or Down - April 16, 6:45AM-7:00AM
+06:55:58 [INFO] [ALERT] 5MIN ETH: +0.111% \u2192 Up @ 16% +506.1% | 4.3min left
+06:55:59 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:56:06 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:56:06 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:56:21 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
+06:56:38 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:56:38 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:56:53 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
+06:57:10 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:57:10 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:57:25 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
+06:57:42 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:57:42 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:57:56 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
+06:58:15 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:58:15 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:58:28 [INFO] [COPY] Whale portfolio: $20,746.72 | positions: 14
+06:58:46 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:58:46 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:59:00 [INFO] [COPY] Whale portfolio: $20,737.69 | positions: 14
