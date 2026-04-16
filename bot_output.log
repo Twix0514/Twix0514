@@ -135,3 +135,6 @@
 06:52:15 [INFO] [COPY] Whale portfolio: $20,745.22 | positions: 14
 06:52:20 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
 06:52:20 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
+06:52:47 [INFO] [COPY] Whale portfolio: $20,746.55 | positions: 14
+06:52:52 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+06:52:52 [INFO] [LIVE] STATUS — ws_tokens:1 | trades:0 | positions:0 | arb_alerts:0 | copy_pos:14
