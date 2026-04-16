@@ -111,10 +111,12 @@ CFG = {
     "arb_min_edge":       0.015,  # 1.5% guaranteed edge before executing
     "arb_min_vol24":      2000,
 
-    # Up/Down markets (5-min / 15-min crypto prediction markets)
-    "updown_scan_secs":   20,     # scan every 20s — these expire fast
-    "updown_min_change":  0.003,  # 0.3% crypto price move needed to bet
-    "updown_max_age_min": 12,     # only bet if market resolves within 12 min
+    # 5-min crypto up/down markets (BTC/ETH/SOL/XRP/DOGE/BNB/HYPE)
+    "updown_scan_secs":   10,     # scan every 10s — 5-min markets expire fast
+    "updown_min_change":  0.001,  # 0.1% move needed (5-min windows are small)
+    "updown_max_age_min": 4.5,    # 4-minute rule: only bet when ≤4.5 min left
+    "updown_min_age_min": 0.5,    # don't bet if <30s left (too late to fill)
+    "updown_max_price":   0.88,   # only bet if market hasn't fully priced in direction
 
     # Near-certainty scalper
     "certainty_scan_secs": 120,
@@ -329,28 +331,45 @@ def book_depth(book):
     return sum(float(b['price'])*float(b['size']) for b in bids) + \
            sum(float(a['price'])*float(a['size']) for a in asks)
 
-def get_crypto_price_change(symbol: str, minutes: int = 15) -> float:
+SYM_MAP = {
+    'BTC':   'BTCUSDT',
+    'ETH':   'ETHUSDT',
+    'SOL':   'SOLUSDT',
+    'XRP':   'XRPUSDT',
+    'DOGE':  'DOGEUSDT',
+    'BNB':   'BNBUSDT',
+    'HYPE':  'HYPEUSDT',   # fallback to USDT
+    'MATIC': 'MATICUSDT',
+    'AVAX':  'AVAXUSDT',
+}
+CRYPTO_NAMES = {
+    'bitcoin': 'BTC', 'ethereum': 'ETH', 'solana': 'SOL',
+    'xrp': 'XRP', 'ripple': 'XRP', 'dogecoin': 'DOGE',
+    'bnb': 'BNB', 'binance': 'BNB', 'hype': 'HYPE', 'hyperliquid': 'HYPE',
+}
+
+def get_crypto_price_change(symbol: str, minutes: int = 5) -> float:
     """
-    Get % price change for a crypto in the last N minutes.
-    Uses Binance public klines — no auth required.
-    Returns e.g. 0.0045 for +0.45%, -0.003 for -0.3%.
+    Get % price change for a crypto over the last N minutes.
+    Uses Binance 1-min klines — no auth required.
+    Returns e.g. 0.0045 for +0.45%.
     """
-    sym_map = {'BTC':'BTCUSDT','ETH':'ETHUSDT','SOL':'SOLUSDT',
-               'XRP':'XRPUSDT','DOGE':'DOGEUSDT','HYPE':'HYPEUSD',
-               'MATIC':'MATICUSDT','AVAX':'AVAXUSDT'}
-    sym = sym_map.get(symbol.upper(), f'{symbol.upper()}USDT')
-    try:
-        data = fetch_json(
-            f"https://api.binance.com/api/v3/klines"
-            f"?symbol={sym}&interval=1m&limit={minutes + 2}"
-        )
-        if not data or len(data) < 2: return 0.0
-        open_price  = float(data[0][1])   # open of oldest candle
-        close_price = float(data[-1][4])  # close of most recent candle
-        return (close_price - open_price) / max(open_price, 0.0001)
-    except Exception as e:
-        log.debug(f"[PRICE] {symbol} fetch failed: {e}")
-        return 0.0
+    sym = SYM_MAP.get(symbol.upper(), f'{symbol.upper()}USDT')
+    for attempt_sym in [sym, f'{symbol.upper()}USDT', f'{symbol.upper()}BUSD']:
+        try:
+            data = fetch_json(
+                f"https://api.binance.com/api/v3/klines"
+                f"?symbol={attempt_sym}&interval=1m&limit={minutes + 2}"
+            )
+            if not data or len(data) < 2:
+                continue
+            open_price  = float(data[0][1])
+            close_price = float(data[-1][4])
+            return (close_price - open_price) / max(open_price, 0.0001)
+        except Exception:
+            continue
+    log.debug(f"[PRICE] {symbol} fetch failed all attempts")
+    return 0.0
 
 # ── SIGNAL ENGINE — MOMENTUM BASED ────────────────────────────────────────────
 # RSI/EMA removed: prediction market prices do NOT behave like stock prices.
@@ -749,7 +768,7 @@ def multi_outcome_arb_scan(min_edge=0.04, min_liquidity=500):
 
             # Execute: buy YES on every outcome
             portfolio = get_portfolio_value() or 0
-            if portfolio < 5.0:
+            if portfolio < CFG["min_balance_usd"]:
                 log.warning(f"[MARB] Skipping — portfolio ${portfolio:.2f} too low")
                 continue
 
@@ -783,31 +802,40 @@ def multi_arb_loop():
             log.error(f"[MARB] Loop error: {e}")
         time.sleep(300)   # scan every 5 minutes
 
-# ══ UP/DOWN MARKET ENGINE ════════════════════════════════════════════════════
-# These are 5-min / 15-min BTC/ETH/SOL/XRP prediction markets.
-# Edge: real crypto price from Binance leads the market price.
-# If BTC is up 0.4% in the last 10 minutes → bet "Up" before market catches up.
+# ══ 5-MIN CRYPTO UP/DOWN ENGINE (4-MINUTE RULE) ══════════════════════════════
+# Targets: BTC, ETH, SOL, XRP, DOGE, BNB, HYPE — 5-minute resolution markets.
+# Strategy: Wait until ≤4.5 minutes left. Check Binance for actual direction.
+# If Binance confirms and market hasn't fully priced it → bet.
+# Win rate target: 63%+ (matching MARKETING101 profile from viral screenshot).
 
-_updown_traded = set()   # track condition IDs traded this session
+_updown_traded = set()
 
 def updown_scan():
     """
-    Find active Up/Down crypto markets, compare to real Binance price.
-    If Binance confirms direction with >= updown_min_change, execute a bet.
+    4-minute rule on 5-min crypto Up/Down markets.
+    Enter when 0.5–4.5 min remain. Binance confirms direction. Market price < 88%.
     """
-    # Pull recent trades to find active Up/Down market condition IDs
-    trades = fetch_json("https://data-api.polymarket.com/trades?limit=100&amount_min=5")
+    now = datetime.now(timezone.utc)
+
+    # Pull recent trades to find active condition IDs
+    trades = fetch_json("https://data-api.polymarket.com/trades?limit=200&amount_min=1")
     if not trades or not isinstance(trades, list):
         return
 
     seen = {}
     for t in trades:
         title = t.get('title', '') or ''
-        if 'up or down' not in title.lower(): continue
-        cid = t.get('conditionId', '')
-        if not cid or cid in _updown_traded: continue
+        if 'up or down' not in title.lower():
+            continue
+        # Only 5-min markets (title contains "X:XXam-X:XXam" 5-min window)
+        # Skip 1-hour and 15-min by checking title pattern
+        cid = t.get('conditionId', '') or t.get('asset', '')
+        if not cid or cid in _updown_traded:
+            continue
+        # Use asset token ID for lookup if conditionId missing
+        asset = t.get('asset', '')
         if cid not in seen:
-            seen[cid] = {'title': title, 'slug': t.get('eventSlug', t.get('slug',''))}
+            seen[cid] = {'title': title, 'asset': asset}
 
     if not seen:
         return
@@ -816,90 +844,124 @@ def updown_scan():
         try:
             title = info['title']
 
-            # Parse crypto symbol
+            # Parse crypto symbol from title
             crypto = None
-            for name, sym in [('Bitcoin','BTC'),('Ethereum','ETH'),('Solana','SOL'),
-                               ('XRP','XRP'),('Dogecoin','DOGE'),('Ripple','XRP')]:
-                if name.lower() in title.lower():
-                    crypto = sym; break
-            if not crypto: continue
+            for name, sym in CRYPTO_NAMES.items():
+                if name in title.lower():
+                    crypto = sym
+                    break
+            if not crypto:
+                continue
 
-            # Fetch market data
-            mdata = fetch_json(f"https://gamma-api.polymarket.com/markets?conditionId={cid}")
-            if not mdata: continue
+            # Look up market via asset token or conditionId
+            asset = info['asset']
+            if asset:
+                mdata = fetch_json(f"https://gamma-api.polymarket.com/markets?clob_token_ids={asset}")
+            else:
+                mdata = fetch_json(f"https://gamma-api.polymarket.com/markets?conditionId={cid}")
+            if not mdata:
+                continue
             markets = mdata if isinstance(mdata, list) else mdata.get('markets', [])
-            if not markets: continue
+            if not markets:
+                continue
             m = markets[0]
 
-            # Check end date — only bet if market expires within updown_max_age_min minutes
-            end_str = m.get('endDate') or m.get('endDateIso') or ''
-            if end_str:
-                try:
-                    end_dt = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
-                    mins_left = (end_dt - datetime.now(timezone.utc)).total_seconds() / 60
-                    if mins_left < 1 or mins_left > CFG["updown_max_age_min"]:
-                        continue   # too close to expiry or too far out
-                except Exception:
-                    pass
+            # Skip non-5-min markets (hourly, 4-hour, daily)
+            q = m.get('question', '') or title
+            # 5-min markets have a time range like "1:55AM-2:00AM"
+            import re as _re
+            if not _re.search(r'\d+:\d+[AP]M-\d+:\d+[AP]M', q):
+                continue
+
+            # 4-MINUTE RULE: only enter with 0.5–4.5 min remaining
+            end_str = m.get('endDate') or ''
+            if not end_str:
+                continue
+            end_dt    = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
+            mins_left = (end_dt - now).total_seconds() / 60
+
+            if mins_left < CFG["updown_min_age_min"] or mins_left > CFG["updown_max_age_min"]:
+                log.debug(f"[UPDN] {crypto} {mins_left:.1f}min left — outside window, skip")
+                continue
 
             # Market prices
             prices = m.get('outcomePrices', '[0.5,0.5]')
-            if isinstance(prices, str): prices = json.loads(prices)
-            if len(prices) < 2: continue
-            up_price   = float(prices[0])   # index 0 = "Up" outcome
-            down_price = float(prices[1])
+            if isinstance(prices, str):
+                prices = json.loads(prices)
+            if len(prices) < 2:
+                continue
 
             outcomes = m.get('outcomes', '["Up","Down"]')
-            if isinstance(outcomes, str): outcomes = json.loads(outcomes)
+            if isinstance(outcomes, str):
+                outcomes = json.loads(outcomes)
 
-            # Get real crypto price direction from Binance
-            change = get_crypto_price_change(crypto, minutes=15)
+            # Map outcomes to up/down indices
+            try:
+                up_idx   = [str(o).lower() for o in outcomes].index('up')
+                down_idx = 1 - up_idx
+            except ValueError:
+                up_idx, down_idx = 0, 1
+
+            up_price   = float(prices[up_idx])
+            down_price = float(prices[down_idx])
+
+            # Binance: get price change over the elapsed portion of this 5-min window
+            elapsed_mins = max(1, round(5 - mins_left))
+            change = get_crypto_price_change(crypto, minutes=elapsed_mins)
+
             if abs(change) < CFG["updown_min_change"]:
-                log.debug(f"[UPDN] {crypto} change={change*100:.2f}% — below threshold, skip")
+                log.debug(f"[UPDN] {crypto} change={change*100:.3f}% — too small, skip")
                 continue
 
             direction = "Up" if change > 0 else "Down"
-            bet_price  = up_price if direction == "Up" else down_price
-            mkt_conf   = up_price if direction == "Up" else down_price  # market's probability
+            bet_price = up_price if direction == "Up" else down_price
 
-            # Only bet if market price < 0.70 (not already priced in) and our signal is clear
-            if bet_price > 0.72:
-                log.debug(f"[UPDN] {crypto} {direction} already priced at {bet_price:.2f} — skip")
+            # Skip if market already priced the direction in fully
+            if bet_price > CFG["updown_max_price"]:
+                log.debug(f"[UPDN] {crypto} {direction} already at {bet_price:.2f} — skip")
                 continue
 
-            # Get token ID for the direction we're betting
+            # Token ID
             toks = m.get('clobTokenIds', '[]')
-            if isinstance(toks, str): toks = json.loads(toks)
-            if len(toks) < 2: continue
+            if isinstance(toks, str):
+                toks = json.loads(toks)
+            if len(toks) < 2:
+                continue
+            bet_token = toks[up_idx if direction == "Up" else down_idx]
+            if isinstance(bet_token, dict):
+                bet_token = bet_token.get('token_id', '')
+            if not bet_token:
+                continue
 
-            # Map direction → token index based on outcomes list
-            try:
-                bet_idx = [o.lower() for o in outcomes].index(direction.lower())
-            except ValueError:
-                bet_idx = 0 if direction == "Up" else 1
-            bet_token = toks[bet_idx] if isinstance(toks[bet_idx], str) else toks[bet_idx].get('token_id','')
-            if not bet_token: continue
+            roi = (1.0 - bet_price) / bet_price * 100
+            log.info(f"[UPDN] {crypto} {change*100:+.3f}% ({elapsed_mins}min) → {direction} "
+                     f"@ {bet_price:.2f} | {mins_left:.1f}min left | +{roi:.1f}% ROI | {q[:45]}")
+            tg(f"5MIN {crypto}: {change*100:+.3f}% → {direction} @ {bet_price:.0%} "
+               f"+{roi:.1f}% | {mins_left:.1f}min left", "UPDN")
 
-            log.info(f"[UPDN] {crypto} is {change*100:+.2f}% → BET {direction} @ {bet_price:.2f} | {title[:50]}")
-            tg(f"UPDOWN: {crypto} {change*100:+.2f}% → BET {direction} @ {bet_price:.2f} | {title[:50]}", "UPDN")
+            portfolio = get_true_portfolio_value() or 0
+            if portfolio < CFG["min_balance_usd"]:
+                continue
 
             sig = {
                 "token_id":  bet_token,
                 "signal":    BUY,
                 "mid":       bet_price,
-                "market":    title[:60],
-                "reason":    f"UPDN {crypto}{change*100:+.2f}% Binance",
+                "market":    q[:60],
+                "reason":    f"5MIN-4RULE {crypto}{change*100:+.3f}% {mins_left:.1f}min",
                 "liquidity": float(m.get('liquidity', 0) or 0),
             }
             place_order(sig, source="UPDN")
-            _updown_traded.add(cid)   # don't re-trade same market window
+            _updown_traded.add(cid)
 
         except Exception as e:
-            log.error(f"[UPDN] Error processing {cid}: {e}")
+            log.error(f"[UPDN] Error on {cid[:16]}: {e}")
 
 
 def updown_loop():
-    log.info(f"[UPDN] Up/Down engine started — scanning every {CFG['updown_scan_secs']}s")
+    log.info(f"[UPDN] 5-min crypto engine started (4-min rule) — every {CFG['updown_scan_secs']}s")
+    log.info(f"[UPDN] Markets: BTC ETH SOL XRP DOGE BNB HYPE | window: "
+             f"{CFG['updown_min_age_min']}-{CFG['updown_max_age_min']}min remaining")
     while True:
         try:
             updown_scan()

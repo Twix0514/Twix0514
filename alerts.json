@@ -1,5 +1,65 @@
 [
   {
+    "time": "05:58:02",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 47.2 shares\nMarket: Will Argentina win the 2026 FIFA World Cup?\nPrice: 0.0885\nStatus: live"
+  },
+  {
+    "time": "05:57:59",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 47.11 shares\nMarket: Will Brazil win the 2026 FIFA World Cup?\nPrice: 0.0845\nStatus: live"
+  },
+  {
+    "time": "05:57:57",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 19.48 shares\nMarket: Will France win the 2026 FIFA World Cup?\nPrice: 0.1635\nStatus: matched"
+  },
+  {
+    "time": "05:57:54",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 22.95 shares\nMarket: Will England win the 2026 FIFA World Cup?\nPrice: 0.111\nStatus: live"
+  },
+  {
+    "time": "05:57:52",
+    "level": "INFO",
+    "msg": "POLY//BOT ORDER\nMARB: BUY 11.82 shares\nMarket: Will Spain win the 2026 FIFA World Cup?\nPrice: 0.1725\nStatus: live"
+  },
+  {
+    "time": "05:57:49",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.7pp\nLegs: 15 | Per leg: $0.41"
+  },
+  {
+    "time": "05:51:51",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $1.68"
+  },
+  {
+    "time": "05:51:50",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 19.1pp\nLegs: 21 | Per leg: $1.68"
+  },
+  {
+    "time": "05:51:50",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.8pp\nLegs: 15 | Per leg: $1.68"
+  },
+  {
+    "time": "05:46:47",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $1.78"
+  },
+  {
+    "time": "05:46:47",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 19.2pp\nLegs: 21 | Per leg: $1.78"
+  },
+  {
+    "time": "05:46:46",
+    "level": "INFO",
+    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.9pp\nLegs: 15 | Per leg: $1.78"
+  },
+  {
     "time": "05:41:42",
     "level": "INFO",
     "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.8pp\nLegs: 17 | Per leg: $1.78"
@@ -188,65 +248,5 @@
     "time": "03:18:34",
     "level": "INFO",
     "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.5pp\nLegs: 21 | Per leg: $2.00"
-  },
-  {
-    "time": "03:18:34",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $2.00"
-  },
-  {
-    "time": "03:13:33",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 22.9pp\nLegs: 17 | Per leg: $2.00"
-  },
-  {
-    "time": "03:13:33",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.6pp\nLegs: 21 | Per leg: $2.00"
-  },
-  {
-    "time": "03:13:32",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $2.00"
-  },
-  {
-    "time": "03:08:27",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: La Liga - Top Goalscorer \nEdge: 4.0pp\nLegs: 3 | Per leg: $2.00"
-  },
-  {
-    "time": "03:08:27",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 23.0pp\nLegs: 17 | Per leg: $2.00"
-  },
-  {
-    "time": "03:08:26",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.9pp\nLegs: 21 | Per leg: $2.00"
-  },
-  {
-    "time": "03:08:25",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $2.00"
-  },
-  {
-    "time": "03:03:21",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: La Liga - Top Goalscorer \nEdge: 4.3pp\nLegs: 3 | Per leg: $2.00"
-  },
-  {
-    "time": "03:03:20",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Presidential Election Winner 2028\nEdge: 23.0pp\nLegs: 17 | Per leg: $2.00"
-  },
-  {
-    "time": "03:03:19",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: Democratic Presidential Nominee 2028\nEdge: 18.8pp\nLegs: 21 | Per leg: $2.00"
-  },
-  {
-    "time": "03:03:19",
-    "level": "INFO",
-    "msg": "POLY//BOT MULTI-ARB\nEvent: 2026 FIFA World Cup Winner \nEdge: 10.6pp\nLegs: 15 | Per leg: $2.00"
   }
 ]
