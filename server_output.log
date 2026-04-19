@@ -1,0 +1,1426 @@
+127.0.0.1 - - [17/Apr/2026 17:56:27] "GET /status.json?t=1776462987156 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:27] "GET /alerts.json?t=1776462987155 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:27] "GET /status.json?t=1776462987202 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:27] code 404, message File not found
+127.0.0.1 - - [17/Apr/2026 17:56:27] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Apr/2026 17:56:32] "GET /alerts.json?t=1776462992540 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:37] "GET /alerts.json?t=1776462997538 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:42] "GET /alerts.json?t=1776463002537 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:47] "GET /alerts.json?t=1776463007536 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:56:52] "GET /alerts.json?t=1776463012533 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49673)
+Traceback (most recent call last):
+  File "C:\Python314\Lib\urllib\request.py", line 1321, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              encode_chunked=req.has_header('Transfer-encoding'))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1358, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1404, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1353, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1113, in _send_output
+    self.send(msg)
+    ~~~~~~~~~^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1057, in send
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1499, in connect
+    self.sock = self._context.wrap_socket(self.sock,
+                ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+                                          server_hostname=server_hostname)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sock=sock,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        session=session
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python314\Lib\ssl.py", line 1076, in _create
+    self.do_handshake()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\ssl.py", line 1372, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+TimeoutError: _ssl.c:1063: The handshake operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1324, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49300)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1325, in do_open
+    r = h.getresponse()
+  File "C:\Python314\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python314\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 17:56:57] "GET /alerts.json?t=1776463017545 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 55537)
+Traceback (most recent call last):
+  File "C:\Python314\Lib\urllib\request.py", line 1321, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              encode_chunked=req.has_header('Transfer-encoding'))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1358, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1404, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1353, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1113, in _send_output
+    self.send(msg)
+    ~~~~~~~~~^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1057, in send
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1499, in connect
+    self.sock = self._context.wrap_socket(self.sock,
+                ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+                                          server_hostname=server_hostname)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sock=sock,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        session=session
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python314\Lib\ssl.py", line 1076, in _create
+    self.do_handshake()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\ssl.py", line 1372, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+TimeoutError: _ssl.c:1063: The handshake operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1324, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 17:56:57] "GET /status.json?t=1776463017545 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:57:02] "GET /alerts.json?t=1776463022541 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:57:07] "GET /alerts.json?t=1776463027535 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:57:12] "GET /alerts.json?t=1776463032535 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:57:17] "GET /alerts.json?t=1776463037529 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54923)
+Traceback (most recent call last):
+  File "C:\Python314\Lib\urllib\request.py", line 1321, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              encode_chunked=req.has_header('Transfer-encoding'))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1358, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1404, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1353, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1113, in _send_output
+    self.send(msg)
+    ~~~~~~~~~^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1057, in send
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1492, in connect
+    super().connect()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1023, in connect
+    self.sock = self._create_connection(
+                ~~~~~~~~~~~~~~~~~~~~~~~^
+        (self.host,self.port), self.timeout, self.source_address)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 870, in create_connection
+    raise exceptions[0]
+  File "C:\Python314\Lib\socket.py", line 855, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1324, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error timed out>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57206)
+Traceback (most recent call last):
+  File "C:\Python314\Lib\urllib\request.py", line 1321, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              encode_chunked=req.has_header('Transfer-encoding'))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1358, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1404, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1353, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1113, in _send_output
+    self.send(msg)
+    ~~~~~~~~~^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1057, in send
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1492, in connect
+    super().connect()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1023, in connect
+    self.sock = self._create_connection(
+                ~~~~~~~~~~~~~~~~~~~~~~~^
+        (self.host,self.port), self.timeout, self.source_address)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 870, in create_connection
+    raise exceptions[0]
+  File "C:\Python314\Lib\socket.py", line 855, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1324, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error timed out>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 17:57:22] "GET /alerts.json?t=1776463042534 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:57:27] "GET /status.json?t=1776463047544 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:57:57] "GET /status.json?t=1776463077529 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:58:26] "GET /alerts.json?t=1776463106534 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:58:27] "GET /status.json?t=1776463107543 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:58:57] "GET /status.json?t=1776463137530 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:59:26] "GET /alerts.json?t=1776463166532 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:59:27] "GET /status.json?t=1776463167546 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:59:38] "GET /status.json?t=1776463178166 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:59:56] "GET /alerts.json?t=1776463196536 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:59:57] "GET /alerts.json?t=1776463197159 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 17:59:57] "GET /status.json?t=1776463197159 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:02] "GET /alerts.json?t=1776463202531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:07] "GET /alerts.json?t=1776463207533 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 52656)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 54, in _handle_proxy
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 64, in _send_json_error
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 55705)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 54, in _handle_proxy
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 64, in _send_json_error
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 18:00:12] "GET /alerts.json?t=1776463212537 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:17] "GET /alerts.json?t=1776463217536 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:22] "GET /alerts.json?t=1776463222528 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:27] "GET /alerts.json?t=1776463227536 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:27] "GET /status.json?t=1776463227536 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:29] "GET /status.json?t=1776463228966 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:32] "GET /alerts.json?t=1776463232537 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:37] "GET /alerts.json?t=1776463237534 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:42] "GET /alerts.json?t=1776463242541 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:47] "GET /alerts.json?t=1776463247530 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:52] "GET /alerts.json?t=1776463252528 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:57] "GET /alerts.json?t=1776463257530 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:00:57] "GET /status.json?t=1776463257531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:02] "GET /alerts.json?t=1776463262533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:07] "GET /alerts.json?t=1776463267533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:12] "GET /alerts.json?t=1776463272531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:17] "GET /alerts.json?t=1776463277530 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:22] "GET /alerts.json?t=1776463282536 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:27] "GET /alerts.json?t=1776463287532 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:27] "GET /status.json?t=1776463287533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:32] "GET /alerts.json?t=1776463292528 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:37] "GET /alerts.json?t=1776463297530 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57671)
+Traceback (most recent call last):
+  File "C:\Python314\Lib\urllib\request.py", line 1321, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              encode_chunked=req.has_header('Transfer-encoding'))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1358, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1404, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1353, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1113, in _send_output
+    self.send(msg)
+    ~~~~~~~~~^^^^^
+  File "C:\Python314\Lib\http\client.py", line 1057, in send
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 1499, in connect
+    self.sock = self._context.wrap_socket(self.sock,
+                ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+                                          server_hostname=server_hostname)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sock=sock,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        session=session
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python314\Lib\ssl.py", line 1076, in _create
+    self.do_handshake()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\ssl.py", line 1372, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+TimeoutError: _ssl.c:1063: The handshake operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1324, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error _ssl.c:1063: The handshake operation timed out>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 18:01:42] "GET /alerts.json?t=1776463302532 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 55150)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 54, in _handle_proxy
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 64, in _send_json_error
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 51476)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 54, in _handle_proxy
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 64, in _send_json_error
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 18:01:47] "GET /alerts.json?t=1776463307533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:52] "GET /alerts.json?t=1776463312529 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:57] "GET /status.json?t=1776463317539 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:01:57] "GET /alerts.json?t=1776463317539 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:02] "GET /alerts.json?t=1776463322532 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:07] "GET /alerts.json?t=1776463327538 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:12] "GET /alerts.json?t=1776463332539 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:17] "GET /alerts.json?t=1776463337533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:22] "GET /alerts.json?t=1776463342531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:27] "GET /alerts.json?t=1776463347542 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:28] "GET /status.json?t=1776463347543 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:30] "GET /status.json?t=1776463349975 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 56771)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 54, in _handle_proxy
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 64, in _send_json_error
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 18:02:32] "GET /alerts.json?t=1776463352541 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:37] "GET /alerts.json?t=1776463357538 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 65119)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 54, in _handle_proxy
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 64, in _send_json_error
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 18:02:42] "GET /alerts.json?t=1776463362530 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 60309)
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 47, in _handle_proxy
+    with urllib.request.urlopen(req, timeout=12) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1325, in do_open
+    r = h.getresponse()
+  File "C:\Python314\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python314\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 26, in __init__
+    super().__init__(*args, directory=BASE_DIR, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 31, in do_GET
+    self._handle_proxy(parsed)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 56, in _handle_proxy
+    self._send_json_error(502, str(e))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\server.py", line 65, in _send_json_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+127.0.0.1 - - [17/Apr/2026 18:02:47] "GET /alerts.json?t=1776463367533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:52] "GET /alerts.json?t=1776463372160 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:57] "GET /alerts.json?t=1776463377535 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:02:58] "GET /status.json?t=1776463377535 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:02] "GET /alerts.json?t=1776463382532 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:07] "GET /alerts.json?t=1776463387528 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:12] "GET /alerts.json?t=1776463392538 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:17] "GET /alerts.json?t=1776463397530 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:22] "GET /alerts.json?t=1776463402529 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:27] "GET /alerts.json?t=1776463407534 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:27] "GET /status.json?t=1776463407535 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:28] "GET /status.json?t=1776463408595 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:32] "GET /alerts.json?t=1776463412542 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:37] "GET /alerts.json?t=1776463417534 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:42] "GET /alerts.json?t=1776463422540 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:47] "GET /alerts.json?t=1776463427534 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:52] "GET /alerts.json?t=1776463432539 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:57] "GET /alerts.json?t=1776463437539 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:03:57] "GET /status.json?t=1776463437540 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:02] "GET /alerts.json?t=1776463442531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:07] "GET /alerts.json?t=1776463447532 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:12] "GET /alerts.json?t=1776463452533 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:17] "GET /alerts.json?t=1776463457539 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:22] "GET /alerts.json?t=1776463462532 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:27] "GET /alerts.json?t=1776463467538 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:27] "GET /status.json?t=1776463467538 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:29] "GET /status.json?t=1776463468755 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:32] "GET /alerts.json?t=1776463472531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:37] "GET /alerts.json?t=1776463477528 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:42] "GET /alerts.json?t=1776463482541 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:47] "GET /alerts.json?t=1776463487540 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:52] "GET /alerts.json?t=1776463492542 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:57] "GET /alerts.json?t=1776463497531 HTTP/1.1" 200 -
+127.0.0.1 - - [17/Apr/2026 18:04:57] "GET /status.json?t=1776463497531 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:27] "GET /alerts.json?t=1776499887638 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:27] "GET /status.json?t=1776499887649 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:28] "GET /status.json?t=1776499888682 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:32] "GET /alerts.json?t=1776499892160 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:35] "GET /alerts.json?t=1776499897160 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:40] "GET /alerts.json?t=1776499902163 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:45] "GET /alerts.json?t=1776499907160 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:50] "GET /alerts.json?t=1776499912159 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:55] "GET /alerts.json?t=1776499917164 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:11:55] "GET /status.json?t=1776499917164 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:00] "GET /alerts.json?t=1776499922159 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:05] "GET /alerts.json?t=1776499927162 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:10] "GET /alerts.json?t=1776499932160 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:15] "GET /alerts.json?t=1776499937161 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:20] "GET /alerts.json?t=1776499942161 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:25] "GET /alerts.json?t=1776499947166 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:25] "GET /status.json?t=1776499947166 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:26] "GET /status.json?t=1776499946452 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:30] "GET /alerts.json?t=1776499950547 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:35] "GET /alerts.json?t=1776499955548 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:40] "GET /alerts.json?t=1776499960549 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:45] "GET /alerts.json?t=1776499965550 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:50] "GET /alerts.json?t=1776499970547 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:55] "GET /alerts.json?t=1776499975551 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:12:55] "GET /status.json?t=1776499975551 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:00] "GET /alerts.json?t=1776499980546 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:05] "GET /alerts.json?t=1776499985547 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:10] "GET /alerts.json?t=1776499990548 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:15] "GET /alerts.json?t=1776499995547 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:20] "GET /alerts.json?t=1776500000546 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:25] "GET /alerts.json?t=1776500005552 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:25] "GET /status.json?t=1776500005552 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:26] "GET /status.json?t=1776500006488 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:31] "GET /alerts.json?t=1776500010549 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:35] "GET /alerts.json?t=1776500015545 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:40] "GET /alerts.json?t=1776500020546 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:45] "GET /alerts.json?t=1776500025547 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:50] "GET /alerts.json?t=1776500030546 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:55] "GET /alerts.json?t=1776500035554 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:13:55] "GET /status.json?t=1776500035554 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:00] "GET /alerts.json?t=1776500040556 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:05] "GET /alerts.json?t=1776500045550 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:11] "GET /alerts.json?t=1776500050917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:15] "GET /alerts.json?t=1776500055920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:21] "GET /alerts.json?t=1776500060931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:26] "GET /alerts.json?t=1776500065933 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:26] "GET /status.json?t=1776500065934 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:27] "GET /status.json?t=1776500066802 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:30] "GET /alerts.json?t=1776500070925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:35] "GET /alerts.json?t=1776500075918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:40] "GET /alerts.json?t=1776500080928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:45] "GET /alerts.json?t=1776500085928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:51] "GET /alerts.json?t=1776500090921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:56] "GET /status.json?t=1776500095935 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:14:56] "GET /alerts.json?t=1776500095935 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:01] "GET /alerts.json?t=1776500100926 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:05] "GET /alerts.json?t=1776500105917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:11] "GET /alerts.json?t=1776500110925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:16] "GET /alerts.json?t=1776500115929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:20] "GET /alerts.json?t=1776500120928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:26] "GET /alerts.json?t=1776500125920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:26] "GET /status.json?t=1776500125921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:27] "GET /status.json?t=1776500127101 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:31] "GET /alerts.json?t=1776500130928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:35] "GET /alerts.json?t=1776500135931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:41] "GET /alerts.json?t=1776500140917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:46] "GET /alerts.json?t=1776500145970 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:51] "GET /alerts.json?t=1776500150920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:55] "GET /alerts.json?t=1776500155933 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:15:56] "GET /status.json?t=1776500155933 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:01] "GET /alerts.json?t=1776500160928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:05] "GET /alerts.json?t=1776500165920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:11] "GET /alerts.json?t=1776500170924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:15] "GET /alerts.json?t=1776500175930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:20] "GET /alerts.json?t=1776500180920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:26] "GET /alerts.json?t=1776500185933 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:26] "GET /status.json?t=1776500185933 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:27] "GET /status.json?t=1776500186995 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:31] "GET /alerts.json?t=1776500190923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:35] "GET /alerts.json?t=1776500195923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:40] "GET /alerts.json?t=1776500200928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:46] "GET /alerts.json?t=1776500205929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:50] "GET /alerts.json?t=1776500210920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:56] "GET /alerts.json?t=1776500215921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:16:56] "GET /status.json?t=1776500215921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:00] "GET /alerts.json?t=1776500220925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:06] "GET /alerts.json?t=1776500225926 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:11] "GET /alerts.json?t=1776500230926 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:15] "GET /alerts.json?t=1776500235919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:21] "GET /alerts.json?t=1776500240932 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:26] "GET /alerts.json?t=1776500245928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:26] "GET /status.json?t=1776500245928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:27] "GET /status.json?t=1776500246970 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:31] "GET /alerts.json?t=1776500250929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:35] "GET /alerts.json?t=1776500255929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:40] "GET /alerts.json?t=1776500260931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:45] "GET /alerts.json?t=1776500265931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:51] "GET /alerts.json?t=1776500270925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:55] "GET /alerts.json?t=1776500275923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:17:56] "GET /status.json?t=1776500275923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:01] "GET /alerts.json?t=1776500280923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:05] "GET /alerts.json?t=1776500285923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:11] "GET /alerts.json?t=1776500290917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:15] "GET /alerts.json?t=1776500295935 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:21] "GET /alerts.json?t=1776500300931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:26] "GET /alerts.json?t=1776500305918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:26] "GET /status.json?t=1776500305919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:27] "GET /status.json?t=1776500306954 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:31] "GET /alerts.json?t=1776500310931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:35] "GET /alerts.json?t=1776500315922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:40] "GET /alerts.json?t=1776500320918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:45] "GET /alerts.json?t=1776500325927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:51] "GET /alerts.json?t=1776500330923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:56] "GET /alerts.json?t=1776500335928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:18:56] "GET /status.json?t=1776500335928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:00] "GET /alerts.json?t=1776500340919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:05] "GET /alerts.json?t=1776500345920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:11] "GET /alerts.json?t=1776500350930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:16] "GET /alerts.json?t=1776500355917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:21] "GET /alerts.json?t=1776500360922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:26] "GET /alerts.json?t=1776500365925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:26] "GET /status.json?t=1776500365925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:27] "GET /status.json?t=1776500367142 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:30] "GET /alerts.json?t=1776500370929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:36] "GET /alerts.json?t=1776500375917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:41] "GET /alerts.json?t=1776500380934 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:45] "GET /alerts.json?t=1776500385923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:51] "GET /alerts.json?t=1776500390930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:55] "GET /alerts.json?t=1776500395925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:19:56] "GET /status.json?t=1776500395925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:01] "GET /alerts.json?t=1776500400925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:06] "GET /alerts.json?t=1776500405922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:11] "GET /alerts.json?t=1776500410928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:16] "GET /alerts.json?t=1776500415927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:20] "GET /alerts.json?t=1776500420918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:26] "GET /alerts.json?t=1776500425928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:26] "GET /status.json?t=1776500425928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:27] "GET /status.json?t=1776500427057 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:31] "GET /alerts.json?t=1776500430917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:36] "GET /alerts.json?t=1776500435916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:41] "GET /alerts.json?t=1776500440920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:45] "GET /alerts.json?t=1776500445919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:51] "GET /alerts.json?t=1776500450925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:55] "GET /alerts.json?t=1776500455927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:20:56] "GET /status.json?t=1776500455927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:21:00] "GET /alerts.json?t=1776500460917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:21:06] "GET /alerts.json?t=1776500465916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:21:10] "GET /alerts.json?t=1776500470929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:21:16] "GET /alerts.json?t=1776500475916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:21:20] "GET /alerts.json?t=1776500480916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:25] "GET /status.json?t=1776500544938 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:25] "GET /alerts.json?t=1776500544937 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:25] "GET /status.json?t=1776500545944 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:39] "GET /alerts.json?t=1776500559365 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:40] "GET /alerts.json?t=1776500560547 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:45] "GET /alerts.json?t=1776500565548 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:50] "GET /alerts.json?t=1776500570554 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:55] "GET /alerts.json?t=1776500575559 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:22:55] "GET /status.json?t=1776500575559 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:00] "GET /alerts.json?t=1776500580924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:06] "GET /alerts.json?t=1776500585916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:11] "GET /alerts.json?t=1776500590918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:15] "GET /alerts.json?t=1776500595923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:21] "GET /alerts.json?t=1776500600931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:26] "GET /status.json?t=1776500605925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:26] "GET /alerts.json?t=1776500605925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:27] "GET /status.json?t=1776500607173 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:30] "GET /alerts.json?t=1776500610923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:35] "GET /alerts.json?t=1776500615918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:40] "GET /alerts.json?t=1776500620922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:45] "GET /alerts.json?t=1776500625930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:51] "GET /alerts.json?t=1776500630922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:55] "GET /alerts.json?t=1776500635922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:23:56] "GET /status.json?t=1776500635923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:01] "GET /alerts.json?t=1776500640922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:05] "GET /alerts.json?t=1776500645928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:11] "GET /alerts.json?t=1776500650925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:15] "GET /alerts.json?t=1776500655916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:21] "GET /alerts.json?t=1776500660920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:27] "GET /alerts.json?t=1776500665918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:27] "GET /status.json?t=1776500665919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:28] "GET /status.json?t=1776500667999 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:31] "GET /alerts.json?t=1776500670920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:36] "GET /alerts.json?t=1776500675932 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:40] "GET /alerts.json?t=1776500680931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:46] "GET /alerts.json?t=1776500685928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:50] "GET /alerts.json?t=1776500690920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:56] "GET /alerts.json?t=1776500695930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:24:56] "GET /status.json?t=1776500695930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:00] "GET /alerts.json?t=1776500700917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:05] "GET /alerts.json?t=1776500705927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:11] "GET /alerts.json?t=1776500710930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:15] "GET /alerts.json?t=1776500715917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:21] "GET /alerts.json?t=1776500720928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:26] "GET /alerts.json?t=1776500725919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:26] "GET /status.json?t=1776500725920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:27] "GET /status.json?t=1776500726802 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:31] "GET /alerts.json?t=1776500730924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:35] "GET /alerts.json?t=1776500735931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:41] "GET /alerts.json?t=1776500740923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:45] "GET /alerts.json?t=1776500745923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:51] "GET /alerts.json?t=1776500750928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:55] "GET /alerts.json?t=1776500755929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:25:56] "GET /status.json?t=1776500755929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:00] "GET /alerts.json?t=1776500760920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:06] "GET /alerts.json?t=1776500765935 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:10] "GET /alerts.json?t=1776500770920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:16] "GET /alerts.json?t=1776500775925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:20] "GET /alerts.json?t=1776500780917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:26] "GET /alerts.json?t=1776500785929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:26] "GET /status.json?t=1776500785929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:27] "GET /status.json?t=1776500787043 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:30] "GET /alerts.json?t=1776500790926 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:35] "GET /alerts.json?t=1776500795925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:40] "GET /alerts.json?t=1776500800936 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:46] "GET /alerts.json?t=1776500805924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:50] "GET /alerts.json?t=1776500810918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:56] "GET /alerts.json?t=1776500815923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:26:56] "GET /status.json?t=1776500815923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:00] "GET /alerts.json?t=1776500820925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:05] "GET /alerts.json?t=1776500825931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:10] "GET /alerts.json?t=1776500830925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:15] "GET /alerts.json?t=1776500835916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:20] "GET /alerts.json?t=1776500840921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:26] "GET /status.json?t=1776500845922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:26] "GET /alerts.json?t=1776500845922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:27] "GET /status.json?t=1776500847227 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:30] "GET /alerts.json?t=1776500850922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:36] "GET /alerts.json?t=1776500855919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:41] "GET /alerts.json?t=1776500860924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:45] "GET /alerts.json?t=1776500865917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:50] "GET /alerts.json?t=1776500870927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:56] "GET /status.json?t=1776500875924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:27:56] "GET /alerts.json?t=1776500875924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:28:24] "GET /alerts.json?t=1776500904934 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:29:25] "GET /alerts.json?t=1776500964922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:29:25] "GET /status.json?t=1776500964922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:29:26] "GET /status.json?t=1776500966117 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:30:24] "GET /alerts.json?t=1776501024932 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:30:25] "GET /status.json?t=1776501024951 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:31:25] "GET /status.json?t=1776501084930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:31:25] "GET /alerts.json?t=1776501084919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:31:26] "GET /status.json?t=1776501086015 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:33:22] "GET /alerts.json?t=1776501201894 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:33:22] "GET /status.json?t=1776501202116 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:33:23] "GET /status.json?t=1776501203217 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:34:25] "GET /alerts.json?t=1776501264940 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:34:25] "GET /status.json?t=1776501264940 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:34:25] "GET /status.json?t=1776501265824 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:35:25] "GET /status.json?t=1776501324935 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:35:25] "GET /alerts.json?t=1776501324929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:36:25] "GET /status.json?t=1776501384927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:36:25] "GET /alerts.json?t=1776501384925 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:36:26] "GET /status.json?t=1776501385945 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:08] "GET /status.json?t=1776501427953 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:08] "GET /alerts.json?t=1776501427939 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:10] "GET /alerts.json?t=1776501430554 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:15] "GET /alerts.json?t=1776501435552 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:20] "GET /alerts.json?t=1776501440545 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:25] "GET /status.json?t=1776501445555 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:25] "GET /alerts.json?t=1776501445551 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:26] "GET /status.json?t=1776501446455 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:30] "GET /alerts.json?t=1776501450548 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:35] "GET /alerts.json?t=1776501455552 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:40] "GET /alerts.json?t=1776501460552 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:45] "GET /alerts.json?t=1776501465548 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:50] "GET /alerts.json?t=1776501470554 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:55] "GET /alerts.json?t=1776501475551 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:37:55] "GET /status.json?t=1776501475551 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:00] "GET /alerts.json?t=1776501480929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:06] "GET /alerts.json?t=1776501485928 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:10] "GET /alerts.json?t=1776501490917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:16] "GET /alerts.json?t=1776501495931 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:20] "GET /alerts.json?t=1776501500921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:26] "GET /alerts.json?t=1776501505935 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:26] "GET /status.json?t=1776501505936 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:27] "GET /status.json?t=1776501506973 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:31] "GET /alerts.json?t=1776501510941 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:35] "GET /alerts.json?t=1776501515930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:40] "GET /alerts.json?t=1776501520920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:45] "GET /alerts.json?t=1776501525917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:51] "GET /alerts.json?t=1776501530918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:55] "GET /alerts.json?t=1776501535929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:38:56] "GET /status.json?t=1776501535929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:01] "GET /alerts.json?t=1776501540916 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:05] "GET /alerts.json?t=1776501545922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:10] "GET /alerts.json?t=1776501550930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:15] "GET /alerts.json?t=1776501555919 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:21] "GET /alerts.json?t=1776501560918 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:26] "GET /alerts.json?t=1776501565923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:26] "GET /status.json?t=1776501565923 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:27] "GET /status.json?t=1776501566774 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:30] "GET /alerts.json?t=1776501570921 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:35] "GET /alerts.json?t=1776501575917 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:41] "GET /alerts.json?t=1776501580924 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:45] "GET /alerts.json?t=1776501585929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:51] "GET /alerts.json?t=1776501590927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:55] "GET /alerts.json?t=1776501595929 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:39:56] "GET /status.json?t=1776501595930 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:40:01] "GET /alerts.json?t=1776501600920 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:40:06] "GET /alerts.json?t=1776501605922 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:40:10] "GET /alerts.json?t=1776501610927 HTTP/1.1" 200 -
+127.0.0.1 - - [18/Apr/2026 04:40:16] "GET /alerts.json?t=1776501615938 HTTP/1.1" 200 -

@@ -17,6 +17,8 @@ ALLOWED_HOSTS = {
     "data-api.polymarket.com",
     "clob.polymarket.com",
     "api.coingecko.com",
+    "api.open-meteo.com",
+    "api.binance.com",
 }
 
 class Handler(http.server.SimpleHTTPRequestHandler):

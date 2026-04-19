@@ -1,16 +1,242 @@
-{
-  "scanned_at": "2026-04-16T03:43:13.698613+00:00",
-  "total_scanned": 1358,
-  "elite_count": 1,
-  "min_win_rate": 0.7,
-  "wallets": [
-    {
-      "address": "0x5566b7c96220f4f40146a17bb25bcab6c0d37c29",
-      "win_rate": 1.0,
-      "wins": 23,
-      "losses": 0,
-      "total_trades": 23,
-      "profit_usd": 0.16
-    }
-  ]
-}
+[
+  {
+    "wallet": "0x02227b8f5a9636e895607edd3185ed6ee5598ff7",
+    "name": "HorizonSplendidView",
+    "pnl_month": 4016107.832463995,
+    "pnl_all": 1991767.5134605914,
+    "vol_month": 0,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0xefbc5fec8d7b0acdc8911bdd9a98d6964308f9a2",
+    "name": "reachingthesky",
+    "pnl_month": 3742635.156562068,
+    "pnl_all": 3742635.156562068,
+    "vol_month": 0,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x2a2c53bd278c04da9962fcf96490e17f3dfb9bc1",
+    "name": "0x2a2C53bD278c04DA9962Fcf96490E17F3DfB9Bc1-1772479215461",
+    "pnl_month": 2697742.8856091183,
+    "pnl_all": 2697742.8856091183,
+    "vol_month": 115507200.729258,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0xc2e7800b5af46e6093872b177b7a5e7f0563be51",
+    "name": "beachboy4",
+    "pnl_month": 2667154.5165910944,
+    "pnl_all": 3046951.1096293945,
+    "vol_month": 14455276.546912998,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x019782cab5d844f02bafb71f512758be78579f3c",
+    "name": "majorexploiter",
+    "pnl_month": 2416975.0291252104,
+    "pnl_all": 3668541.581104434,
+    "vol_month": 0,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x2005d16a84ceefa912d4e380cd32e7ff827875ea",
+    "name": "RN1",
+    "pnl_month": 2075768.8931797948,
+    "pnl_all": 7329063.59387869,
+    "vol_month": 93118578.10570702,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0xee613b3fc183ee44f9da9c05f53e2da107e3debf",
+    "name": "sovereign2013",
+    "pnl_month": 1841791.4530794697,
+    "pnl_all": 3487737.9877900355,
+    "vol_month": 45019258.699278004,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0xdc876e6873772d38716fda7f2452a78d426d7ab6",
+    "name": "432614799197",
+    "pnl_month": 1495977.460859552,
+    "pnl_all": 4526176.046413317,
+    "vol_month": 0,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x204f72f35326db932158cba6adff0b9a1da95e14",
+    "name": "swisstony",
+    "pnl_month": 1482922.4083291618,
+    "pnl_all": 6128534.422298611,
+    "vol_month": 59304991.472509004,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x93abbc022ce98d6f45d4444b594791cc4b7a9723",
+    "name": "gatorr",
+    "pnl_month": 1435606.8059395393,
+    "pnl_all": 2224337.938081148,
+    "vol_month": 6919749.357121999,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x6a72f61820b26b1fe4d956e17b6dc2a1ea3033ee",
+    "name": "kch123",
+    "pnl_month": 1032850.6466292016,
+    "pnl_all": 11860311.802569175,
+    "vol_month": 15532215.143884998,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x507e52ef684ca2dd91f90a9d26d149dd3288beae",
+    "name": "GamblingIsAllYouNeed",
+    "pnl_month": 866433.5915773208,
+    "pnl_all": 4673646.704034859,
+    "vol_month": 61866371.120366015,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x8c80d213c0cbad777d06ee3f58f6ca4bc03102c3",
+    "name": "SecondWindCapital",
+    "pnl_month": 786395.626992292,
+    "pnl_all": 1872258.2297697468,
+    "vol_month": 2968776.417141,
+    "tier": "T1"
+  },
+  {
+    "wallet": "0x492442eab586f242b53bda933fd5de859c8a3782",
+    "name": "0x492442EaB586F242B53bDa933fD5dE859c8A3782-1766317541188",
+    "pnl_month": 7127605.119528396,
+    "pnl_all": 0,
+    "vol_month": 27970686.499866,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0xf195721ad850377c96cd634457c70cd9e8308057",
+    "name": "lo34567Taipe",
+    "pnl_month": 1459445.3681237074,
+    "pnl_all": 0,
+    "vol_month": 19.75,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0xa5ea13a81d2b7e8e424b182bdc1db08e756bd96a",
+    "name": "bossoskil1",
+    "pnl_month": 1449154.8220623143,
+    "pnl_all": 0,
+    "vol_month": 18365096.999459,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0xc8075693f48668a264b9fa313b47f52712fcc12b",
+    "name": "texaskid",
+    "pnl_month": 1298928.4440256883,
+    "pnl_all": 0,
+    "vol_month": 13049499.050439997,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0xead152b855effa6b5b5837f53b24c0756830c76a",
+    "name": "elkmonkey",
+    "pnl_month": 1212392.514880375,
+    "pnl_all": 0,
+    "vol_month": 40813028.44033101,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0x59a0744db1f39ff3afccd175f80e6e8dfc239a09",
+    "name": "Blessed-Sunshine",
+    "pnl_month": 1202926.5392165454,
+    "pnl_all": 0,
+    "vol_month": 0,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0x8f037a2e4fd49d11267f4ab874ab7ba745ac64d6",
+    "name": "Anointed-Connect",
+    "pnl_month": 1169464.1679544633,
+    "pnl_all": 0,
+    "vol_month": 485859.47447399993,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0x777d9f00c2b4f7b829c9de0049ca3e707db05143",
+    "name": "CarlosMC",
+    "pnl_month": 1144796.8503580901,
+    "pnl_all": 0,
+    "vol_month": 8853551.66956,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0xbaa2bcb5439e985ce4ccf815b4700027d1b92c73",
+    "name": "denizz",
+    "pnl_month": 1020934.0821953437,
+    "pnl_all": 0,
+    "vol_month": 12495992.153392,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0x37c1874a60d348903594a96703e0507c518fc53a",
+    "name": "CemeterySun",
+    "pnl_month": 1020371.6780833916,
+    "pnl_all": 0,
+    "vol_month": 50260041.036336996,
+    "tier": "T2"
+  },
+  {
+    "wallet": "0x56687bf447db6ffa42ffe2204a05edaa20f55839",
+    "name": "Theo4",
+    "pnl_month": 0,
+    "pnl_all": 22053933.752321757,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  },
+  {
+    "wallet": "0x1f2dd6d473f3e824cd2f8a89d9c69fb96f6ad0cf",
+    "name": "Fredi9999",
+    "pnl_month": 0,
+    "pnl_all": 16619506.631730152,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  },
+  {
+    "wallet": "0x78b9ac44a6d7d7a076c14e0ad518b301b63c6b76",
+    "name": "Len9311238",
+    "pnl_month": 0,
+    "pnl_all": 8709972.988069998,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  },
+  {
+    "wallet": "0xd235973291b2b75ff4070e9c0b01728c520b0f29",
+    "name": "zxgngl",
+    "pnl_month": 0,
+    "pnl_all": 7807265.5892408835,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  },
+  {
+    "wallet": "0x863134d00841b2e200492805a01e1e2f5defaa53",
+    "name": "RepTrump",
+    "pnl_month": 0,
+    "pnl_all": 7532409.671579,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  },
+  {
+    "wallet": "0x8119010a6e589062aa03583bb3f39ca632d9f887",
+    "name": "PrincessCaro",
+    "pnl_month": 0,
+    "pnl_all": 6083643.099591745,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  },
+  {
+    "wallet": "0xe9ad918c7678cd38b12603a762e638a5d1ee7091",
+    "name": "walletmobile",
+    "pnl_month": 0,
+    "pnl_all": 5942685.45339684,
+    "vol_month": 0,
+    "tier": "T3-alltime"
+  }
+]

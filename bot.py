@@ -1,1669 +1,1998 @@
 """
-POLY//BOT v2 — Signal + CopyTrade + Arb Scanner
-  - RSI/EMA signal engine via WebSocket
-  - Mirror trades from whale wallet 0x751a...9ea1
-  - Continuous arb scanner (YES+NO mispricing alerts)
+POLY//BOT v5 — Four proven edges:
+  1. UPDN  — 5-min crypto markets (BTC/ETH/SOL/XRP/DOGE/BNB), enter last 30-60s (ET hours)
+  2. LIVE  — Any binary market closing in ≤4 min where leader is 82-96%
+  3. DRIFT — Momentum on top liquid markets: buy when price drifts 4%+ consistently
+  4. WX    — Weather forecast vs Polymarket price, buy <20¢ sell at 45¢
 """
 
-import json, time, threading, logging, urllib.request, urllib.parse
+import json, time, re, threading, logging, pathlib, os
+import urllib.request
 from collections import defaultdict, deque
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+try:
+    from web3 import Web3
+    from eth_account.messages import encode_defunct
+    _WEB3_OK = True
+except ImportError:
+    _WEB3_OK = False
 
 import websocket
-import numpy as np
 from py_clob_client.client import ClobClient
-from py_clob_client.clob_types import ApiCreds, OrderArgs
+from py_clob_client.clob_types import OrderArgs, BalanceAllowanceParams, AssetType
 from py_clob_client.order_builder.constants import BUY, SELL
-from kelly import evaluate_trade, record_trade_result, update_vol_ema, load_state
-
-# ── ML MODEL (lazy-loaded — won't block bot startup) ───────────────────────────
-_ml_predictor = None
-_ml_lock = threading.Lock()
-
-def _get_ml_predictor():
-    """Load trained ML model on first use. Returns None if unavailable."""
-    global _ml_predictor
-    if _ml_predictor is not None:
-        return _ml_predictor
-    with _ml_lock:
-        if _ml_predictor is not None:
-            return _ml_predictor
-        try:
-            from ml_model import get_predictor
-            p = get_predictor()
-            if p.trained:
-                _ml_predictor = p
-                log.info("[ML] Model loaded successfully")
-        except Exception as e:
-            log.debug(f"[ML] Not available: {e}")
-    return _ml_predictor
 
 # ── LOGGING ───────────────────────────────────────────────────────────────────
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%H:%M:%S'
-)
-log = logging.getLogger('POLY//BOT')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s', datefmt='%H:%M:%S')
+log = logging.getLogger('BOT')
 
-# ── CREDENTIALS ───────────────────────────────────────────────────────────────
-PRIVATE_KEY    = "72f882593b660160169ee4d14165dbd3ad15626b6f45632373dd2774e7294300"
-FUNDER         = "0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07"
-TRADING_ADDR   = "0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07"
-CHAIN_ID       = 137
-API_KEY        = "308e6706-5190-b8d1-fdbd-fc7078f304f7"
-API_SECRET     = "LeifAlgvBF9XgMCgA_ldD138biDN_CPNEHSoRacmWds="
-API_PASSPHRASE = "fc149edc549a56860ff17e8f14222c497bf05bf56b5df9a7255087ed2a0c4625"
-ANTHROPIC_KEY  = ""   # set in secrets.py (gitignored)
-PROXY          = ""   # e.g. "socks5://127.0.0.1:1080" or "http://user:pass@host:port"
-
-# ── TERMINAL ALERTS ──────────────────────────────────────────────────────────
-import os, pathlib
-
-ALERTS_FILE  = pathlib.Path(__file__).parent / "alerts.json"
-STATUS_FILE  = pathlib.Path(__file__).parent / "status.json"
-COPY_STATE   = pathlib.Path(__file__).parent / "copy_state.json"
-_alert_lock  = threading.Lock()
-_order_lock  = threading.Lock()   # prevents concurrent order submissions
-
-def tg(msg, level="INFO"):
-    """Write alert to alerts.json — picked up by POLY//TERMINAL dashboard."""
-    entry = {
-        "time":  datetime.now(timezone.utc).strftime("%H:%M:%S"),
-        "level": level,
-        "msg":   msg,
-    }
-    with _alert_lock:
-        try:
-            existing = json.loads(ALERTS_FILE.read_text()) if ALERTS_FILE.exists() else []
-        except Exception:
-            existing = []
-        existing.insert(0, entry)
-        existing = existing[:50]  # keep last 50 alerts
-        ALERTS_FILE.write_text(json.dumps(existing, indent=2))
-    log.info(f"[ALERT] {msg}")
-
-# ── CONFIG ────────────────────────────────────────────────────────────────────
-CFG = {
-    "dry_run":            False,  # False = real orders
-    "max_position_usd":   5.00,   # max $ per trade
-    "min_balance_usd":    2.00,
-
-    # Risk management
-    "max_position_pct":   0.30,   # 30% of portfolio per trade
-    "daily_loss_halt":    -0.40,  # halt at -40% daily
-    "kill_switch_dd":     -0.75,  # kill switch at -75% total
-    "min_liquidity":      3_000,
-
-    # Signal engine (momentum-based, NOT RSI/EMA)
-    "momentum_ticks":     10,     # price history ticks to measure velocity
-    "momentum_threshold": 0.04,   # 4% price move triggers signal
-    "lookback":           20,
-    "ws_url":             "wss://ws-subscriptions-clob.polymarket.com/ws/market",
-
-    # CopyTrade
-    "copy_wallet":        "0x751a2b86cab503496efd325c8344e10159349ea1",
-    "copy_ratio":         0.15,   # mirror 15% of whale position size
-    "copy_poll_secs":     30,
-
-    # Arb scanner — executes automatically when edge is real
-    "arb_scan_secs":      45,
-    "arb_min_edge":       0.015,  # 1.5% guaranteed edge before executing
-    "arb_min_vol24":      2000,
-
-    # 5-min crypto up/down markets (BTC/ETH/SOL/XRP/DOGE/BNB/HYPE)
-    "updown_scan_secs":   10,     # scan every 10s — 5-min markets expire fast
-    "updown_min_change":  0.001,  # 0.1% move needed (5-min windows are small)
-    "updown_max_age_min": 4.5,    # 4-minute rule: only bet when ≤4.5 min left
-    "updown_min_age_min": 0.5,    # don't bet if <30s left (too late to fill)
-    "updown_max_price":   0.88,   # only bet if market hasn't fully priced in direction
-
-    # Near-certainty scalper
-    "certainty_scan_secs": 120,
-    "certainty_min_price": 0.87,  # market priced ≥87% YES
-    "certainty_max_price": 0.97,  # but not yet resolved
-    "certainty_min_vol":   3_000,
-    "certainty_max_days":  180,   # up to 6 months out
-
-    # 4-minute rule — final minutes before resolution
-    "fourmin_scan_secs":   15,    # scan every 15s — critical timing
-    "fourmin_max_mins":    4,     # market closes within this many minutes
-    "fourmin_min_leader":  0.82,  # leader must be priced ≥82% to bet
-    "fourmin_max_leader":  0.96,  # but not yet fully resolved (leave room for edge)
-    "fourmin_min_liq":     500,   # minimum $500 liquidity
-}
-
-# ── PROXY (routes all CLOB + HTTP traffic through proxy to bypass geoblock) ───
-_proxy = PROXY
+# ── CREDENTIALS (secrets_local.py or env vars override) ──────────────────────
+PRIVATE_KEY = os.environ.get("POLY_PRIVATE_KEY", "72f882593b660160169ee4d14165dbd3ad15626b6f45632373dd2774e7294300")
+FUNDER      = os.environ.get("POLY_FUNDER",      "0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07")
+CHAIN_ID    = 137
+PROXY       = os.environ.get("POLY_PROXY", "")
 try:
-    from secrets_local import PROXY as _P
-    if _P: _proxy = _P
+    from secrets_local import PRIVATE_KEY, FUNDER, PROXY  # type: ignore
 except Exception:
     pass
 
-if _proxy:
-    import os as _penv
-    _penv.environ["HTTP_PROXY"]  = _proxy
-    _penv.environ["HTTPS_PROXY"] = _proxy
-    _penv.environ["ALL_PROXY"]   = _proxy
-    # patch urllib for fetch_json calls
-    import urllib.request as _ur
-    _ph = urllib.request.ProxyHandler({"http": _proxy, "https": _proxy})
-    _ur.install_opener(_ur.build_opener(_ph))
-    log.info(f"[PROXY] Routing through {_proxy}")
-else:
-    log.warning("[PROXY] No proxy set — orders may be geoblocked. Set PROXY in secrets_local.py")
+# ── CONFIG ────────────────────────────────────────────────────────────────────
+CFG = {
+    "dry_run":         False,
+    "max_usd":         0.75,   # 5-8% of a $10 bankroll — never bet the house
+    "min_free_usdc":   0.50,   # lower floor to avoid constant SKIPs with 6 engines active
+    "daily_halt_pct":  -0.15,  # halt after -15% day — capital preservation first
+    "max_positions":   6,      # 6 slots across all engines — per-source caps prevent hoarding
+
+    # UPDN — only trade when market AGREES with our signal (proven from trade history)
+    # Losses at 0.30-0.44, wins at 0.55+. Market calibration > Binance signal alone.
+    "updn_max_price":  0.82,   # skip if already 82%+ priced in (diminishing ROI)
+    "updn_min_price":  0.55,   # HARD FLOOR: market must price our direction at 55%+
+
+    # WEATHER
+    "wx_buy_under":    0.20,   # buy YES when price < 20¢ and forecast says it'll happen
+    "wx_sell_at":      0.45,   # target exit price
+    "wx_min_edge":     0.08,   # 8% gap between forecast and market price
+    "wx_max_days":     2,      # only markets resolving within 2 days
+    "wx_min_liq":      100,
+
+    # LIVE (6-min rule)
+    "live_max_mins":   6.0,
+    "live_min_leader": 0.78,   # leader priced ≥78%
+    "live_max_leader": 0.97,   # not yet fully resolved
+    "live_min_liq":    500,    # min $500 liquidity — low liq = bad fills + high price impact
+
+    # DRIFT — momentum on top liquid markets
+    "drift_min_move":  0.025,  # 2.5% price drift required
+    "drift_readings":  2,      # readings before firing (2min each = 4min warmup)
+    "drift_max_price": 0.88,
+    "drift_min_price": 0.08,
+    "drift_exit_pct":  0.20,   # exit at +20% profit
+
+    # WebSocket
+    "ws_url":          "wss://ws-subscriptions-clob.polymarket.com/ws/market",
+    "lookback":        20,
+    "momentum_thresh": 0.04,
+}
+
+# ── PROXY SETUP ───────────────────────────────────────────────────────────────
+_direct = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+if PROXY:
+    os.environ["HTTP_PROXY"]  = PROXY
+    os.environ["HTTPS_PROXY"] = PROXY
+    os.environ["ALL_PROXY"]   = PROXY
+    log.info(f"[PROXY] {PROXY}")
 
 # ── CLIENT ────────────────────────────────────────────────────────────────────
-creds = ApiCreds(api_key=API_KEY, api_secret=API_SECRET, api_passphrase=API_PASSPHRASE)
-client = ClobClient(
-    "https://clob.polymarket.com",
-    key=PRIVATE_KEY, chain_id=CHAIN_ID, creds=creds,
-    signature_type=2, funder=FUNDER,
-)
+client = ClobClient("https://clob.polymarket.com", key=PRIVATE_KEY,
+                    chain_id=CHAIN_ID, signature_type=2, funder=FUNDER)
+try:
+    client.set_api_creds(client.create_or_derive_api_creds())
+    log.info("[AUTH] API creds derived")
+except Exception as e:
+    log.warning(f"[AUTH] {e}")
+
+# ── FILES ─────────────────────────────────────────────────────────────────────
+BASE        = pathlib.Path(__file__).parent
+ALERTS_FILE = BASE / "alerts.json"
+STATUS_FILE = BASE / "status.json"
+LOCK_FILE   = BASE / "bot.lock"
 
 # ── STATE ─────────────────────────────────────────────────────────────────────
-price_history   = defaultdict(lambda: deque(maxlen=CFG["lookback"] + 5))
-order_books     = defaultdict(dict)
-open_positions  = {}
-trade_log       = []
-copy_positions  = json.loads(COPY_STATE.read_text()) if COPY_STATE.exists() else {}
-arb_alerts      = []
-
-# ── AGENT SYSTEM + WALLET SCANNER ─────────────────────────────────────────────
-import os as _os
-try:
-    from secrets_local import ANTHROPIC_KEY as _ANT_KEY
-    ANTHROPIC_KEY = _ANT_KEY
-except ImportError:
-    pass
-if ANTHROPIC_KEY:
-    _os.environ["ANTHROPIC_API_KEY"] = ANTHROPIC_KEY
-
-# Risk management state
-_bot_halted      = False   # set True by daily halt or kill switch
+_order_lock      = threading.Lock()
+_bot_halted      = False
 _halt_reason     = ""
-_session_start_portfolio = None   # portfolio value at bot start
-_day_start_portfolio     = None   # portfolio value at start of today
-_day_start_time          = None   # datetime of today's reset
+_day_start_val   = None
+_session_start   = None
+_wx_positions    = {}      # token_id -> entry_price (for weather exits)
+trade_log        = []
+open_positions   = {}
+price_history    = defaultdict(lambda: deque(maxlen=CFG["lookback"] + 5))
+order_books      = defaultdict(dict)
+WATCHED_TOKENS   = []
+# WS order queue — on_message enqueues signals; ws_order_worker processes them off the WS thread
+import queue as _queue
+_ws_order_queue: _queue.Queue = _queue.Queue(maxsize=20)
 
-# ── RISK MANAGEMENT ──────────────────────────────────────────────────────────
-def get_portfolio_value():
-    """Fetch USDC balance + estimated open position values."""
+# Cached portfolio value — updated every 30s in status_loop, read in check_halt()
+# Avoids making HTTP calls inside _order_lock (which stalls all threads for 10s)
+_cached_portfolio_val: float = 0.0
+_cached_portfolio_ts:  float = 0.0
+
+# ── HELPERS ───────────────────────────────────────────────────────────────────
+def fetch(url: str):
     try:
-        from py_clob_client.clob_types import BalanceAllowanceParams, AssetType
-        bal = client.get_balance_allowance(BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
-        raw = bal.get('balance', 0) or 0
-        raw_f = float(raw)
-        # CLOB returns either micro-USDC (>1000) or already-decimal USDC (<1000)
-        usdc = raw_f / 1_000_000 if raw_f > 1000 else raw_f
-    except Exception:
-        usdc = 0.0
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
+        with _direct.open(req, timeout=10) as r:
+            return json.loads(r.read())
+    except Exception as e:
+        log.debug(f"fetch {url[:70]}: {e}")
+        return None
 
-    # Add estimated value of open positions using last known prices
-    pos_value = 0.0
-    for token_id, pos in list(open_positions.items()):
-        size = float(pos.get('size', 0) or 0)
-        prices = list(price_history.get(token_id, []))
-        if prices and size:
-            pos_value += size * prices[-1]
-        elif size:
-            pos_value += size * float(pos.get('entry', 0.5) or 0.5)
-
-    total = usdc + pos_value
-    return total if total > 0 else (usdc or None)
-
-def get_true_portfolio_value():
-    """
-    Fetch real total portfolio value (cash + positions) from Polymarket data API.
-    Used at startup to get accurate baseline including existing open positions.
-    Falls back to CLOB balance if data API unavailable.
-    """
+def tg(msg: str, level: str = "INFO"):
+    entry = {"time": datetime.now(timezone.utc).strftime("%H:%M:%S"), "level": level, "msg": msg}
     try:
-        data = fetch_json(f"https://data-api.polymarket.com/value?user={TRADING_ADDR}")
-        if data:
-            if isinstance(data, list): data = data[0] if data else {}
-            val = float(data.get('portfolioValue', data.get('value', 0)) or 0)
-            if val > 0:
-                return val
+        existing = json.loads(ALERTS_FILE.read_text()) if ALERTS_FILE.exists() else []
+        existing.insert(0, entry)
+        ALERTS_FILE.write_text(json.dumps(existing[:200], indent=2))
     except Exception:
         pass
-    return get_portfolio_value()
+    log.info(f"[ALERT] {msg}")
 
-def init_risk_baseline():
-    """Called once at startup to set portfolio baseline."""
-    global _session_start_portfolio, _day_start_portfolio, _day_start_time
-    val = get_true_portfolio_value()
-    if val is not None and val > 0:
-        _session_start_portfolio = val
-        _day_start_portfolio = val
-        _day_start_time = datetime.now(timezone.utc)
-        log.info(f"[RISK] Baseline set: ${val:.2f}  (8% cap=${val*0.08:.2f}, halt@-50%=${val*0.5:.2f})")
+def free_usdc() -> float:
+    try:
+        bal = client.get_balance_allowance(BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
+        raw = float(bal.get("balance", 0) or 0)
+        return raw / 1_000_000 if raw > 1000 else raw
+    except Exception:
+        return 0.0
 
-def reset_daily_baseline():
-    """Reset daily P&L baseline each UTC midnight."""
-    global _day_start_portfolio, _day_start_time, _bot_halted, _halt_reason
-    val = get_portfolio_value()
-    if val is not None:
-        _day_start_portfolio = val
-        _day_start_time = datetime.now(timezone.utc)
-        if _bot_halted and "daily" in _halt_reason:
-            _bot_halted = False
-            _halt_reason = ""
-            log.info("[RISK] Daily halt lifted — new trading day")
-            tg("POLY//BOT: Daily halt lifted. New trading day started.")
+def portfolio_val() -> float:
+    try:
+        data = fetch(f"https://data-api.polymarket.com/value?user={FUNDER}")
+        if data:
+            item = data[0] if isinstance(data, list) else data
+            v = float(item.get("portfolioValue") or item.get("value") or 0)
+            if v > 0:
+                return v
+    except Exception:
+        pass
+    # Fallback: USDC + mark-to-market positions using live CLOB price (not stale entry)
+    usdc = free_usdc()
+    pos_val = 0.0
+    for tid, p in list(open_positions.items()):
+        mid = clob_mid(tid)
+        sz  = float(p.get("size", 0))
+        pos_val += sz * (mid if mid > 0 else float(p.get("entry", 0.5)))
+    return usdc + pos_val
 
-def check_risk_limits():
-    """
-    Returns True if trading is allowed.
-    Halts bot on daily -20% or total -40% drawdown.
-    """
+def parse_prices(m):
+    p = m.get("outcomePrices", "[0.5,0.5]")
+    return [float(x) for x in (json.loads(p) if isinstance(p, str) else p)]
+
+def parse_tokens(m):
+    t = m.get("clobTokenIds", "[]")
+    raw = json.loads(t) if isinstance(t, str) else t
+    return [x if isinstance(x, str) else x.get("token_id", "") for x in raw]
+
+def parse_outcomes(m):
+    o = m.get("outcomes", '["Yes","No"]')
+    return json.loads(o) if isinstance(o, str) else o
+
+# ── RISK MANAGEMENT ───────────────────────────────────────────────────────────
+def init_baseline():
+    global _day_start_val, _session_start
+    val = portfolio_val()
+    if val > 0:
+        _day_start_val = val
+        _session_start = val
+        log.info(f"[RISK] Baseline ${val:.2f} | halt@-20%=${val*0.8:.2f}")
+
+def check_halt() -> bool:
     global _bot_halted, _halt_reason
     if _bot_halted:
         return False
-
-    val = get_true_portfolio_value()
-    if val is None:
-        return True  # can't fetch — allow but log
-
-    # Daily loss check
-    if _day_start_portfolio and _day_start_portfolio > 0:
-        daily_pnl_pct = (val - _day_start_portfolio) / _day_start_portfolio
-        if daily_pnl_pct < CFG["daily_loss_halt"]:
+    if _day_start_val:
+        # Use cached value — never make HTTP calls inside _order_lock
+        val = _cached_portfolio_val if _cached_portfolio_val > 0 else _day_start_val
+        pct = (val - _day_start_val) / _day_start_val
+        if pct < CFG["daily_halt_pct"]:
             _bot_halted = True
-            _halt_reason = f"daily loss {daily_pnl_pct*100:.1f}%"
-            msg = f"[RISK] DAILY HALT — P&L {daily_pnl_pct*100:.1f}% (limit {CFG['daily_loss_halt']*100:.0f}%). Waiting for next UTC day."
-            log.error(msg)
-            tg(f"POLY//BOT HALTED\nDaily loss: {daily_pnl_pct*100:.1f}%\nLimit: {CFG['daily_loss_halt']*100:.0f}%\nResumes next UTC midnight.")
+            _halt_reason = f"daily loss {pct*100:.1f}%"
+            try:
+                tg(f"BOT HALTED — daily loss {pct*100:.1f}%. Resumes at midnight UTC.", "WARN")
+            except Exception:
+                pass  # never let alert failure prevent halt from taking effect
             return False
-
-    # Total drawdown kill switch
-    if _session_start_portfolio and _session_start_portfolio > 0:
-        total_dd = (val - _session_start_portfolio) / _session_start_portfolio
-        if total_dd < CFG["kill_switch_dd"]:
-            _bot_halted = True
-            _halt_reason = f"kill switch {total_dd*100:.1f}%"
-            msg = f"[RISK] KILL SWITCH — total drawdown {total_dd*100:.1f}% (limit {CFG['kill_switch_dd']*100:.0f}%). MANUAL RESTART REQUIRED."
-            log.error(msg)
-            tg(f"POLY//BOT KILL SWITCH\nTotal drawdown: {total_dd*100:.1f}%\nLimit: {CFG['kill_switch_dd']*100:.0f}%\nMANUAL RESTART REQUIRED.")
-            return False
-
     return True
 
-def calc_position_size(price):
-    """
-    Half-Kelly + 8% portfolio cap position sizing.
-    Returns size in shares.
-    """
-    portfolio = get_portfolio_value() or CFG["max_position_usd"] * 10
-    max_usd = min(CFG["max_position_usd"], portfolio * CFG["max_position_pct"])
-    size = max(5.0, round(max_usd / max(price, 0.01), 2))
-    return size, max_usd
-
-def day_reset_loop():
-    """Check every minute if we've crossed UTC midnight for daily reset."""
-    last_day = datetime.now(timezone.utc).date()
-    while True:
-        time.sleep(60)
-        today = datetime.now(timezone.utc).date()
-        if today != last_day:
-            last_day = today
-            reset_daily_baseline()
-
-# ── HELPERS ───────────────────────────────────────────────────────────────────
-def fetch_json(url):
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
-        with urllib.request.urlopen(req, timeout=10) as r:
-            return json.loads(r.read())
-    except Exception as e:
-        log.debug(f"fetch {url}: {e}")
-        return None
-
-def pct(v): return f"{v*100:.1f}c"
-
-# ── HELPERS ──────────────────────────────────────────────────────────────────
-def best_bid_ask(book):
-    bids = book.get('bids', []); asks = book.get('asks', [])
-    return (max((float(b['price']) for b in bids), default=None),
-            min((float(a['price']) for a in asks), default=None))
-
-def book_depth(book):
-    bids = sorted(book.get('bids', []), key=lambda x: -float(x['price']))[:5]
-    asks = sorted(book.get('asks', []), key=lambda x: float(x['price']))[:5]
-    return sum(float(b['price'])*float(b['size']) for b in bids) + \
-           sum(float(a['price'])*float(a['size']) for a in asks)
-
-SYM_MAP = {
-    'BTC':   'BTCUSDT',
-    'ETH':   'ETHUSDT',
-    'SOL':   'SOLUSDT',
-    'XRP':   'XRPUSDT',
-    'DOGE':  'DOGEUSDT',
-    'BNB':   'BNBUSDT',
-    'HYPE':  'HYPEUSDT',   # fallback to USDT
-    'MATIC': 'MATICUSDT',
-    'AVAX':  'AVAXUSDT',
-}
-CRYPTO_NAMES = {
-    'bitcoin': 'BTC', 'ethereum': 'ETH', 'solana': 'SOL',
-    'xrp': 'XRP', 'ripple': 'XRP', 'dogecoin': 'DOGE',
-    'bnb': 'BNB', 'binance': 'BNB', 'hype': 'HYPE', 'hyperliquid': 'HYPE',
-}
-
-def get_crypto_price_change(symbol: str, minutes: int = 5) -> float:
-    """
-    Get % price change for a crypto over the last N minutes.
-    Uses Binance 1-min klines — no auth required.
-    Returns e.g. 0.0045 for +0.45%.
-    """
-    sym = SYM_MAP.get(symbol.upper(), f'{symbol.upper()}USDT')
-    for attempt_sym in [sym, f'{symbol.upper()}USDT', f'{symbol.upper()}BUSD']:
-        try:
-            data = fetch_json(
-                f"https://api.binance.com/api/v3/klines"
-                f"?symbol={attempt_sym}&interval=1m&limit={minutes + 2}"
-            )
-            if not data or len(data) < 2:
-                continue
-            open_price  = float(data[0][1])
-            close_price = float(data[-1][4])
-            return (close_price - open_price) / max(open_price, 0.0001)
-        except Exception:
-            continue
-    log.debug(f"[PRICE] {symbol} fetch failed all attempts")
-    return 0.0
-
-# ── SIGNAL ENGINE — MOMENTUM BASED ────────────────────────────────────────────
-# RSI/EMA removed: prediction market prices do NOT behave like stock prices.
-# Momentum signal: if price velocity over last N ticks exceeds threshold, ride it.
-def momentum_signal(token_id, market_name="", is_yes_token=True):
-    """
-    Returns BUY signal when price momentum is strong enough.
-    Only fires when market is uncertain (20-80% range) — no edge at extremes.
-    """
-    prices = list(price_history[token_id])
-    if len(prices) < CFG["lookback"]: return None
-
-    book  = order_books.get(token_id, {})
-    bid, ask = best_bid_ask(book)
-    if bid is None or ask is None: return None
-    if book_depth(book) < CFG["min_liquidity"]: return None
-
-    spread = ask - bid
-    if spread > 0.08: return None  # too wide, poor fill quality
-
-    current = prices[-1]
-    if current > 0.80 or current < 0.20: return None  # too extreme for momentum
-
-    n = CFG["momentum_ticks"]
-    if len(prices) < n * 2: return None
-    recent   = float(np.mean(prices[-n:]))
-    previous = float(np.mean(prices[-n*2:-n]))
-    if previous <= 0: return None
-
-    velocity = (recent - previous) / previous  # positive = rising
-
-    if velocity > CFG["momentum_threshold"]:
-        # Price rising — BUY this token (YES or NO depending on which token this is)
-        return {
-            "token_id": token_id, "signal": BUY, "mid": round(ask, 4),
-            "depth": book_depth(book),
-            "reason": f"momentum +{velocity*100:.1f}%  ({n}-tick)",
-            "market": market_name,
-        }
-    return None
+def reset_daily():
+    global _day_start_val, _bot_halted, _halt_reason
+    val = portfolio_val()
+    if val > 0:
+        _day_start_val = val
+    if _bot_halted and "daily" in _halt_reason:
+        _bot_halted = False
+        _halt_reason = ""
+        tg("Daily halt lifted — new trading day.", "INFO")
 
 # ── ORDER EXECUTION ───────────────────────────────────────────────────────────
-def place_order(sig, source="SIGNAL"):
-    with _order_lock:   # serialize all order submissions — no concurrent balance races
-        _place_order_inner(sig, source)
-
-def _place_order_inner(sig, source="SIGNAL"):
-    token_id = sig["token_id"]; side = sig["signal"]
-    price = sig["mid"]
-    tag = f"[{source}]"
-
-    # ── Risk gate 1: halt check ───────────────────────────────────────────────
-    if not check_risk_limits():
-        log.warning(f"{tag} BLOCKED by risk halt ({_halt_reason})")
-        return
-
-    # ── Risk gate 2: liquidity filter ($50K minimum) ─────────────────────────
-    liq = float(sig.get("liquidity", 0) or 0)
-    if liq > 0 and liq < CFG["min_liquidity"]:
-        log.info(f"{tag} SKIP — liquidity ${liq:,.0f} < ${CFG['min_liquidity']:,} minimum")
-        return
-
-    # ── Risk gate 3: Kelly sizing ─────────────────────────────────────────────
-    portfolio = get_portfolio_value() or CFG["max_position_usd"] * 4
-    category  = sig.get("category", source)
-
-    # Sources with their own edge logic — bypass Bayesian Kelly (which would
-    # return 50% prior for unknown categories and block the trade).
-    # p_win is based on the source's inherent edge, not historical performance.
-    DIRECT_SOURCES = {
-        "COPY":  lambda p: min(0.97, p + 0.12),   # whale alpha +12%
-        "ARB":   lambda p: 0.97,                   # mathematical guarantee
-        "MARB":  lambda p: 0.97,                   # mathematical guarantee
-        "UPDN":  lambda p: 0.63,                   # Binance price lead
-        "CERT":  lambda p: min(0.97, p + 0.05),    # near-certainty + 5% safety margin
-        "FOUR":  lambda p: min(0.97, p + 0.08),    # 4-min rule: direction locked + 8% boost
-        "AGNT":  lambda p: min(0.97, p + 0.10),    # 3-agent consensus: 2/3 majority
-    }
-
-    if source in DIRECT_SOURCES:
-        p_win = DIRECT_SOURCES[source](price)
-        from kelly import kelly_size
-        kelly_f, size_usd, size_shares, skip, k_reason = kelly_size(portfolio, p_win, price)
-        if skip:
-            size    = max(5.0, round(CFG["min_balance_usd"] / max(price, 0.01), 2))
-            max_usd = size * price
-            log.info(f"{tag} Kelly skip ({k_reason}) — using min size")
-        else:
-            size    = size_shares
-            max_usd = size_usd
-        log.info(f"{tag} {side} {token_id[:14]}... price={price:.3f} size={size} "
-                 f"(${max_usd:.2f} p={p_win:.2f}) | {sig.get('reason','')}")
-    else:
-        # Signal-based (MOMENTUM, SIGNAL): full Kelly gate with Bayesian + temporal + vol
-        kelly = evaluate_trade(portfolio, price, category, source=source)
-        for r in kelly["reasons"]:
-            log.debug(f"  [KELLY] {r}")
-        if not kelly["allowed"]:
-            log.info(f"{tag} BLOCKED by Kelly engine: {' | '.join(kelly['reasons'])}")
+def place_order(token_id: str, price: float, size_usd: float, market: str, source: str,
+                p_win: float = 0.0, expected_gap: float = 0.15):
+    with _order_lock:
+        if not check_halt():
             return
-        size    = kelly["size_shares"]
-        max_usd = kelly["size_usd"]
-        log.info(f"{tag} {side} {token_id[:14]}... price={price} size={size} "
-                 f"(${max_usd:.2f} f={kelly['kelly_f']:.3f} p={kelly['p_win']:.2f}) | {sig.get('reason','')}")
-
-    if CFG["dry_run"]:
-        log.info(f"  [DRY RUN] Would place {side} {size} shares @ {price}")
-        trade_log.append({"time": datetime.now(timezone.utc).isoformat(), "source": source,
-                          "token_id": token_id, "side": side, "price": price, "size": size})
-        return
-    try:
-        order = client.create_and_post_order(OrderArgs(
-            token_id=token_id, price=price, size=size, side=side))
-        log.info(f"  ORDER PLACED: {order}")
-        open_positions[token_id] = {"side": side, "size": size, "entry": price}
-        trade_log.append({"time": datetime.now(timezone.utc).isoformat(), "source": source,
-                          "token_id": token_id, "side": side, "price": price, "size": size, "order": order})
-        # Telegram alert on every fill
-        status = order.get('status', '?')
-        tg(f"POLY//BOT ORDER\n{source}: {side} {size} shares\nMarket: {sig.get('market','?')[:60]}\nPrice: {price}\nStatus: {status}")
-    except Exception as e:
-        log.error(f"  Order failed: {e}")
-
-# ══ COPYTRADE ENGINE ══════════════════════════════════════════════════════════
-
-def get_whale_positions():
-    """Fetch current open positions of the whale wallet."""
-    data = fetch_json(f"https://data-api.polymarket.com/positions?user={CFG['copy_wallet']}&limit=50")
-    if not data or not isinstance(data, list):
-        return {}
-    result = {}
-    for p in data:
-        cid = p.get('conditionId', p.get('condition_id', p.get('market', '')))
-        if cid:
-            result[cid] = p
-    return result
-
-def get_token_id_for_condition(cond_id, outcome):
-    """Look up CLOB token ID for a given condition + outcome."""
-    data = fetch_json(f"https://gamma-api.polymarket.com/markets?conditionId={cond_id}")
-    if not data:
-        return None
-    markets = data if isinstance(data, list) else data.get('markets', [])
-    for m in markets:
+        # Cross-engine dedup: never double-enter the same token
+        if token_id in open_positions:
+            log.debug(f"[{source}] SKIP — already holding {token_id[:16]}")
+            return
+        # Cap concurrent positions globally
+        if len(open_positions) >= CFG["max_positions"]:
+            log.warning(f"[{source}] SKIP — max {CFG['max_positions']} positions reached")
+            return
+        # Per-source caps: prevent any single engine monopolizing all slots
+        _SRC_CAPS = {"COPY": 2, "UPDN": 3}
+        src_group = source.split("/")[0]
+        if src_group in _SRC_CAPS:
+            src_count = sum(1 for p in open_positions.values()
+                            if p.get("source", "").startswith(src_group))
+            if src_count >= _SRC_CAPS[src_group]:
+                log.debug(f"[{source}] SKIP — {src_group} cap {_SRC_CAPS[src_group]} reached")
+                return
+        f = free_usdc()
+        if f < CFG["min_free_usdc"]:
+            log.warning(f"[{source}] SKIP — free USDC ${f:.2f}")
+            return
+        # Kelly sizing: if p_win provided, use quarter-Kelly; else fall back to max_usd
+        bankroll = _cached_portfolio_val or f
+        port_cap = max(0.50, bankroll * 0.10)
+        if p_win > 0.5:
+            kelly = kelly_size(p_win, price, bankroll)
+            size_usd = min(kelly if kelly > 0 else size_usd, f * 0.9, CFG["max_usd"], port_cap)
+        else:
+            size_usd = min(size_usd, f * 0.9, CFG["max_usd"], port_cap)
+        shares = max(1, round(size_usd / max(price, 0.01)))  # Polymarket min = 1 share
+        size_usd = round(shares * price, 2)
+        if size_usd > f * 0.9:
+            log.warning(f"[{source}] SKIP — {shares}sh @ {price:.3f} costs ${size_usd:.2f}, only ${f:.2f} free")
+            return
+        cost = round(shares * price, 2)
+        if CFG["dry_run"]:
+            log.info(f"[DRY] {source} BUY {shares}sh @ {price:.3f} (${cost}) | {market[:50]}")
+            open_positions[token_id] = {"size": shares, "entry": price, "source": source}
+            trade_log.append({"source": source, "token_id": token_id, "price": price, "size": shares})
+            return
         try:
-            toks = m.get('clobTokenIds', '[]')
-            if isinstance(toks, str): toks = json.loads(toks)
-            # index 0 = YES token, index 1 = NO token
-            is_yes = str(outcome).upper() in ('YES', 'YES_OUTCOME', '0')
-            idx = 0 if is_yes else 1
-            if idx < len(toks):
-                return toks[idx]
+            order  = client.create_and_post_order(OrderArgs(token_id=token_id, price=price, size=shares, side=BUY))
+            status = order.get("status", "?")
+            tg(f"ORDER [{source}] BUY {shares}sh @ {price:.3f} (${cost}) | {market[:50]} | {status}")
+            log.info(f"[{source}] ORDER: {shares}sh @ {price:.3f} = ${cost} | {status}")
+            # Only track as open if order was accepted (not unmatched/cancelled)
+            if status not in ("unmatched", "cancelled", "error"):
+                open_positions[token_id] = {
+                    "size": shares, "entry": price, "source": source, "market": market,
+                    "entry_time": time.time(), "expected_gap": expected_gap,
+                }
+                trade_log.append({"source": source, "token_id": token_id, "price": price, "size": shares})
+                if len(trade_log) > 500:
+                    del trade_log[:250]  # drop oldest half when full
+        except Exception as e:
+            log.error(f"[{source}] Order failed: {e}")
+
+def sell_position(token_id: str, price: float, market: str, source: str):
+    # BUG3 FIX: read pos and pop INSIDE lock atomically; only pop on success
+    with _order_lock:
+        pos = open_positions.get(token_id)
+        if not pos:
+            return
+        shares = float(pos.get("size", 0))
+        if shares <= 0:
+            return
+        try:
+            order = client.create_and_post_order(OrderArgs(token_id=token_id, price=price, size=shares, side=SELL))
+            status = order.get("status", "?")
+            # Only remove position if order was accepted/filled — keep tracking on unmatched/cancelled
+            if status in ("matched", "delayed", "live"):
+                open_positions.pop(token_id, None)
+            elif status in ("unmatched", "cancelled"):
+                log.warning(f"[{source}] SELL unmatched — still holding {shares}sh @ {price:.3f}")
+            tg(f"SELL [{source}] {shares}sh @ {price:.3f} | {market[:50]} | {status}")
+            log.info(f"[{source}] SELL {shares}sh @ {price:.3f} | {status}")
+        except Exception as e:
+            log.error(f"[{source}] Sell failed: {e}")
+
+# ── ENGINE 1: MULTI-TIMEFRAME CRYPTO UP/DOWN ──────────────────────────────────
+# Three timeframes — each with different confirmation depth and win rate:
+#   5-min : enter last 0.4-2.5min → 2.5-4.6min confirmed → ~60% win rate
+#   15-min: enter last 2-5min    → 10-13min confirmed   → ~68% win rate
+#   4-hour: enter last 30-60min  → 180-210min confirmed → ~75% win rate
+
+CRYPTO_MAP = {
+    "bitcoin": "BTC", "btc": "BTC", "ethereum": "ETH", "eth": "ETH",
+    "solana": "SOL", "sol": "SOL", "xrp": "XRP", "ripple": "XRP",
+    "dogecoin": "DOGE", "doge": "DOGE", "bnb": "BNB", "binance": "BNB",
+}
+SYM = {"BTC": "BTCUSDT", "ETH": "ETHUSDT", "SOL": "SOLUSDT", "XRP": "XRPUSDT",
+       "DOGE": "DOGEUSDT", "BNB": "BNBUSDT"}
+
+# Per-timeframe config — slug_interval is Binance kline interval for lookback
+UPDN_TF = {
+    # 5m DISABLED — 60% win rate, too low. All losses came from 5m at cheap prices.
+    # "5m": { ... }
+
+    # 15m: 68% base → 75%+ with 0.25% min edge + 0.55 price floor (was 0.40%)
+    "15m": {
+        "interval_min":  15,
+        "window_min":    1.5,
+        "window_max":    3.5,
+        "bin_interval":  "1m",
+        "min_edge":      0.0025,  # 0.25% — balanced between signal and frequency
+        "max_price":     0.82,
+        "slug_rnd":      15,
+    },
+    # 1h: new timeframe — 50+ min confirmed move, enter last 5-10 min
+    "1h": {
+        "interval_min":  60,
+        "window_min":    5,
+        "window_max":    10,
+        "bin_interval":  "5m",
+        "min_edge":      0.0050,  # 0.5% over 1h is a clear directional signal
+        "max_price":     0.81,
+        "slug_rnd":      60,
+    },
+    # 4h: 75%+ base win rate — require strong sustained trend
+    "4h": {
+        "interval_min":  240,
+        "window_min":    30,
+        "window_max":    60,
+        "bin_interval":  "15m",
+        "min_edge":      0.0050,  # 0.5% over 4h — sustained, still strong (was 0.80%)
+        "max_price":     0.80,
+        "slug_rnd":      240,
+    },
+}
+
+def binance_change(symbol: str, elapsed_min: int, bin_interval: str = "1m") -> float:
+    """Price change over `elapsed_min` minutes using completed candles only."""
+    sym = SYM.get(symbol, f"{symbol}USDT")
+    interval_mins = {"1m": 1, "5m": 5, "15m": 15, "1h": 60}
+    candle_min    = interval_mins.get(bin_interval, 1)
+    n_candles     = max(3, elapsed_min // candle_min + 3)
+    data = fetch(f"https://api.binance.com/api/v3/klines?symbol={sym}&interval={bin_interval}&limit={n_candles}")
+    if not data or len(data) < 3:
+        return 0.0
+    # data[-2] = last COMPLETED candle; data[-1] = in-progress (noisy)
+    open_price  = float(data[0][1])
+    close_price = float(data[-2][4])
+    return (close_price - open_price) / max(open_price, 1e-9)
+
+_UPDN_TRADED_FILE = BASE / "updn_traded.json"
+
+_UPDN_TRADE_TTL = 5 * 3600   # 5h — covers the longest window (4h) + buffer
+
+def _load_updn_traded() -> set:
+    """Load persisted traded set — expire entries older than 5h."""
+    try:
+        now_ts = time.time()
+        data = json.loads(_UPDN_TRADED_FILE.read_text())
+        return {cid for cid, ts in data.items() if now_ts - ts < _UPDN_TRADE_TTL}
+    except Exception:
+        return set()
+
+def _save_updn_traded(traded: set):
+    now_ts = time.time()
+    try:
+        existing = {}
+        try:
+            existing = json.loads(_UPDN_TRADED_FILE.read_text())
         except Exception:
             pass
-    return None
+        # Only add new entries — don't overwrite existing timestamps
+        for cid in traded:
+            if cid not in existing:
+                existing[cid] = now_ts
+        existing = {k: v for k, v in existing.items() if now_ts - v < _UPDN_TRADE_TTL}
+        _UPDN_TRADED_FILE.write_text(json.dumps(existing))
+    except Exception:
+        pass
 
-def copytrade_loop():
-    """Poll whale wallet every N seconds, mirror new/changed positions."""
-    log.info(f"[COPY] Watching whale {CFG['copy_wallet'][:12]}... every {CFG['copy_poll_secs']}s")
-    global copy_positions
+_updn_traded: set = _load_updn_traded()
 
-    while True:
-        time.sleep(CFG["copy_poll_secs"])
-        try:
-            new_positions = get_whale_positions()
-            if not new_positions:
-                continue
+UPDN_CRYPTOS = {
+    "btc": "BTC", "eth": "ETH", "sol": "SOL",
+    "xrp": "XRP", "doge": "DOGE", "bnb": "BNB",
+}
 
-            # Find new positions whale opened since last poll
-            for cid, pos in new_positions.items():
-                if cid in copy_positions:
-                    continue  # already knew about this position
+# Pre-fetched cache: {cid -> market_dict with "tf" key}, refreshed every 90s
+_updn_market_cache: dict = {}
+_updn_cache_ts: float = 0.0
 
-                outcome  = pos.get('outcome', pos.get('side', 'Yes'))
-                size_raw = float(pos.get('size', pos.get('shares', 0)) or 0)
-                price_raw= float(pos.get('avgPrice', pos.get('currentPrice', 0.5)) or 0.5)
-                title    = pos.get('title', pos.get('question', cid[:20]))
-                slug     = pos.get('slug', '')
+def _windows_for_tf(tf_key: str, now: datetime) -> list:
+    """Generate candidate window start timestamps for a timeframe."""
+    cfg   = UPDN_TF[tf_key]
+    rnd   = cfg["slug_rnd"]
+    itvl  = cfg["interval_min"]
+    if rnd < 60:
+        base_min = (now.minute // rnd) * rnd
+        base     = now.replace(minute=base_min, second=0, microsecond=0)
+    else:
+        # 4h — round to 4h boundary
+        base_h = (now.hour // (rnd // 60)) * (rnd // 60)
+        base   = now.replace(hour=base_h, minute=0, second=0, microsecond=0)
+    return [base + timedelta(minutes=i * itvl) for i in range(-1, 4)]
 
-                if size_raw < 10:
-                    continue  # skip tiny positions
+def _refresh_updn_cache():
+    """Fetch market data for all timeframes (5m, 15m, 4h) across all cryptos."""
+    global _updn_market_cache, _updn_cache_ts
+    now   = datetime.now(timezone.utc)
+    cache = {}
+    counts = {}
 
-                # Skip resolved/near-resolved markets (price >= 0.95 = dust collection, not live bets)
-                if price_raw >= 0.95:
+    for tf_key in UPDN_TF:
+        windows = _windows_for_tf(tf_key, now)
+        counts[tf_key] = 0
+        for window in windows:
+            ts = int(window.timestamp())
+            for slug_key, sym in UPDN_CRYPTOS.items():
+                slug = f"{slug_key}-updown-{tf_key}-{ts}"
+                d    = fetch(f"https://gamma-api.polymarket.com/markets?slug={slug}")
+                time.sleep(0.05)  # 50ms between calls — ~60 calls/refresh → 3s total, avoids rate limit
+                if not d:
                     continue
+                for m in (d if isinstance(d, list) else d.get("markets", [])):
+                    cid = m.get("conditionId") or m.get("id") or ""
+                    if not cid:
+                        continue
+                    end_str = m.get("endDate", "")
+                    end_dt  = datetime.fromisoformat(end_str.replace("Z", "+00:00")) if end_str else None
+                    cache[cid] = {
+                        "market": m, "sym": sym, "tf": tf_key, "end_dt": end_dt,
+                        "prices": parse_prices(m), "outcomes": parse_outcomes(m),
+                        "toks": parse_tokens(m),
+                    }
+                    counts[tf_key] += 1
 
-                # Calculate our mirror size
-                our_size_usd = size_raw * price_raw * CFG["copy_ratio"]
-                our_size_usd = min(our_size_usd, CFG["max_position_usd"])
+    if cache:
+        summary = " | ".join(f"{tf}:{n}" for tf, n in counts.items())
+        log.info(f"[UPDN] Cache: {len(cache)} markets — {summary}")
+        _updn_market_cache = cache  # only replace cache if we got real data
+    else:
+        log.warning("[UPDN] Cache refresh got 0 markets — keeping previous cache")
+    _updn_cache_ts = time.time()  # always reset timer to avoid hammering on failure
 
-                log.info(f"[COPY] WHALE OPENED: {outcome} {size_raw:.0f} shares @ {price_raw:.2f} — {title[:50]}")
-                log.info(f"[COPY] Mirroring: ${our_size_usd:.2f} on same side")
-
-                # Get token ID
-                token_id = get_token_id_for_condition(cid, outcome)
-                if not token_id:
-                    log.warning(f"[COPY] Could not find token_id for {cid}")
-                    continue
-
-                # Always BUY the target token — YES token for YES bets, NO token for NO bets.
-                # SELL would require owning the opposite token, which we don't have.
-                side = BUY
-                sig = {"token_id": token_id, "signal": side,
-                       "mid": price_raw, "reason": f"COPY {CFG['copy_wallet'][:10]}",
-                       "market": title}
-                place_order(sig, source="COPY")
-
-            # Update snapshot and persist so restarts don't re-mirror existing positions
-            copy_positions = new_positions
-            COPY_STATE.write_text(json.dumps(copy_positions))
-            val = fetch_json(f"https://data-api.polymarket.com/value?user={CFG['copy_wallet']}")
-            if val:
-                if isinstance(val, list): val = val[0] if val else {}
-                port = float(val.get('portfolioValue', val.get('value', 0)) or 0)
-                log.info(f"[COPY] Whale portfolio: ${port:,.2f} | positions: {len(new_positions)}")
-
-        except Exception as e:
-            log.error(f"[COPY] Error: {e}")
-
-# ══ ARB SCANNER ═══════════════════════════════════════════════════════════════
-
-def arb_scan():
-    """
-    Scan all active markets for YES+NO mispricing.
-    When YES + NO < 1.0 by >= arb_min_edge: buy the cheaper token immediately.
-    When YES + NO > 1.0: one side is overpriced — skip (selling requires owning tokens).
-    """
-    markets = []
-    for offset in range(0, 300, 100):
-        data = fetch_json(f"https://gamma-api.polymarket.com/markets?active=true&limit=100&offset={offset}&sort=volume24hr&ascending=false")
-        if not data: break
-        batch = data if isinstance(data, list) else data.get('markets', data.get('data', []))
-        if not batch: break
-        markets.extend(batch)
-        if len(batch) < 100: break
-
-    found = []
-    for m in markets:
-        try:
-            prices = m.get('outcomePrices', '[]')
-            if isinstance(prices, str): prices = json.loads(prices)
-            if len(prices) < 2: continue
-            yes = float(prices[0]); no = float(prices[1])
-            total = yes + no
-            # Only actionable: CHEAP side — both tokens underpriced → guaranteed profit
-            if total >= 1.0: continue
-            edge = 1.0 - total
-            if edge < CFG["arb_min_edge"]: continue
-            vol24 = float(m.get('volume24hr', 0) or 0)
-            if vol24 < CFG["arb_min_vol24"]: continue
-            liq = float(m.get('liquidity', 0) or 0)
-            if liq < CFG["min_liquidity"]: continue
-
-            toks = m.get('clobTokenIds', '[]')
-            if isinstance(toks, str): toks = json.loads(toks)
-            if len(toks) < 2: continue
-
-            found.append({
-                "question":   m.get('question', '')[:55],
-                "slug":       m.get('slug', ''),
-                "yes":        yes, "no": no, "total": total,
-                "edge":       edge, "vol24": vol24,
-                "yes_token":  toks[0] if isinstance(toks[0], str) else toks[0].get('token_id',''),
-                "no_token":   toks[1] if isinstance(toks[1], str) else toks[1].get('token_id',''),
-            })
-        except Exception:
-            continue
-
-    found.sort(key=lambda x: -x['edge'])
-
-    for m in found[:3]:
-        log.info(f"[ARB] GAP FOUND: YES={m['yes']:.3f} + NO={m['no']:.3f} = {m['total']:.3f}  "
-                 f"GUARANTEED EDGE={m['edge']*100:.1f}%  VOL24=${m['vol24']:,.0f}")
-        log.info(f"[ARB]   {m['question']}")
-        tg(f"ARB: {m['edge']*100:.1f}% edge | {m['question'][:50]}", "ARB")
-
-        # Execute: buy whichever token is cheaper
-        portfolio = get_true_portfolio_value() or 0
-        if portfolio < CFG["min_balance_usd"]:
-            log.warning(f"[ARB] Skip — portfolio ${portfolio:.2f} too low")
-            continue
-
-        cheaper_price = min(m['yes'], m['no'])
-        cheaper_token = m['yes_token'] if m['yes'] <= m['no'] else m['no_token']
-        cheaper_side  = "YES" if m['yes'] <= m['no'] else "NO"
-
-        sig = {
-            "token_id":  cheaper_token,
-            "signal":    BUY,
-            "mid":       cheaper_price,
-            "market":    m['question'],
-            "reason":    f"ARB gap={m['edge']*100:.1f}% cheaper={cheaper_side}",
-            "liquidity": m['vol24'],
-        }
-        place_order(sig, source="ARB")
-        arb_alerts.append(m)
-
-    if not found:
-        log.debug(f"[ARB] Scanned {len(markets)} markets — no gaps >= {CFG['arb_min_edge']*100:.1f}%")
-
-    return found
-
-def arb_loop():
-    """Run arb scanner continuously."""
-    log.info(f"[ARB] Scanner started — scanning every {CFG['arb_scan_secs']}s")
-    while True:
-        try:
-            arb_scan()
-        except Exception as e:
-            log.error(f"[ARB] Error: {e}")
-        time.sleep(CFG["arb_scan_secs"])
-
-# ══ MULTI-OUTCOME ARB SCANNER ═════════════════════════════════════════════════
-
-def multi_outcome_arb_scan(min_edge=0.04, min_liquidity=500):
-    """
-    Scan Polymarket events with multiple mutually exclusive outcomes.
-    If sum of all YES prices < 1.0 - min_edge, buy YES on every outcome
-    and lock in guaranteed profit when exactly one resolves.
-
-    Example: Harvey Weinstein sentencing — 6 outcomes sum to 0.951
-    → buy all YES for $0.951, collect $1.00 regardless of verdict = 4.9% return.
-    """
-    try:
-        events = fetch_json(
-            "https://gamma-api.polymarket.com/events?active=true&closed=false"
-            "&limit=100&sort=liquidity&ascending=false"
-        )
-    except Exception as e:
-        log.error(f"[MARB] Failed to fetch events: {e}")
-        return
-
-    if not events:
-        return
-    if isinstance(events, dict):
-        events = events.get('data', events.get('events', []))
-
-    for evt in events:
-        try:
-            markets = evt.get('markets', [])
-            if len(markets) < 3:
-                continue  # need at least 3 outcomes to be interesting
-
-            # Collect YES prices and token IDs for all active markets
-            outcomes = []
-            for m in markets:
-                prices = m.get('outcomePrices', '[]')
-                if isinstance(prices, str): prices = json.loads(prices)
-                if len(prices) < 2: continue
-                yes = float(prices[0])
-                if yes <= 0.01 or yes >= 0.99: continue  # skip resolved/dust
-                liq = float(m.get('liquidity', 0) or 0)
-                toks = m.get('clobTokenIds', '[]')
-                if isinstance(toks, str): toks = json.loads(toks)
-                if not toks: continue
-                yes_token = toks[0] if isinstance(toks[0], str) else toks[0].get('token_id','')
-                outcomes.append({
-                    'question': m.get('question', '')[:60],
-                    'yes':       yes,
-                    'token_id':  yes_token,
-                    'liquidity': liq,
-                    'slug':      m.get('slug', ''),
-                })
-
-            if len(outcomes) < 3:
-                continue
-
-            # Reject cumulative "by date" markets — they're NOT mutually exclusive.
-            # "Starmer out by June 30" and "by December 31" can BOTH resolve YES.
-            # Detect: if questions all contain "by " with a date, prices are sorted ascending,
-            # or the event title contains "by...?" pattern.
-            questions_lower = [o['question'].lower() for o in outcomes]
-            is_cumulative = (
-                sum(1 for q in questions_lower if ' by ' in q or 'before ' in q) >= len(outcomes) - 1
-                and sorted([o['yes'] for o in outcomes]) == [o['yes'] for o in sorted(outcomes, key=lambda x: x['yes'])]
-            )
-            if is_cumulative:
-                continue
-
-            total_yes = sum(o['yes'] for o in outcomes)
-            edge = 1.0 - total_yes
-
-            if edge < min_edge:
-                continue  # not enough profit
-
-            min_liq = min(o['liquidity'] for o in outcomes)
-            if min_liq < min_liquidity:
-                continue  # at least one leg has no liquidity
-
-            evt_title = evt.get('title', evt.get('slug', '?'))[:60]
-            log.info(f"[MARB] *** MULTI-OUTCOME ARB FOUND ***")
-            log.info(f"[MARB] Event: {evt_title}")
-            log.info(f"[MARB] Sum of YES prices: {total_yes:.4f} → edge: {edge*100:.1f}pp")
-            for o in outcomes:
-                log.info(f"[MARB]   YES={o['yes']:.3f}  liq=${o['liquidity']:,.0f}  | {o['question']}")
-
-            # Execute: buy YES on every outcome
-            portfolio = get_portfolio_value() or 0
-            if portfolio < CFG["min_balance_usd"]:
-                log.warning(f"[MARB] Skipping — portfolio ${portfolio:.2f} too low")
-                continue
-
-            # Size: small fixed allocation per leg (don't over-concentrate)
-            per_leg_usd = min(2.0, portfolio * 0.05)
-            tg(f"POLY//BOT MULTI-ARB\nEvent: {evt_title}\nEdge: {edge*100:.1f}pp\n"
-               f"Legs: {len(outcomes)} | Per leg: ${per_leg_usd:.2f}")
-
-            for o in outcomes:
-                shares = max(1.0, round(per_leg_usd / o['yes'], 2))
-                sig = {
-                    'token_id': o['token_id'],
-                    'signal':   BUY,
-                    'mid':      o['yes'],
-                    'market':   o['question'],
-                    'reason':   f"MARB edge={edge*100:.1f}pp",
-                    'liquidity': o['liquidity'],
-                }
-                place_order(sig, source="MARB")
-
-        except Exception as e:
-            log.error(f"[MARB] Error processing event: {e}")
-
-def multi_arb_loop():
-    """Scan for multi-outcome arbs every 5 minutes."""
-    log.info("[MARB] Multi-outcome arb scanner started")
-    while True:
-        try:
-            multi_outcome_arb_scan()
-        except Exception as e:
-            log.error(f"[MARB] Loop error: {e}")
-        time.sleep(300)   # scan every 5 minutes
-
-# ══ 5-MIN CRYPTO UP/DOWN ENGINE (4-MINUTE RULE) ══════════════════════════════
-# Targets: BTC, ETH, SOL, XRP, DOGE, BNB, HYPE — 5-minute resolution markets.
-# Strategy: Wait until ≤4.5 minutes left. Check Binance for actual direction.
-# If Binance confirms and market hasn't fully priced it → bet.
-# Win rate target: 63%+ (matching MARKETING101 profile from viral screenshot).
-
-_updown_traded = set()
-
-def updown_scan():
-    """
-    4-minute rule on 5-min crypto Up/Down markets.
-    Enter when 0.5–4.5 min remain. Binance confirms direction. Market price < 88%.
-    """
+def updn_scan():
     now = datetime.now(timezone.utc)
+    traded_this_scan = False   # one trade per scan — prevent multi-crypto simultaneous drain
 
-    # Pull recent trades to find active condition IDs
-    trades = fetch_json("https://data-api.polymarket.com/trades?limit=200&amount_min=1")
-    if not trades or not isinstance(trades, list):
-        return
-
-    seen = {}
-    for t in trades:
-        title = t.get('title', '') or ''
-        if 'up or down' not in title.lower():
-            continue
-        # Only 5-min markets (title contains "X:XXam-X:XXam" 5-min window)
-        # Skip 1-hour and 15-min by checking title pattern
-        cid = t.get('conditionId', '') or t.get('asset', '')
-        if not cid or cid in _updown_traded:
-            continue
-        # Use asset token ID for lookup if conditionId missing
-        asset = t.get('asset', '')
-        if cid not in seen:
-            seen[cid] = {'title': title, 'asset': asset}
-
-    if not seen:
-        return
-
-    for cid, info in seen.items():
+    for cid, entry in list(_updn_market_cache.items()):
         try:
-            title = info['title']
-
-            # Parse crypto symbol from title
-            crypto = None
-            for name, sym in CRYPTO_NAMES.items():
-                if name in title.lower():
-                    crypto = sym
-                    break
-            if not crypto:
+            if cid in _updn_traded or traded_this_scan:
                 continue
 
-            # Look up market via asset token or conditionId
-            asset = info['asset']
-            if asset:
-                mdata = fetch_json(f"https://gamma-api.polymarket.com/markets?clob_token_ids={asset}")
-            else:
-                mdata = fetch_json(f"https://gamma-api.polymarket.com/markets?conditionId={cid}")
-            if not mdata:
-                continue
-            markets = mdata if isinstance(mdata, list) else mdata.get('markets', [])
-            if not markets:
-                continue
-            m = markets[0]
-
-            # Skip non-5-min markets (hourly, 4-hour, daily)
-            q = m.get('question', '') or title
-            # 5-min markets have a time range like "1:55AM-2:00AM"
-            import re as _re
-            if not _re.search(r'\d+:\d+[AP]M-\d+:\d+[AP]M', q):
+            end_dt = entry.get("end_dt")
+            if not end_dt:
                 continue
 
-            # 4-MINUTE RULE: only enter with 0.5–4.5 min remaining
-            end_str = m.get('endDate') or ''
-            if not end_str:
-                continue
-            end_dt    = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
+            tf_key  = entry.get("tf", "15m")
+            tf_cfg  = UPDN_TF.get(tf_key)
+            if tf_cfg is None:
+                continue   # timeframe disabled (e.g. 5m) — skip
             mins_left = (end_dt - now).total_seconds() / 60
 
-            if mins_left < CFG["updown_min_age_min"] or mins_left > CFG["updown_max_age_min"]:
-                log.debug(f"[UPDN] {crypto} {mins_left:.1f}min left — outside window, skip")
+            if not (tf_cfg["window_min"] <= mins_left <= tf_cfg["window_max"]):
                 continue
 
-            # Market prices
-            prices = m.get('outcomePrices', '[0.5,0.5]')
-            if isinstance(prices, str):
-                prices = json.loads(prices)
-            if len(prices) < 2:
+            sym      = entry["sym"]
+            outcomes = entry["outcomes"]
+            toks     = entry["toks"]
+            if len(toks) < 2:
                 continue
 
-            outcomes = m.get('outcomes', '["Up","Down"]')
-            if isinstance(outcomes, str):
-                outcomes = json.loads(outcomes)
-
-            # Map outcomes to up/down indices
             try:
-                up_idx   = [str(o).lower() for o in outcomes].index('up')
-                down_idx = 1 - up_idx
+                up_i   = [str(o).lower() for o in outcomes].index("up")
+                down_i = 1 - up_i
             except ValueError:
-                up_idx, down_idx = 0, 1
+                up_i, down_i = 0, 1
 
-            up_price   = float(prices[up_idx])
-            down_price = float(prices[down_idx])
-
-            # Binance: get price change over the elapsed portion of this 5-min window
-            elapsed_mins = max(1, round(5 - mins_left))
-            change = get_crypto_price_change(crypto, minutes=elapsed_mins)
-
-            if abs(change) < CFG["updown_min_change"]:
-                log.debug(f"[UPDN] {crypto} change={change*100:.3f}% — too small, skip")
-                continue
+            elapsed_min = max(1, round(tf_cfg["interval_min"] - mins_left))
+            change      = binance_change(sym, elapsed_min, tf_cfg["bin_interval"])
+            if abs(change) < 0.00005:
+                continue   # truly flat
 
             direction = "Up" if change > 0 else "Down"
-            bet_price = up_price if direction == "Up" else down_price
+            bet_i     = up_i if direction == "Up" else down_i
+            token_id  = toks[bet_i]
 
-            # Skip if market already priced the direction in fully
-            if bet_price > CFG["updown_max_price"]:
-                log.debug(f"[UPDN] {crypto} {direction} already at {bet_price:.2f} — skip")
+            # Edge check — must clear the per-timeframe minimum move
+            if abs(change) < tf_cfg["min_edge"]:
+                log.info(f"[UPDN/{tf_key}] {sym} {direction} {change*100:+.3f}% < {tf_cfg['min_edge']*100:.2f}% needed — skip")
                 continue
 
-            # Token ID
-            toks = m.get('clobTokenIds', '[]')
-            if isinstance(toks, str):
-                toks = json.loads(toks)
-            if len(toks) < 2:
-                continue
-            bet_token = toks[up_idx if direction == "Up" else down_idx]
-            if isinstance(bet_token, dict):
-                bet_token = bet_token.get('token_id', '')
-            if not bet_token:
-                continue
+            # Live CLOB price
+            live_price = clob_mid(token_id)
+            if live_price <= 0:
+                cached_prices = entry["prices"]
+                live_price = float(cached_prices[bet_i]) if len(cached_prices) > bet_i else 0.5
 
-            roi = (1.0 - bet_price) / bet_price * 100
-            log.info(f"[UPDN] {crypto} {change*100:+.3f}% ({elapsed_mins}min) → {direction} "
-                     f"@ {bet_price:.2f} | {mins_left:.1f}min left | +{roi:.1f}% ROI | {q[:45]}")
-            tg(f"5MIN {crypto}: {change*100:+.3f}% → {direction} @ {bet_price:.0%} "
-               f"+{roi:.1f}% | {mins_left:.1f}min left", "UPDN")
-
-            portfolio = get_true_portfolio_value() or 0
-            if portfolio < CFG["min_balance_usd"]:
+            if live_price > tf_cfg["max_price"]:
+                log.info(f"[UPDN/{tf_key}] {sym} {direction}@{live_price:.2f} priced in — skip")
+                continue
+            if live_price < CFG["updn_min_price"]:
+                log.info(f"[UPDN/{tf_key}] {sym} {direction}@{live_price:.2f} market disagrees — skip")
                 continue
 
-            sig = {
-                "token_id":  bet_token,
-                "signal":    BUY,
-                "mid":       bet_price,
-                "market":    q[:60],
-                "reason":    f"5MIN-4RULE {crypto}{change*100:+.3f}% {mins_left:.1f}min",
-                "liquidity": float(m.get('liquidity', 0) or 0),
-            }
-            place_order(sig, source="UPDN")
-            _updown_traded.add(cid)
+            q   = (entry["market"].get("question") or "")[:60]
+            roi = (1 - live_price) / live_price * 100
+            magnitude  = min(abs(change), 0.02)
+            p_win_updn = 0.55 + (magnitude / 0.02) * 0.23   # 0.55→0.78 based on move size
+            exp_gap    = abs(change) * 5
+            log.info(f"[UPDN/{tf_key}] {sym} {change*100:+.3f}% ({elapsed_min}min elapsed) "
+                     f"→ {direction} @ {live_price:.2f} +{roi:.1f}%ROI | {mins_left:.1f}min left | p={p_win_updn:.0%}")
+            tg(f"UPDN/{tf_key} {sym}: {change*100:+.3f}% → {direction} @ {live_price:.0%} +{roi:.1f}% | {mins_left:.1f}min", "UPDN")
+            place_order(token_id, live_price, CFG["max_usd"], q, f"UPDN/{tf_key}",
+                        p_win=p_win_updn, expected_gap=exp_gap)
+            _updn_traded.add(cid)
+            _save_updn_traded(_updn_traded)
+            traded_this_scan = True
 
         except Exception as e:
-            log.error(f"[UPDN] Error on {cid[:16]}: {e}")
+            log.error(f"[UPDN] {e}")
 
+_updn_refresh_lock = threading.Lock()
 
-def updown_loop():
-    log.info(f"[UPDN] 5-min crypto engine started (4-min rule) — every {CFG['updown_scan_secs']}s")
-    log.info(f"[UPDN] Markets: BTC ETH SOL XRP DOGE BNB HYPE | window: "
-             f"{CFG['updown_min_age_min']}-{CFG['updown_max_age_min']}min remaining")
+def _refresh_updn_cache_async():
+    """Run cache refresh in a background thread so updn_scan() never blocks."""
+    if _updn_refresh_lock.locked():
+        return  # refresh already in progress
+    def _work():
+        with _updn_refresh_lock:
+            _refresh_updn_cache()
+    threading.Thread(target=_work, daemon=True, name="updn-refresh").start()
+
+def updn_loop():
+    log.info("[UPDN] Started — BTC ETH SOL XRP DOGE BNB | 24/7 | cache-based slug lookup")
+    _refresh_updn_cache()   # blocking load on startup (need cache before first scan)
     while True:
         try:
-            updown_scan()
+            # Kick off async refresh every 90s — scan continues uninterrupted using old cache
+            if time.time() - _updn_cache_ts > 90:
+                _refresh_updn_cache_async()
+            updn_scan()
         except Exception as e:
-            log.error(f"[UPDN] Loop error: {e}")
-        time.sleep(CFG["updown_scan_secs"])
+            log.error(f"[UPDN] loop: {e}")
+        time.sleep(5)
 
+# ── ENGINE 2: WEATHER MARKETS ─────────────────────────────────────────────────
+# Strategy documented: $1K → $24K buying when price <15¢, selling at 45¢.
+# Uses NOAA + OpenMeteo forecast vs. Polymarket price.
+# Only trade markets resolving within 2 days.
 
-# ══ NEAR-CERTAINTY SCALPER ════════════════════════════════════════════════════
-# Markets priced 87-96% YES are "almost certainly" resolving YES.
-# Buying at 90¢ = 11% return to $1.00 at resolution.
-# Filter: must have resolution within 21 days, vol > 5K.
+CITIES = [
+    {"city": "New York",    "lat": 40.71, "lon": -74.01, "noaa": "GHCND:USW00094728"},
+    {"city": "Los Angeles", "lat": 34.05, "lon": -118.24,"noaa": "GHCND:USW00093134"},
+    {"city": "Chicago",     "lat": 41.88, "lon": -87.63, "noaa": "GHCND:USW00094846"},
+    {"city": "Miami",       "lat": 25.77, "lon": -80.19, "noaa": "GHCND:USW00012839"},
+    {"city": "London",      "lat": 51.51, "lon": -0.13,  "noaa": None},
+    {"city": "Paris",       "lat": 48.86, "lon": 2.35,   "noaa": None},
+    {"city": "Tokyo",       "lat": 35.68, "lon": 139.69, "noaa": None},
+    {"city": "Seoul",       "lat": 37.57, "lon": 126.98, "noaa": None},
+    {"city": "Sydney",      "lat": -33.87,"lon": 151.21, "noaa": None},
+    {"city": "Dubai",       "lat": 25.20, "lon": 55.27,  "noaa": None},
+]
 
-def near_certainty_scan():
-    """Find markets priced 87-96% YES, buy for near-guaranteed 4-13% return."""
-    markets = []
-    for offset in range(0, 200, 100):
-        data = fetch_json(
-            f"https://gamma-api.polymarket.com/markets?active=true&limit=100"
-            f"&offset={offset}&sort=liquidity&ascending=false"
-        )
-        if not data: break
-        batch = data if isinstance(data, list) else data.get('markets', data.get('data', []))
-        if not batch: break
-        markets.extend(batch)
-        if len(batch) < 100: break
+def clob_mid(token_id: str) -> float:
+    data = fetch(f"https://clob.polymarket.com/midpoint?token_id={token_id}")
+    if data:
+        return float(data.get("mid", 0) or 0)
+    return 0.0
 
-    hits = []
-    for m in markets:
-        try:
-            prices = m.get('outcomePrices', '[]')
-            if isinstance(prices, str): prices = json.loads(prices)
-            if len(prices) < 2: continue
-            yes = float(prices[0])
-            if not (CFG["certainty_min_price"] <= yes <= CFG["certainty_max_price"]): continue
-
-            vol24 = float(m.get('volume24hr', 0) or 0)
-            liq   = float(m.get('liquidity', 0) or 0)
-            if liq < CFG["certainty_min_vol"]: continue
-
-            # Markets resolving within certainty_max_days
-            end_str = m.get('endDate') or ''
-            days_left = 30  # default if unknown
-            if end_str:
-                try:
-                    end_dt = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
-                    days_left = (end_dt - datetime.now(timezone.utc)).days
-                    if days_left > CFG["certainty_max_days"] or days_left < 0: continue
-                except Exception:
-                    pass
-
-            toks = m.get('clobTokenIds', '[]')
-            if isinstance(toks, str): toks = json.loads(toks)
-            if not toks: continue
-            yes_token = toks[0] if isinstance(toks[0], str) else toks[0].get('token_id','')
-
-            ret_pct = (1.0 - yes) / yes * 100  # return on investment if YES resolves
-
-            hits.append({
-                "question":   m.get('question', '')[:70],
-                "yes_price":  yes,
-                "yes_token":  yes_token,
-                "liq":        liq,
-                "vol24":      vol24,
-                "ret_pct":    ret_pct,
-                "days_left":  days_left,
-            })
-        except Exception:
-            continue
-
-    hits.sort(key=lambda x: -x['ret_pct'])   # highest return first
-
-    for h in hits[:3]:
-        log.info(f"[CERT] {h['yes_price']:.2%} YES → {h['ret_pct']:.1f}% return | "
-                 f"{h['days_left']}d left | liq=${h['liq']:,.0f} | {h['question']}")
-        tg(f"CERT: {h['yes_price']:.0%} YES +{h['ret_pct']:.1f}% ROI | {h['question'][:50]}", "CERT")
-
-        portfolio = get_true_portfolio_value() or 0
-        if portfolio < CFG["min_balance_usd"]: continue
-
-        sig = {
-            "token_id":  h['yes_token'],
-            "signal":    BUY,
-            "mid":       h['yes_price'],
-            "market":    h['question'],
-            "reason":    f"CERT {h['yes_price']:.0%} YES {h['ret_pct']:.1f}% ROI",
-            "liquidity": h['liq'],
-        }
-        place_order(sig, source="CERT")
-
-
-def near_certainty_loop():
-    log.info(f"[CERT] Near-certainty scalper started — every {CFG['certainty_scan_secs']}s")
-    while True:
-        try:
-            near_certainty_scan()
-        except Exception as e:
-            log.error(f"[CERT] Loop error: {e}")
-        time.sleep(CFG["certainty_scan_secs"])
-
-
-# ══ 4-MINUTE RULE ═════════════════════════════════════════════════════════════
-# Find ANY binary market closing within 4 minutes where the leader is 82–96%.
-# In the final minutes a market can't reverse — direction is locked.
-# Buying YES at 0.88 with 3 min left = ~13% return in 3 minutes.
-# Strategy made famous by fresh Polymarket accounts printing fast profits.
-
-_fourmin_traded: set = set()   # condition IDs already traded this session
-
-def fourmin_scan():
-    """4-minute rule: bet on the leading side of markets expiring in ≤4 min."""
-    now = datetime.now(timezone.utc)
-
-    # Pull markets sorted by endDate ascending — soonest expiry first
-    data = fetch_json(
-        "https://gamma-api.polymarket.com/markets?active=true&limit=200"
-        "&order=endDate&ascending=true"
-    )
+def clob_book(token_id: str) -> dict:
+    """Return {bids_depth, asks_depth} in USD. Returns zeros on failure."""
+    data = fetch(f"https://clob.polymarket.com/book?token_id={token_id}")
     if not data:
+        return {"bids_depth": 0.0, "asks_depth": 0.0}
+    bids = sum(float(b.get("size", 0)) * float(b.get("price", 0)) for b in data.get("bids", []))
+    asks = sum(float(a.get("size", 0)) * float(a.get("price", 0)) for a in data.get("asks", []))
+    return {"bids_depth": round(bids, 2), "asks_depth": round(asks, 2)}
+
+def kelly_size(p_win: float, market_price: float, bankroll: float, max_fraction: float = 0.25) -> float:
+    """Quarter-Kelly position size. Returns 0 if negative EV."""
+    if market_price <= 0 or market_price >= 1:
+        return 0.0
+    b = (1 / market_price) - 1   # payout ratio
+    q = 1 - p_win
+    f_star = (p_win * b - q) / b
+    if f_star <= 0:
+        return 0.0
+    f_capped = min(f_star, max_fraction)
+    return round(bankroll * f_capped, 2)
+
+def score_market(token_id: str, p_win: float, hours_left: float) -> dict | None:
+    """Return score dict if market passes all filters, else None."""
+    mid = clob_mid(token_id)
+    if mid <= 0:
+        return None
+    gap = abs(p_win - mid)
+    if gap < 0.07:                    # edge too thin
+        return None
+    if hours_left < 4 or hours_left > 168:  # timing out of sweet spot
+        return None
+    book = clob_book(token_id)
+    depth = min(book["bids_depth"], book["asks_depth"])
+    if depth < 500:                   # can't fill without price impact
+        return None
+    ev = round(gap * depth * 0.001, 2)
+    return {"gap": round(gap, 3), "depth": depth, "hours": hours_left, "ev": ev, "mid": mid}
+
+# ── TARGET WALLETS (from poly_data analysis) ──────────────────────────────────
+_TARGETS_FILE = BASE / "targets.json"
+_target_wallets: set = set()
+
+def _load_targets():
+    global _target_wallets
+    if _TARGETS_FILE.exists():
+        try:
+            data = json.loads(_TARGETS_FILE.read_text())
+            _target_wallets = {e["wallet"].lower() for e in data if e.get("wallet")}
+            log.info(f"[TARGETS] Loaded {len(_target_wallets)} elite wallets")
+        except Exception as e:
+            log.warning(f"[TARGETS] load failed: {e}")
+
+def whale_in_market(token_id: str) -> bool:
+    """Return True if any elite target wallet holds this token_id."""
+    if not _target_wallets:
+        return False
+    data = fetch(f"https://data-api.polymarket.com/positions?asset_id={token_id}&sizeThreshold=5")
+    if not data:
+        return False
+    holders = {str(p.get("proxyWallet", "") or p.get("user", "")).lower() for p in data}
+    return bool(holders & _target_wallets)
+
+def openmeteo(lat: float, lon: float) -> dict:
+    url = (f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
+           f"&daily=precipitation_probability_max,temperature_2m_max,rain_sum"
+           f"&forecast_days=3&timezone=auto")
+    data = fetch(url)
+    if not data or "daily" not in data:
+        return {}
+    d = data["daily"]
+    return {
+        "rain_prob": float((d.get("precipitation_probability_max") or [50])[0]) / 100,
+        "temp_max":  float((d.get("temperature_2m_max") or [20])[0]),
+        "rain_mm":   float((d.get("rain_sum") or [0])[0]),
+    }
+
+_wx_traded: set = set()
+
+def wx_scan():
+    now     = datetime.now(timezone.utc)
+    markets = _fetch_live_markets(max_age=120)   # weather is slow-moving, 2min cache is fine
+    if not markets:
         return
-    markets = data if isinstance(data, list) else data.get('markets', data.get('data', []))
+
+    # Check weather exits — poll CLOB midpoint directly (WS doesn't cover these tokens)
+    for token_id, entry in list(_wx_positions.items()):
+        pos = open_positions.get(token_id)
+        if not pos:
+            _wx_positions.pop(token_id, None)
+            continue
+        mid = clob_mid(token_id)
+        if mid >= CFG["wx_sell_at"]:
+            sell_position(token_id, mid, pos.get("market", "?"), "WX-EXIT")
+            _wx_positions.pop(token_id, None)
 
     for m in markets:
         try:
-            cid = m.get('conditionId') or m.get('id') or ''
-            if not cid or cid in _fourmin_traded:
+            q   = (m.get("question") or "").strip().lower()
+            cid = m.get("conditionId") or m.get("id") or ""
+            if not cid or cid in _wx_traded:
                 continue
 
-            # Time-to-expiry filter
-            end_str = m.get('endDate') or ''
+            # Filter: weather keywords
+            if not any(kw in q for kw in ("rain", "temperature", "weather", "precipitation",
+                                           "snow", "sunny", "cloudy", "humid", "wind")):
+                continue
+
+            end_str = m.get("endDate") or ""
             if not end_str:
                 continue
-            end_dt = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
-            mins_left = (end_dt - now).total_seconds() / 60
-
-            if mins_left < 0.5 or mins_left > CFG["fourmin_max_mins"]:
-                continue  # already expiring or too far out
-
-            # Must be binary YES/NO
-            outcomes = m.get('outcomes', '[]')
-            if isinstance(outcomes, str):
-                outcomes = json.loads(outcomes)
-            if len(outcomes) != 2:
-                continue
-            yes_idx = next((i for i, o in enumerate(outcomes)
-                            if str(o).upper() in ('YES', 'Y')), None)
-            no_idx  = next((i for i, o in enumerate(outcomes)
-                            if str(o).upper() in ('NO', 'N')), None)
-            if yes_idx is None or no_idx is None:
+            end_dt   = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            days_out = (end_dt - now).total_seconds() / 86400
+            if days_out < 0 or days_out > CFG["wx_max_days"]:
                 continue
 
-            # Prices
-            prices = m.get('outcomePrices', '[0.5,0.5]')
-            if isinstance(prices, str):
-                prices = json.loads(prices)
-            if len(prices) < 2:
-                continue
-            yes_price = float(prices[yes_idx])
-            no_price  = float(prices[no_idx])
-
-            # Find the leader
-            leader_price = max(yes_price, no_price)
-            leader_is_yes = (yes_price >= no_price)
-
-            if not (CFG["fourmin_min_leader"] <= leader_price <= CFG["fourmin_max_leader"]):
-                continue  # either too cheap (uncertain) or already resolved
-
-            # Liquidity check
-            liq = float(m.get('liquidity', 0) or 0)
-            if liq < CFG["fourmin_min_liq"]:
+            prices = parse_prices(m)
+            toks   = parse_tokens(m)
+            if len(prices) < 2 or len(toks) < 2:
                 continue
 
-            # Token ID for the leader side
-            toks = m.get('clobTokenIds', '[]')
-            if isinstance(toks, str):
-                toks = json.loads(toks)
-            if len(toks) < 2:
-                continue
-            tok_idx = yes_idx if leader_is_yes else no_idx
-            token_id = toks[tok_idx] if isinstance(toks[tok_idx], str) else toks[tok_idx].get('token_id', '')
-            if not token_id:
+            yes_price = float(prices[0])
+            no_price  = float(prices[1])
+            liq       = float(m.get("liquidity", 0) or 0)
+            if liq < CFG["wx_min_liq"]:
                 continue
 
-            side  = "YES" if leader_is_yes else "NO"
-            ret   = (1.0 - leader_price) / leader_price * 100
-            question = m.get('question', '')[:60]
-
-            log.info(f"[FOUR] {mins_left:.1f}min left | {side} @ {leader_price:.2f} "
-                     f"(+{ret:.1f}% ROI) | liq=${liq:,.0f} | {question}")
-            tg(f"4MIN RULE: {side} @ {leader_price:.0%} +{ret:.1f}% ROI | {mins_left:.1f}min | {question}", "FOUR")
-
-            portfolio = get_true_portfolio_value() or 0
-            if portfolio < CFG["min_balance_usd"]:
+            # Match city
+            city_data = next((c for c in CITIES if c["city"].lower() in q), None)
+            if not city_data:
                 continue
 
-            sig = {
-                "token_id":  token_id,
-                "signal":    BUY,
-                "mid":       leader_price,
-                "market":    question,
-                "reason":    f"4MIN {side}@{leader_price:.2f} {mins_left:.1f}min {ret:.1f}%ROI",
-                "liquidity": liq,
-            }
-            place_order(sig, source="FOUR")
-            _fourmin_traded.add(cid)
+            forecast = openmeteo(city_data["lat"], city_data["lon"])
+            if not forecast:
+                continue
+
+            rain_prob = forecast["rain_prob"]
+            temp_max  = forecast["temp_max"]
+
+            # Determine forecast direction for this question
+            if any(kw in q for kw in ("rain", "precipitation", "wet")):
+                forecast_yes = rain_prob
+            elif "temperature" in q or "°" in q or "degrees" in q:
+                forecast_yes = 0.7 if "above" in q and temp_max > 25 else 0.3
+            else:
+                forecast_yes = rain_prob  # default
+
+            edge_yes = forecast_yes - yes_price
+            edge_no  = (1 - forecast_yes) - no_price
+
+            best_edge  = max(edge_yes, edge_no)
+            best_price = yes_price if edge_yes >= edge_no else no_price
+            best_token = toks[0]   if edge_yes >= edge_no else toks[1]
+            side_name  = "YES"     if edge_yes >= edge_no else "NO"
+
+            if best_edge < CFG["wx_min_edge"]:
+                continue
+            if best_price > CFG["wx_buy_under"]:
+                continue  # only buy cheap — the $1K→$24K strategy buys low and exits at 45¢
+
+            log.info(f"[WX] {city_data['city']} | {side_name} @ {best_price:.2f} "
+                     f"| forecast={forecast_yes:.0%} | edge={best_edge*100:.1f}pp | {q[:50]}")
+            tg(f"WEATHER {city_data['city']} {side_name} @ {best_price:.0%} "
+               f"forecast={forecast_yes:.0%} edge={best_edge*100:.1f}pp | {q[:50]}", "WX")
+
+            place_order(best_token, best_price, CFG["max_usd"], q, "WX")
+            _wx_traded.add(cid)
+            _wx_positions[best_token] = best_price
 
         except Exception as e:
-            log.error(f"[FOUR] Error on market {m.get('conditionId','?')}: {e}")
+            log.error(f"[WX] {e}")
 
-
-def fourmin_loop():
-    log.info(f"[FOUR] 4-minute rule engine started — scanning every {CFG['fourmin_scan_secs']}s")
+def wx_loop():
+    log.info("[WX] Started — NOAA/OpenMeteo vs Polymarket prices | buy <20¢ sell at 45¢")
+    last_clear = time.time()
     while True:
         try:
-            fourmin_scan()
+            if time.time() - last_clear > 3600:
+                _wx_traded.clear()
+                last_clear = time.time()
+            wx_scan()
         except Exception as e:
-            log.error(f"[FOUR] Loop error: {e}")
-        time.sleep(CFG["fourmin_scan_secs"])
+            log.error(f"[WX] loop: {e}")
+        time.sleep(120)
 
+# ── ENGINE 3: LIVE / 4-MIN RULE ───────────────────────────────────────────────
+# Bet on the leading side (82–96%) of ANY binary market closing in ≤4 min.
+# In the final minutes a market can't reverse — direction is locked.
+# Works on: live sports, live events, elections night results, crypto milestones.
 
-# ══ AGENT-BASED MARKET SCANNER ════════════════════════════════════════════════
-# Three agents vote on every market in the 4-48h resolution window.
-# Filters: book depth >= $500, resolution 4-48h, Claude gap >= 7%.
-# Entry: 2/3 agents agree on direction.
-# Exit: tracked by position_tracker.py (80% target / vol spike / 24h stale).
+_live_traded: set = set()
 
-_agent_scan_traded: set = set()   # condition IDs executed this session
+_markets_cache:    list  = []
+_markets_cache_ts: float = 0.0
 
-def _book_depth(token_id: str) -> float:
-    """Get total liquidity on best 3 bid levels."""
-    book = order_books.get(token_id, {})
-    bids = sorted(book.get("bids", {}).items(), key=lambda x: -float(x[0]))[:3]
-    return sum(float(p) * float(s) for p, s in bids)
+def _fetch_live_markets(max_age: float = 8.0) -> list:
+    """Shared market cache — all engines (LIVE, SPORT, NEAR) share one fetch per 8s."""
+    global _markets_cache, _markets_cache_ts
+    if time.time() - _markets_cache_ts < max_age and _markets_cache:
+        return _markets_cache
+    d = fetch("https://gamma-api.polymarket.com/markets?active=true&limit=500&sort=volume24hr&ascending=false")
+    if d:
+        _markets_cache    = d if isinstance(d, list) else d.get("markets", [])
+        _markets_cache_ts = time.time()
+    return _markets_cache
 
-def _current_vol(token_id: str) -> float:
-    """Return last known volume from order book or price history proxy."""
-    return 0.0   # extended by WS data when available
-
-def _sell_position(token_id: str, size: float) -> bool:
-    """Attempt to sell a position via CLOB."""
-    if CFG["dry_run"]:
-        log.info(f"[DRY] Would SELL {size:.1f}sh of {token_id[:12]}...")
-        return True
-    try:
-        from py_clob_client.clob_types import OrderArgs
-        from py_clob_client.order_builder.constants import SELL
-        order = client.create_and_post_order(OrderArgs(
-            token_id=token_id,
-            price=0.01,       # market sell — best available
-            size=round(size, 2),
-            side=SELL,
-        ))
-        return bool(order)
-    except Exception as e:
-        log.error(f"[TRACKER] Sell error: {e}")
-        return False
-
-def agent_market_scan():
-    """
-    Scan active 4-48h markets. Run 3-agent vote. Execute on 2/3 consensus.
-    """
-    from agent_system import vote as agent_vote
-    from wallet_scanner import load_elite_wallets
-
-    elite = load_elite_wallets()
-    elite_addresses = {w["address"] for w in elite}
-    log.info(f"[AGENT] Loaded {len(elite_addresses)} elite wallets (>{70}% WR)")
-
-    # Fetch candidate markets in 4-48h window (sorted by end date)
-    markets = []
-    for offset in range(0, 300, 100):
-        data = fetch_json(
-            f"https://gamma-api.polymarket.com/markets?active=true&limit=100"
-            f"&offset={offset}&order=endDate&ascending=true"
-        )
-        if not data:
-            break
-        batch = data if isinstance(data, list) else data.get("markets", [])
-        if not batch:
-            break
-        markets.extend(batch)
-        if len(batch) < 100:
-            break
-
+def live_scan():
+    now  = datetime.now(timezone.utc)
+    markets = _fetch_live_markets()
     if not markets:
-        log.warning("[AGENT] No markets returned")
         return
-
-    candidates = 0
-    voted      = 0
-    executed   = 0
 
     for m in markets:
         try:
             cid = m.get("conditionId") or m.get("id") or ""
-            if not cid or cid in _agent_scan_traded:
+            if not cid or cid in _live_traded:
                 continue
 
-            # Quick endDate pre-filter
             end_str = m.get("endDate") or ""
             if not end_str:
                 continue
-            end_dt     = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
-            hours_left = (end_dt - datetime.now(timezone.utc)).total_seconds() / 3600
-            if not (4 <= hours_left <= 48):
+            end_dt    = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            mins_left = (end_dt - now).total_seconds() / 60
+
+            if mins_left > CFG["live_max_mins"]:
+                continue
+            if mins_left < 0.4:
                 continue
 
-            # Must be binary YES/NO
-            outcomes = m.get("outcomes", "[]")
-            if isinstance(outcomes, str):
-                outcomes = json.loads(outcomes)
+            outcomes = parse_outcomes(m)
             if len(outcomes) != 2:
                 continue
-            yes_idx = next((i for i, o in enumerate(outcomes)
-                            if str(o).upper() in ("YES", "Y")), None)
-            if yes_idx is None:
+
+            prices = parse_prices(m)
+            toks   = parse_tokens(m)
+            if len(prices) < 2 or len(toks) < 2:
                 continue
 
-            prices = m.get("outcomePrices", "[0.5,0.5]")
-            if isinstance(prices, str):
-                prices = json.loads(prices)
-            if len(prices) < 2:
-                continue
-            yes_price = float(prices[yes_idx])
-            if yes_price <= 0.02 or yes_price >= 0.98:
-                continue   # effectively resolved
+            leader_price = max(prices[0], prices[1])
+            leader_i     = prices.index(leader_price)
 
-            # Liquidity check (book depth via liquidity field as proxy)
-            liq = float(m.get("liquidity") or 0)
-
-            # Token
-            toks = m.get("clobTokenIds", "[]")
-            if isinstance(toks, str):
-                toks = json.loads(toks)
-            if len(toks) < 2:
-                continue
-            yes_token = toks[yes_idx] if isinstance(toks[yes_idx], str) else toks[yes_idx].get("token_id", "")
-            no_token  = toks[1 - yes_idx] if isinstance(toks[1-yes_idx], str) else toks[1-yes_idx].get("token_id", "")
-
-            # Book depth from live order book (if subscribed), else use liquidity
-            book_depth = _book_depth(yes_token) or liq
-
-            candidates += 1
-
-            # 3-AGENT VOTE
-            decision = agent_vote(
-                market=m,
-                yes_price=yes_price,
-                condition_id=cid,
-                book_depth=book_depth,
-                elite_addresses=elite_addresses,
-                fetch_fn=fetch_json,
-                get_ml_fn=_get_ml_predictor,
-            )
-            voted += 1
-
-            log.info(f"[AGENT] {decision['reason']} | {m.get('question','')[:55]}")
-            tg(f"AGENT VOTE: {decision['reason'][:80]}", "AGENT")
-
-            if not decision["trade"]:
+            if not (CFG["live_min_leader"] <= leader_price <= CFG["live_max_leader"]):
                 continue
 
-            # Execute
-            direction = decision["direction"]
-            bet_price = yes_price if direction == "YES" else (1.0 - yes_price)
-            bet_token = yes_token  if direction == "YES" else no_token
-
-            portfolio = get_true_portfolio_value() or 0
-            if portfolio < CFG["min_balance_usd"]:
-                log.warning(f"[AGENT] Portfolio ${portfolio:.2f} too low, skip")
+            liq = float(m.get("liquidity", 0) or 0)
+            if liq < CFG["live_min_liq"]:
                 continue
 
-            sig = {
-                "token_id":  bet_token,
-                "signal":    BUY,
-                "mid":       bet_price,
-                "market":    m.get("question", "")[:60],
-                "reason":    f"3-AGENT {direction} | {decision['reason'][:60]}",
-                "liquidity": liq,
-            }
-            place_order(sig, source="AGNT")
-            _agent_scan_traded.add(cid)
-            executed += 1
+            token_id = toks[leader_i]
+            if token_id in open_positions:
+                continue
 
-            # Register in position tracker
-            try:
-                from position_tracker import open_position
-                shares = round(CFG["max_position_usd"] / max(bet_price, 0.01), 2)
-                open_position(bet_token, m.get("question",""), bet_price, shares, direction, cid)
-            except Exception as e:
-                log.debug(f"[AGENT] Position tracker error: {e}")
+            q = (m.get("question") or "")[:60]
+
+            # Verify live CLOB price — gamma prices can be stale by minutes
+            live_price = clob_mid(token_id)
+            if live_price <= 0:
+                live_price = leader_price   # fallback to gamma
+            # Re-check price bounds with live price
+            if not (CFG["live_min_leader"] <= live_price <= CFG["live_max_leader"]):
+                log.info(f"[LIVE] {q[:40]} — CLOB {live_price:.2f} outside bounds, skip")
+                continue
+
+            roi = (1 - live_price) / live_price * 100
+
+            log.info(f"[LIVE] {mins_left:.1f}min | CLOB @ {live_price:.2f} +{roi:.1f}%ROI "
+                     f"| liq=${liq:,.0f} | {q}")
+            tg(f"LIVE {outcomes[leader_i]} @ {live_price:.0%} +{roi:.1f}%ROI | {mins_left:.1f}min | {q}", "FOUR")
+
+            place_order(token_id, live_price, CFG["max_usd"], q, "FOUR")
+            _live_traded.add(cid)
+            return   # one trade per scan — prevents draining balance in one pass
 
         except Exception as e:
-            log.error(f"[AGENT] Error on market {m.get('conditionId','?')[:16]}: {e}")
+            log.error(f"[LIVE] {e}")
 
-    log.info(f"[AGENT] Scan done: {candidates} candidates, {voted} voted, {executed} executed")
-
-
-def agent_loop():
-    """Agent-based scanner: runs every 10 min. Also starts position tracker."""
-    # Start position exit monitor
-    try:
-        from position_tracker import start_tracker, load_positions
-
-        def _get_price(token_id):
-            ph = list(price_history.get(token_id, []))
-            return ph[-1] if ph else None
-
-        start_tracker(
-            get_price_fn=_get_price,
-            get_vol_fn=_current_vol,
-            sell_fn=_sell_position,
-            tg_fn=tg,
-        )
-        log.info("[AGENT] Position tracker started")
-    except Exception as e:
-        log.error(f"[AGENT] Could not start tracker: {e}")
-
-    # Start wallet scanner background refresh
-    try:
-        from wallet_scanner import start_background_scanner
-        start_background_scanner()
-        log.info("[AGENT] Wallet scanner background refresh started")
-    except Exception as e:
-        log.error(f"[AGENT] Could not start wallet scanner: {e}")
-
-    log.info("[AGENT] 3-Agent market scanner started — every 10 min")
+def live_loop():
+    log.info("[LIVE] Started — any binary market ≤6min where leader 78–97%")
+    last_clear = time.time()
     while True:
         try:
-            agent_market_scan()
+            if time.time() - last_clear > 3600:
+                _live_traded.clear()
+                last_clear = time.time()
+            live_scan()
         except Exception as e:
-            log.error(f"[AGENT] Loop error: {e}")
-        time.sleep(600)   # every 10 minutes
+            log.error(f"[LIVE] loop: {e}")
+        time.sleep(5)
 
+# ── ENGINE 4: DRIFT — MOMENTUM ON LIQUID MARKETS ──────────────────────────────
+# Works 24/7 on whatever is liquid. Polls top 20 markets every 5 min.
+# Buys when price has consistently drifted 4%+ in one direction over 15 min.
+# Exits at +25% profit. Avoids already-extreme prices.
 
-# ══ WEBSOCKET ═════════════════════════════════════════════════════════════════
+_drift_snapshots  = defaultdict(lambda: deque(maxlen=8))  # token_id -> [(ts, mid)]
+_drift_positions  = {}   # token_id -> entry_price
+_drift_traded     = {}   # token_id -> last_trade_ts (10-min cooldown)
+_drift_skip_count = defaultdict(int)   # token_id -> consecutive skip count (evict at 5)
 
-WATCHED_TOKENS = []
+def check_profit_exits():
+    # BUG1 FIX: do NOT hold _order_lock here — sell_position acquires it internally.
+    # Holding the lock and calling sell_position() caused a deadlock.
+    now = time.time()
+    for token_id, pos in list(open_positions.items()):
+            entry      = float(pos.get("entry", 0))
+            if entry <= 0:
+                continue
+            mid = clob_mid(token_id)
+            if mid <= 0:
+                continue
+            profit_pct = (mid - entry) / entry
+            entry_time = float(pos.get("entry_time", now))
+            hours_held = (now - entry_time) / 3600
+            source     = pos.get("source", "")
+            mkt        = pos.get("market", source)
+            is_updn    = source.startswith("UPDN")
 
-def fetch_top_markets(max_tokens=25):
-    """
-    Scan all active Polymarket markets and rank by profitability potential.
-    Scoring: 24h volume (liquidity) + arb edge (YES+NO gap) + price range (tradeable).
-    Returns top markets as [{token_id, market, score}].
-    """
-    scored = []
-    for offset in range(0, 300, 100):
-        data = fetch_json(
-            f"https://gamma-api.polymarket.com/markets?active=true&limit=100"
-            f"&offset={offset}&sort=volume24hr&ascending=false"
-        )
-        if not data: break
-        batch = data if isinstance(data, list) else data.get('markets', data.get('data', []))
-        if not batch: break
-        for m in batch:
-            try:
-                prices = m.get('outcomePrices', '[]')
-                if isinstance(prices, str): prices = json.loads(prices)
-                if len(prices) < 2: continue
-                yes = float(prices[0]); no = float(prices[1])
+            # UPDN markets: hold to resolution — only exit on full resolve or stop-loss
+            if is_updn:
+                if mid >= 0.95:
+                    # Sell 2 ticks below mid to become a taker and guarantee fill,
+                    # rather than posting a maker offer that may not get hit
+                    exit_price = round(max(0.90, mid - 0.02), 3)
+                    log.info(f"[EXIT] RESOLVED WIN | {token_id[:16]} profit={profit_pct*100:+.1f}% sell@{exit_price}")
+                    tg(f"EXIT RESOLVED WIN +{profit_pct*100:.1f}% | {token_id[:16]}", "EXIT")
+                    sell_position(token_id, exit_price, mkt, "RESOLVED")
+                elif mid <= 0.05:
+                    exit_price = round(min(0.10, mid + 0.02), 3)
+                    log.info(f"[EXIT] RESOLVED LOSS | {token_id[:16]} profit={profit_pct*100:+.1f}% sell@{exit_price}")
+                    tg(f"EXIT RESOLVED LOSS {profit_pct*100:.1f}% | {token_id[:16]}", "EXIT")
+                    sell_position(token_id, exit_price, mkt, "RESOLVED")
+                elif profit_pct <= -0.40:
+                    exit_price = round(max(0.01, mid - 0.02), 3)
+                    log.info(f"[EXIT] STOP-LOSS | {token_id[:16]} profit={profit_pct*100:+.1f}% sell@{exit_price}")
+                    tg(f"EXIT STOP-LOSS {profit_pct*100:.1f}% | {token_id[:16]}", "EXIT")
+                    sell_position(token_id, exit_price, mkt, "STOP")
+                continue
 
-                # Skip near-resolved and extreme-priced markets — limited movement
-                if yes > 0.85 or yes < 0.20: continue
+            # Non-UPDN: Rule 1 — target hit (85% of expected move, min 15%)
+            expected_gap = max(float(pos.get("expected_gap", 0.15)), 0.15)
+            target_pct   = expected_gap * 0.85
+            if profit_pct >= target_pct or mid >= 0.95:
+                reason = f"+{profit_pct*100:.1f}% TARGET" if profit_pct >= target_pct else "RESOLVED"
+                log.info(f"[EXIT] {reason} | {token_id[:16]} entry={entry:.3f} now={mid:.3f}")
+                tg(f"EXIT {reason} | {token_id[:16]}", "EXIT")
+                sell_position(token_id, mid, mkt, "PROFIT")
+                continue
 
-                vol24  = float(m.get('volume24hr', 0) or 0)
-                vol    = float(m.get('volume', 0) or 0)
-                liq    = float(m.get('liquidity', 0) or 0)
+            # Rule 2: volume spike — 3× normal signals smart money leaving
+            hist = list(price_history.get(token_id, []))
+            if len(hist) >= 10:
+                recent_vol   = sum(abs(hist[i] - hist[i-1]) for i in range(-5, 0))
+                baseline_vol = sum(abs(hist[i] - hist[i-1]) for i in range(-10, -5))
+                if baseline_vol > 0 and recent_vol > baseline_vol * 3:
+                    log.info(f"[EXIT] VOLUME SPIKE | {token_id[:16]} profit={profit_pct*100:+.1f}%")
+                    tg(f"EXIT VOLUME SPIKE | {token_id[:16]}", "EXIT")
+                    sell_position(token_id, mid, mkt, "VOLUME")
+                    continue
 
-                # Need at least some activity
-                if vol24 < 100: continue
+            # Rule 3: stale thesis — 24h, barely moved
+            if hours_held > 24 and abs(profit_pct) < 0.02:
+                log.info(f"[EXIT] STALE {hours_held:.0f}h | {token_id[:16]} profit={profit_pct*100:+.1f}%")
+                tg(f"EXIT STALE {hours_held:.0f}h | {token_id[:16]}", "EXIT")
+                sell_position(token_id, mid, mkt, "STALE")
 
-                # Arb edge: how far YES+NO deviates from 1.0
-                edge = abs((yes + no) - 1.0)
+def drift_scan():
+    now = time.time()
+    data = fetch("https://gamma-api.polymarket.com/markets?active=true&limit=100&sort=volume24hr&ascending=false")
+    if not data:
+        return
+    markets = data if isinstance(data, list) else data.get("markets", [])
 
-                # Price range score: highest near 50¢, drops toward extremes
-                mid = yes
-                range_score = 1.0 - abs(mid - 0.5) * 2   # 1.0 at 50¢, 0 at 0¢ or 100¢
+    for m in markets:
+        try:
+            cid = m.get("conditionId") or m.get("id") or ""
+            if not cid:
+                continue
 
-                # Combined score: volume dominates, edge and range are bonuses
-                score = (vol24 / 1000) + (edge * 50) + (range_score * 10) + (liq / 2000)
+            if any(bk in (m.get("question") or "").lower() for bk in BANNED_KEYWORDS):
+                continue
 
-                question = m.get('question', '')[:60]
+            end_str = m.get("endDate") or ""
+            if not end_str:
+                continue
+            end_dt = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            days_left = (end_dt - datetime.now(timezone.utc)).total_seconds() / 86400
+            if days_left < 0.5 or days_left > 200:
+                continue
 
-                # ML model boost: adds up to +20 to score when model detects mispricing
-                ml_edge = 0.0
-                ml_side = None
+            prices = parse_prices(m)
+            toks   = parse_tokens(m)
+            if len(prices) < 2 or len(toks) < 2:
+                continue
+
+            liq = float(m.get("liquidity", 0) or 0)
+            if liq < 200:
+                continue
+
+            yes_p = float(prices[0])
+            no_p  = float(prices[1])
+            yes_tid = toks[0]
+            no_tid  = toks[1]
+
+            # Track YES mid price over time
+            mid_yes = clob_mid(yes_tid)
+            if mid_yes <= 0:
+                mid_yes = yes_p
+            _drift_snapshots[yes_tid].append((now, mid_yes))
+
+            snaps = list(_drift_snapshots[yes_tid])
+            if len(snaps) < CFG["drift_readings"]:
+                continue
+
+            old_price = snaps[0][1]
+            new_price = snaps[-1][1]
+            drift     = (new_price - old_price) / max(old_price, 0.001)
+
+            # Must be consistently moving (no reversals)
+            price_seq = [s[1] for s in snaps]
+            is_up   = all(price_seq[i] <= price_seq[i+1] + 0.005 for i in range(len(price_seq)-1))
+            is_down = all(price_seq[i] >= price_seq[i+1] - 0.005 for i in range(len(price_seq)-1))
+
+            def _evict(tid, reason):
+                _drift_snapshots.pop(tid, None)
+                _drift_skip_count.pop(tid, None)
+                log.info(f"[DRIFT] Evicted {tid[:16]}... — {reason} (will find better market)")
+
+            if not (is_up or is_down):
+                _drift_skip_count[yes_tid] += 1
+                if _drift_skip_count[yes_tid] >= 5:
+                    _evict(yes_tid, "no consistent trend")
+                continue
+            if abs(drift) < CFG["drift_min_move"]:
+                _drift_skip_count[yes_tid] += 1
+                if _drift_skip_count[yes_tid] >= 5:
+                    _evict(yes_tid, f"drift {drift*100:+.1f}% too thin")
+                continue
+
+            # Pick which side to bet — use actual NO mid price, not assumed 1-yes
+            if is_up and drift > 0:
+                bet_tid   = yes_tid
+                bet_price = new_price
+                side      = "YES"
+            else:
+                bet_tid   = no_tid
+                no_mid    = clob_mid(no_tid)
+                bet_price = no_mid if no_mid > 0 else float(no_p)
+                side      = "NO"
+
+            if not (CFG["drift_min_price"] <= bet_price <= CFG["drift_max_price"]):
+                _drift_skip_count[yes_tid] += 1
+                if _drift_skip_count[yes_tid] >= 5:
+                    _evict(yes_tid, f"price {bet_price:.2f} outside range")
+                continue
+
+            # Cooldown check
+            if now - _drift_traded.get(bet_tid, 0) < 600:
+                continue
+            if bet_tid in open_positions:
+                continue
+
+            q = (m.get("question") or "")[:60]
+            roi = (1 - bet_price) / bet_price * 100
+            log.info(f"[DRIFT] {side} drift={drift*100:+.1f}% @ {bet_price:.3f} +{roi:.0f}%ROI | {q}")
+            tg(f"DRIFT {side} {drift*100:+.1f}% move @ {bet_price:.2f} +{roi:.0f}%ROI | {q}", "DRIFT")
+
+            place_order(bet_tid, bet_price, CFG["max_usd"], q, "DRIFT")
+            _drift_traded[bet_tid] = now
+            _drift_skip_count[yes_tid] = 0   # reset on successful trade
+            return  # one trade per scan cycle
+
+        except Exception as e:
+            log.error(f"[DRIFT] {e}")
+
+def drift_loop():
+    log.info("[DRIFT] Started — momentum on top liquid markets | 2.5% drift | exit +20%")
+    while True:
+        try:
+            check_profit_exits()
+            drift_scan()
+        except Exception as e:
+            log.error(f"[DRIFT] loop: {e}")
+        time.sleep(120)
+
+# ── ENGINE 4b: LIVE SPORTS — SCAN MARKETS 6-30 MIN OUT AT HIGH CONVICTION ─────
+# Catches live sports/events markets while still tradeable (not just last 6 min).
+# Targets: leader 90-98%, min $500 liquidity, resolving within 30 min.
+# These are near-certain wins — the match is effectively over, market just hasn't closed.
+
+_sports_traded = {}   # token_id -> trade_ts
+
+SPORTS_KEYWORDS = (
+    "tennis", "basketball", "football", "soccer", "cricket", "esports",
+    "golf", "formula 1", " f1 ", "race", "ufc", "boxing", "nfl", "nba",
+    "nhl", "mlb", "mls", "serie a", "premier league", "bundesliga",
+    "ligue 1", "la liga", "wimbledon", "grand slam", "atp", "wta",
+    "beats", "wins set", "wins game", "wins match", "final score",
+)
+
+def sports_scan():
+    now = datetime.now(timezone.utc)
+    now_ts = time.time()
+    markets = _fetch_live_markets()
+    if not markets:
+        return
+
+    for m in markets:
+        try:
+            cid = m.get("conditionId") or m.get("id") or ""
+            if not cid:
+                continue
+
+            end_str = m.get("endDate") or ""
+            if not end_str:
+                continue
+            end_dt    = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            mins_left = (end_dt - now).total_seconds() / 60
+
+            # 6–45 minute window (LIVE engine handles <6min)
+            if mins_left > 45 or mins_left < 6:
+                continue
+
+            q_low = (m.get("question") or "").lower()
+            # Only live sports/events or crypto UPDN
+            is_sports = any(kw in q_low for kw in SPORTS_KEYWORDS)
+            is_updn   = "up or down" in q_low
+
+            if not (is_sports or is_updn):
+                continue
+
+            if any(bk in q_low for bk in BANNED_KEYWORDS):
+                continue
+
+            prices = parse_prices(m)
+            toks   = parse_tokens(m)
+            if len(prices) < 2 or len(toks) < 2:
+                continue
+
+            liq = float(m.get("liquidity", 0) or 0)
+            if liq < 200:
+                continue
+
+            leader_price = max(prices[0], prices[1])
+            leader_i     = prices.index(leader_price)
+
+            # For this engine: require very high conviction (90-98%)
+            if not (0.90 <= leader_price <= 0.98):
+                continue
+
+            token_id = toks[leader_i]
+
+            # Cooldown: only once per token per 2 hours
+            if now_ts - _sports_traded.get(token_id, 0) < 7200:
+                continue
+            if token_id in open_positions:
+                continue
+
+            outcomes = parse_outcomes(m)
+            roi      = (1 - leader_price) / leader_price * 100
+            q        = (m.get("question") or "")[:60]
+            kind     = "UPDN" if is_updn else "SPORT"
+
+            log.info(f"[{kind}] {mins_left:.0f}min | leader {leader_price:.2f} +{roi:.1f}%ROI liq=${liq:,.0f} | {q}")
+            tg(f"{kind} {mins_left:.0f}min {leader_price:.0%} +{roi:.1f}%ROI | {q}", "LIVE")
+
+            place_order(token_id, leader_price, CFG["max_usd"], q, kind)
+            _sports_traded[token_id] = now_ts
+            return   # one trade per scan
+
+        except Exception as e:
+            log.error(f"[SPORT] {e}")
+
+def sports_loop():
+    log.info("[SPORT] Started — live sports/events + UPDN in 6-45min window at 90-98% conviction")
+    while True:
+        try:
+            sports_scan()
+        except Exception as e:
+            log.error(f"[SPORT] loop: {e}")
+        time.sleep(10)
+
+# ── ENGINE 5: NEAR — HIGH-CONVICTION DIRECTIONAL BIAS ─────────────────────────
+# Scans top liquid markets RIGHT NOW. If a market has a strong directional bias
+# (price 72-88¢) with high 24h volume AND tight spread AND short horizon, ride it.
+# Tightened from original 60-88% / 30d to 72-88% / 7d to reduce reversal risk.
+
+_near_traded     = {}   # token_id -> last trade time (4h cooldown)
+_near_blacklist  = {}   # cid -> expiry_ts (skip for 30min when repeatedly filtered)
+_near_skip_count = defaultdict(int)   # cid -> consecutive skip count
+
+BANNED_KEYWORDS = (
+    "world cup", "fifa", "election", "president", "senate", "congress",
+    "2028", "2027", "nominee", "nomina", "political", "inaugur",
+    "gta vi", "gta6", "jesus christ", "rihanna", "carti", "bond actor",
+    "ceasefire", "putin", "xi jinping",
+    "nba finals", "stanley cup", "champions league winner", "super bowl",
+    "world series", "win the 2026", "win the 2025",
+)
+
+def near_scan():
+    now = time.time()
+    markets = _fetch_live_markets()
+    if not markets:
+        return
+
+    # Purge expired blacklist entries
+    for k in [k for k, exp in list(_near_blacklist.items()) if now > exp]:
+        del _near_blacklist[k]
+        _near_skip_count.pop(k, None)
+
+    for m in markets:
+        try:
+            cid = m.get("conditionId") or m.get("id") or ""
+            if not cid:
+                continue
+
+            # Skip blacklisted markets (repeatedly filtered — find better ones)
+            if cid in _near_blacklist:
+                continue
+
+            q_low = (m.get("question") or "").lower()
+            if any(bk in q_low for bk in BANNED_KEYWORDS):
+                continue
+
+            vol24 = float(m.get("volume24hr", 0) or 0)
+            if vol24 < 5000:   # raised from $2K — high volume = real conviction signal
+                _near_skip_count[cid] += 1
+                if _near_skip_count[cid] >= 4:
+                    _near_blacklist[cid] = now + 1800
+                    log.info(f"[NEAR] Blacklisted vol-low market for 30min | {q_low[:50]}")
+                continue
+
+            end_str = m.get("endDate") or ""
+            if not end_str:
+                continue
+            end_dt   = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            days_left = (end_dt - datetime.now(timezone.utc)).total_seconds() / 86400
+            if days_left < 0.25 or days_left > 7:  # 6h–7d: short enough to limit reversal risk
+                continue
+
+            prices = parse_prices(m)
+            toks   = parse_tokens(m)
+            if len(prices) < 2 or len(toks) < 2:
+                continue
+
+            yes_p   = float(prices[0])
+            no_p    = float(prices[1])
+            liq     = float(m.get("liquidity", 0) or 0)
+            if liq < 500:
+                _near_skip_count[cid] += 1
+                if _near_skip_count[cid] >= 4:
+                    _near_blacklist[cid] = now + 1800
+                    log.info(f"[NEAR] Blacklisted liq-low market for 30min | {q_low[:50]}")
+                continue
+
+            # Raised floor from 60% to 72% — reduces low-confidence noise trades
+            if 0.72 <= yes_p <= 0.88:
+                bet_tid, bet_price, side = toks[0], yes_p, "YES"
+            elif 0.72 <= no_p <= 0.88:
+                bet_tid, bet_price, side = toks[1], no_p, "NO"
+            else:
+                _near_skip_count[cid] += 1
+                if _near_skip_count[cid] >= 6:
+                    _near_blacklist[cid] = now + 1800
+                    log.info(f"[NEAR] Blacklisted no-edge market for 30min | {q_low[:50]}")
+                continue
+
+            # Verify tight spread on CLOB (liquid enough to enter/exit)
+            mid = clob_mid(bet_tid)
+            if mid <= 0:
+                continue
+            spread_ratio = abs(mid - bet_price) / max(bet_price, 0.01)
+            if spread_ratio > 0.05:   # mid must be within 5% of gamma price
+                _near_skip_count[cid] += 1
+                if _near_skip_count[cid] >= 4:
+                    _near_blacklist[cid] = now + 1800
+                    log.info(f"[NEAR] Blacklisted wide-gap market for 30min | {q_low[:50]}")
+                continue
+
+            # Cooldown: 4 hours per token
+            if now - _near_traded.get(bet_tid, 0) < 14400:
+                continue
+            if bet_tid in open_positions:
+                continue
+
+            roi = (1 - bet_price) / bet_price * 100
+            q   = (m.get("question") or "")[:60]
+            log.info(f"[NEAR] {side} @ {bet_price:.2f} +{roi:.0f}%ROI liq=${liq:,.0f} vol=${vol24:,.0f} | {q}")
+            tg(f"NEAR {side} @ {bet_price:.2f} +{roi:.0f}%ROI | vol=${vol24:,.0f} | {q}", "NEAR")
+
+            place_order(bet_tid, bet_price, CFG["max_usd"], q, "NEAR")
+            _near_traded[bet_tid] = now
+            _near_skip_count[cid] = 0   # reset on trade
+            return  # one trade per scan cycle
+
+        except Exception as e:
+            log.error(f"[NEAR] {e}")
+
+def near_loop():
+    log.info("[NEAR] Started — high-conviction bias on top-volume markets | 60-88% leader")
+    while True:
+        try:
+            near_scan()
+        except Exception as e:
+            log.error(f"[NEAR] loop: {e}")
+        time.sleep(180)   # every 3 minutes
+
+# ── ENGINE 8: AUTO-REDEMPTION — CLAIM WON POSITIONS FOR USDC ─────────────────
+# Polymarket settles most positions automatically, but some require an on-chain
+# redeemPositions call to the ConditionalTokens contract.
+# Uses: web3.py → Gnosis Safe execTransaction from EOA → ConditionalTokens.redeemPositions
+
+_POLYGON_RPC  = "https://polygon-bor-rpc.publicnode.com"
+_CT_ADDR      = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045"
+_USDC_POLY    = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+_ZERO_ADDR    = "0x0000000000000000000000000000000000000000"
+_CT_ABI = [{"name":"redeemPositions","type":"function","inputs":[
+    {"name":"collateralToken","type":"address"},
+    {"name":"parentCollectionId","type":"bytes32"},
+    {"name":"conditionId","type":"bytes32"},
+    {"name":"indexSets","type":"uint256[]"},
+],"outputs":[]}]
+_SAFE_ABI = [
+    {"name":"nonce","type":"function","inputs":[],"outputs":[{"type":"uint256"}]},
+    {"name":"getTransactionHash","type":"function","outputs":[{"type":"bytes32"}],"inputs":[
+        {"name":"to","type":"address"},{"name":"value","type":"uint256"},
+        {"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},
+        {"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},
+        {"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},
+        {"name":"refundReceiver","type":"address"},{"name":"_nonce","type":"uint256"},
+    ]},
+    {"name":"execTransaction","type":"function","outputs":[{"type":"bool"}],"inputs":[
+        {"name":"to","type":"address"},{"name":"value","type":"uint256"},
+        {"name":"data","type":"bytes"},{"name":"operation","type":"uint8"},
+        {"name":"safeTxGas","type":"uint256"},{"name":"baseGas","type":"uint256"},
+        {"name":"gasPrice","type":"uint256"},{"name":"gasToken","type":"address"},
+        {"name":"refundReceiver","type":"address"},{"name":"signatures","type":"bytes"},
+    ]},
+]
+
+_redeemed_cids: set = set()
+
+def _redeem_position(w3, acct, cid_hex: str, outcome: str) -> bool:
+    """Call ConditionalTokens.redeemPositions via the Gnosis Safe proxy wallet."""
+    try:
+        funder_cs = Web3.to_checksum_address(FUNDER)
+        ct_cs     = Web3.to_checksum_address(_CT_ADDR)
+        usdc_cs   = Web3.to_checksum_address(_USDC_POLY)
+
+        # YES=indexSet[1], NO=indexSet[2]
+        index_set = [1] if outcome.lower() in ("yes", "up") else [2]
+
+        ct   = w3.eth.contract(address=ct_cs,     abi=_CT_ABI)
+        safe = w3.eth.contract(address=funder_cs, abi=_SAFE_ABI)
+
+        cid_bytes = bytes.fromhex(cid_hex.replace("0x", ""))
+        call_data = ct.encode_abi("redeemPositions", [usdc_cs, b"\x00"*32, cid_bytes, index_set])
+
+        nonce_safe = safe.functions.nonce().call()
+        tx_hash    = safe.functions.getTransactionHash(
+            ct_cs, 0, call_data, 0, 0, 0, 0, _ZERO_ADDR, _ZERO_ADDR, nonce_safe
+        ).call()
+
+        signed  = acct.sign_message(encode_defunct(tx_hash))
+        sig     = signed.r.to_bytes(32,"big") + signed.s.to_bytes(32,"big") + bytes([signed.v + 4])
+
+        # Check EOA has MATIC for gas
+        matic_bal = w3.eth.get_balance(acct.address)
+        gas_price = w3.eth.gas_price
+        if matic_bal < gas_price * 200_000:
+            matic_needed = w3.from_wei(gas_price * 200_000 - matic_bal, "ether")
+            tg(f"REDEEM blocked — need {matic_needed:.4f} MATIC for gas at {acct.address[:16]}...", "WARN")
+            return False
+
+        nonce_eoa = w3.eth.get_transaction_count(acct.address)
+        tx = safe.functions.execTransaction(
+            ct_cs, 0, call_data, 0, 0, 0, 0, _ZERO_ADDR, _ZERO_ADDR, sig
+        ).build_transaction({"from": acct.address, "nonce": nonce_eoa,
+                             "gas": 250_000, "gasPrice": gas_price, "chainId": 137})
+
+        signed_tx = acct.sign_transaction(tx)
+        tx_sent   = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+        receipt   = w3.eth.wait_for_transaction_receipt(tx_sent, timeout=60)
+        if receipt.status == 1:
+            tg(f"REDEEMED {cid_hex[:16]}... | tx={tx_sent.hex()[:16]}... | gas={receipt.gasUsed}", "INFO")
+            return True
+        else:
+            log.error(f"[REDEEM] tx reverted for {cid_hex[:16]}...")
+            return False
+    except Exception as e:
+        log.error(f"[REDEEM] {e}")
+        return False
+
+def redeem_loop():
+    if not _WEB3_OK:
+        log.warning("[REDEEM] web3.py not available — skipping redemption loop")
+        return
+    try:
+        w3   = Web3(Web3.HTTPProvider(_POLYGON_RPC, request_kwargs={"timeout": 15}))
+        acct = w3.eth.account.from_key("0x" + PRIVATE_KEY)
+    except Exception as e:
+        log.error(f"[REDEEM] Init failed: {e}")
+        return
+
+    log.info(f"[REDEEM] Started — EOA={acct.address[:16]}... | checks every 5min")
+    while True:
+        try:
+            positions = fetch(f"https://data-api.polymarket.com/positions?user={FUNDER}&sizeThreshold=0.01")
+            if isinstance(positions, list):
+                for pos in positions:
+                    cid       = pos.get("conditionId", "")
+                    redeemable = bool(pos.get("redeemable"))
+                    size      = float(pos.get("size", 0) or 0)
+                    outcome   = pos.get("outcome", "Yes")
+                    title     = pos.get("title", "?")[:50]
+                    if not redeemable or not cid or size < 0.1 or cid in _redeemed_cids:
+                        continue
+                    log.info(f"[REDEEM] Found redeemable: {title} | size={size:.2f} | outcome={outcome}")
+                    if _redeem_position(w3, acct, cid, outcome):
+                        _redeemed_cids.add(cid)
+                        tg(f"CLAIMED {size:.2f} shares | {title}", "INFO")
+        except Exception as e:
+            log.error(f"[REDEEM] loop: {e}")
+        time.sleep(300)   # check every 5 minutes
+
+# ── WEBSOCKET — MOMENTUM ON LIVE MARKETS ──────────────────────────────────────
+_ws_proxy_keys  = ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy")
+_mtum_cooldown  = {}   # token_id -> last order time, 5-min cooldown per token
+
+# ── ENGINE 6: COPY — WHALE TRACKING ───────────────────────────────────────────
+# Tracks known high-profit wallets. When a whale makes a fresh BUY (<30 min ago)
+# in a non-banned, non-extreme-priced market, we copy at 10% of their size (min $1).
+
+WHALE_FILE   = BASE / "elite_wallets.json"
+# Top Polymarket traders by 30-day + all-time PnL (updated from leaderboard API)
+_SEED_WHALES = [
+    # T1 — consistent in BOTH monthly and all-time top 50
+    "0x02227b8f5a9636e895607edd3185ed6ee5598ff7",  # HorizonSplendidView  30d=$4.0M all=$2.0M
+    "0xefbc5fec8d7b0acdc8911bdd9a98d6964308f9a2",  # reachingthesky       30d=$3.7M all=$3.7M
+    "0x2a2c53bd278c04da9962fcf96490e17f3dfb9bc1",  # anon                 30d=$2.7M all=$2.7M
+    "0xc2e7800b5af46e6093872b177b7a5e7f0563be51",  # beachboy4            30d=$2.7M all=$3.0M
+    "0x019782cab5d844f02bafb71f512758be78579f3c",  # majorexploiter       30d=$2.4M all=$3.7M
+    "0x2005d16a84ceefa912d4e380cd32e7ff827875ea",  # RN1                  30d=$2.1M all=$7.3M
+    "0xee613b3fc183ee44f9da9c05f53e2da107e3debf",  # sovereign2013        30d=$1.8M all=$3.5M
+    "0xdc876e6873772d38716fda7f2452a78d426d7ab6",  # 432614799197         30d=$1.5M all=$4.5M
+    "0x204f72f35326db932158cba6adff0b9a1da95e14",  # swisstony            30d=$1.5M all=$6.1M
+    "0x93abbc022ce98d6f45d4444b594791cc4b7a9723",  # gatorr               30d=$1.4M all=$2.2M
+    "0x6a72f61820b26b1fe4d956e17b6dc2a1ea3033ee",  # kch123               30d=$1.0M all=$11.9M
+    "0x507e52ef684ca2dd91f90a9d26d149dd3288beae",  # GamblingIsAllYouNeed 30d=$866K all=$4.7M
+    "0x8c80d213c0cbad777d06ee3f58f6ca4bc03102c3",  # SecondWindCapital    30d=$786K all=$1.9M
+    # T2 — hot recent traders (new or surge)
+    "0x492442eab586f242b53bda933fd5de859c8a3782",  # anon                 30d=$7.1M
+    "0xf195721ad850377c96cd634457c70cd9e8308057",  # lo34567Taipe         30d=$1.5M
+    "0xa5ea13a81d2b7e8e424b182bdc1db08e756bd96a",  # bossoskil1           30d=$1.4M
+    "0xc8075693f48668a264b9fa313b47f52712fcc12b",  # texaskid             30d=$1.3M
+    "0xead152b855effa6b5b5837f53b24c0756830c76a",  # elkmonkey            30d=$1.2M
+    "0x777d9f00c2b4f7b829c9de0049ca3e707db05143",  # CarlosMC             30d=$1.1M
+    "0xbaa2bcb5439e985ce4ccf815b4700027d1b92c73",  # denizz               30d=$1.0M
+    # T3 — all-time legends (may be less active recently)
+    "0x56687bf447db6ffa42ffe2204a05edaa20f55839",  # Theo4                all=$22.1M
+    "0x1f2dd6d473f3e824cd2f8a89d9c69fb96f6ad0cf",  # Fredi9999            all=$16.6M
+    "0x78b9ac44a6d7d7a076c14e0ad518b301b63c6b76",  # Len9311238           all=$8.7M
+    "0xd235973291b2b75ff4070e9c0b01728c520b0f29",  # zxgngl               all=$7.8M
+    "0x863134d00841b2e200492805a01e1e2f5defaa53",  # RepTrump             all=$7.5M
+    # T4 — CRYPTO/UPDN specialists (top 15 by 30d crypto PnL from leaderboard)
+    "0xde17f7144fbd0eddb2679132c10ff5e74b120988",  # crypto#1             30d=$727K
+    "0xd84c2b6d65dc596f49c7b6aadd6d74ca91e407b9",  # BoneReader           30d=$614K
+    "0xd0d6053c3c37e727402d84c14069780d360993aa",  # k9Q2mX4L8A7ZP3R      30d=$536K
+    "0x63ce342161250d705dc0b16df89036c8e5f9ba9a",  # 0x8dxd               30d=$535K
+    "0xe1d6b51521bd4365769199f392f9818661bd907c",  # crypto#5             30d=$521K
+    "0xeebde7a0e019a63e6b476eb425505b7b3e6eba30",  # Bonereaper           30d=$492K
+    "0xb27bc932bf8110d8f78e55da7d5f0497a18b5b82",  # crypto#7             30d=$490K
+    "0x6e1d5040d0ac73709b0621f620d2a60b80d2d0fa",  # crypto#8             30d=$438K
+    "0x2d8b401d2f0e6937afebf18e19e11ca568a5260a",  # vidarx               30d=$417K
+    "0x1f0ebc543b2d411f66947041625c0aa1ce61cf86",  # crypto#10            30d=$386K
+    "0x0006af12cd4dacc450836a0e1ec6ce47365d8c63",  # stingo43             30d=$365K
+    "0x04283f2fef49d70d8c55ab240450d17a65bf85b1",  # crypto#12            30d=$306K
+    "0x89b5cdaaa4866c1e738406712012a630b4078beb",  # ohanism              30d=$293K
+    "0x2eb5714ff6f20f5f9f7662c556dbef5e1c9bf4d4",  # crypto#14            30d=$274K
+    "0x3a847382ad6fff9be1db4e073fd9b869f6884d44",  # crypto#15            30d=$254K
+]
+COPY_WALLETS = []   # populated from file + auto-discovery
+
+def _load_whales():
+    """Load tracked wallets from file, supplement with auto-discovered."""
+    global COPY_WALLETS
+    COPY_WALLETS = list(_SEED_WHALES)
+    try:
+        data = json.loads(WHALE_FILE.read_text())
+        # elite_wallets.json is a plain list; copy_wallets.json may use {"wallets": [...]}
+        stored = data if isinstance(data, list) else data.get("wallets", [])
+        for w in stored:
+            if isinstance(w, str):
+                if w and w not in COPY_WALLETS:
+                    COPY_WALLETS.append(w)
+            elif isinstance(w, dict):
+                addr = w.get("wallet") or w.get("address") or w.get("proxyWallet") or ""
+                if addr and addr not in COPY_WALLETS:
+                    COPY_WALLETS.append(addr)
+    except Exception as e:
+        log.warning(f"[COPY] elite_wallets load failed: {e}")
+    # Also seed from copy_state.json
+    try:
+        cs = json.loads((BASE / "copy_state.json").read_text())
+        if isinstance(cs, dict):
+            for v in cs.values():
+                w = v.get("proxyWallet", "")
+                if w and w not in COPY_WALLETS:
+                    COPY_WALLETS.append(w)
+    except Exception:
+        pass
+    # Also load top-ranked wallets from targets.json (poly_data analysis)
+    try:
+        targets = json.loads(_TARGETS_FILE.read_text())
+        for t in targets:
+            addr = t.get("wallet", "")
+            if addr and addr not in COPY_WALLETS:
+                COPY_WALLETS.append(addr)
+    except Exception:
+        pass
+    if COPY_WALLETS:
+        log.info(f"[COPY] Loaded {len(COPY_WALLETS)} whale wallets")
+
+_ACTIVE_CUTOFF_DAYS = 14   # drop wallets with no trades in 14 days
+
+def _is_wallet_active(wallet: str) -> bool:
+    """Return True if wallet traded within ACTIVE_CUTOFF_DAYS. On network error → True (keep wallet)."""
+    data = fetch(f"https://data-api.polymarket.com/activity?user={wallet}&limit=1")
+    if data is None:
+        return True   # network error: assume still active rather than purging
+    if not isinstance(data, list) or not data:
+        return False  # empty list = no trades ever
+    ts = data[0].get("timestamp", 0)
+    try:
+        raw_ts = float(ts)
+        if raw_ts > 1e12:
+            raw_ts /= 1000   # convert ms → s
+        age_days = (time.time() - raw_ts) / 86400
+        return age_days <= _ACTIVE_CUTOFF_DAYS
+    except Exception:
+        return True  # parse error: keep wallet
+
+def _discover_whales():
+    """Find large active wallets from top-volume markets (fresh every 4h)."""
+    found = []
+    data = fetch("https://gamma-api.polymarket.com/markets?active=true&limit=20&sort=volume24hr&ascending=false")
+    if not data:
+        return []
+    markets = data if isinstance(data, list) else data.get("markets", [])
+    for m in markets[:10]:
+        cid = m.get("conditionId") or m.get("id") or ""
+        if not cid:
+            continue
+        # Each active market's recent traders are potential copy targets
+        activity = fetch(f"https://data-api.polymarket.com/activity?market={cid}&limit=50")
+        if not isinstance(activity, list):
+            continue
+        for trade in activity:
+            wallet   = trade.get("proxyWallet", "")
+            usd_size = float(trade.get("usdcSize", 0) or 0)
+            if wallet and usd_size >= 1000 and wallet not in found and wallet != FUNDER:
+                found.append(wallet)
+    return found[:30]
+
+def _refresh_whale_list():
+    """Drop inactive wallets, discover fresh ones. Run every 4h."""
+    global COPY_WALLETS
+    # Filter: keep only wallets active in last 14 days
+    active = []
+    for w in list(COPY_WALLETS):
+        if _is_wallet_active(w):
+            active.append(w)
+        else:
+            log.debug(f"[COPY] Dropping inactive wallet {w[:18]}")
+    # Discover new active whales from top markets
+    new_whales = _discover_whales()
+    added = 0
+    for w in new_whales:
+        if w not in active:
+            active.append(w)
+            added += 1
+    if not active:
+        log.warning("[COPY] Refresh produced empty list (API failure?) — keeping old list")
+    else:
+        COPY_WALLETS = active
+    log.info(f"[COPY] Whale list refreshed: {len(COPY_WALLETS)} active ({added} new discovered)")
+
+_copy_seen:    dict = {}  # cid -> timestamp — prune entries older than 2h to prevent unbounded growth
+_copy_wallets_checked = 0
+
+def copy_scan():
+    global _copy_wallets_checked
+    if not COPY_WALLETS:
+        return
+
+    now_ts = time.time()
+    wallet = COPY_WALLETS[_copy_wallets_checked % len(COPY_WALLETS)]
+    _copy_wallets_checked += 1
+
+    try:
+        activity = fetch(f"https://data-api.polymarket.com/activity?user={wallet}&limit=20")
+        if not isinstance(activity, list):
+            return
+
+        now_dt = datetime.now(timezone.utc)
+        for trade in activity:
+            raw_ts  = int(trade.get("timestamp", 0) or 0)
+            # Polymarket API returns seconds; guard against accidental ms timestamps
+            if raw_ts > 1e12:
+                raw_ts //= 1000
+            age_min = (now_ts - raw_ts) / 60
+            if age_min > 45:   # only trades in last 45 min (scan cycle ~15min, 45min = 3x buffer)
+                continue
+            if age_min < 0:
+                continue       # clock skew guard
+
+            if trade.get("type") != "TRADE":
+                continue
+            # BUG5 FIX: only copy whale BUYs — copying their SELLs as our BUYs is wrong
+            side = str(trade.get("side") or "").upper()
+            if side in ("SELL", "2", "SHORT"):
+                continue
+            cid      = trade.get("conditionId", "")
+            usd_size = float(trade.get("usdcSize", 0) or 0)
+            price    = float(trade.get("price", 0) or 0)
+            size     = float(trade.get("size", 0) or 0)
+
+            if not cid or price <= 0 or usd_size < 50:  # lowered from $100 — more signals
+                continue
+            # Prune _copy_seen entries older than 2h to prevent unbounded growth
+            cutoff = now_ts - 7200
+            for k in [k for k, v in _copy_seen.items() if v < cutoff]:
+                del _copy_seen[k]
+            if cid in _copy_seen:
+                continue
+
+            if size <= 0 or not (0.10 <= price <= 0.90):
+                continue
+
+            # Resolve to token + market question
+            mkt_data = fetch(f"https://gamma-api.polymarket.com/markets?conditionId={cid}")
+            if not mkt_data:
+                continue
+            markets_list = mkt_data if isinstance(mkt_data, list) else mkt_data.get("markets", [])
+            if not markets_list:
+                continue
+            m = markets_list[0]
+
+            q_low = (m.get("question") or "").lower()
+            if any(bk in q_low for bk in BANNED_KEYWORDS):
+                continue
+
+            # Skip if market has already closed or has < 5 min left (no time to profit)
+            end_str = m.get("endDate") or ""
+            if end_str:
                 try:
-                    ml = _get_ml_predictor()
-                    if ml:
-                        duration = max((datetime.fromisoformat(
-                            (m.get('endDate') or '2025-01-01T00:00:00Z').replace('Z','+00:00')
-                        ) - datetime.now(timezone.utc)).days, 1)
-                        pred = ml.predict(
-                            yes_price=yes, volume=vol, liquidity=liq,
-                            volume24hr=vol24, duration_days=duration,
-                            question=question
-                        )
-                        if pred.get('confidence') in ('HIGH', 'MEDIUM'):
-                            ml_edge = pred['edge']
-                            ml_side = pred['best_side']
-                            score += min(ml_edge * 100, 20)   # cap ML boost at +20
+                    end_dt    = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+                    mins_left = (end_dt - now_dt).total_seconds() / 60
+                    if mins_left < 5:
+                        continue
                 except Exception:
                     pass
 
-                toks = m.get('clobTokenIds', m.get('tokens', '[]'))
-                if isinstance(toks, str): toks = json.loads(toks)
-                for t in toks:
-                    tid = t if isinstance(t, str) else t.get('token_id', '')
-                    if tid:
-                        scored.append({"token_id": tid, "market": question,
-                                       "score": score, "yes": yes, "vol24": vol24,
-                                       "edge": edge, "ml_edge": ml_edge, "ml_side": ml_side})
-            except Exception:
+            toks = parse_tokens(m)
+            if not toks:
                 continue
-        if len(batch) < 100: break
 
-    # Deduplicate by market question — keep best-scored entry, then emit all its tokens
-    best_by_market: dict = {}
-    for s in scored:
-        key = s['market']
-        if key not in best_by_market or s['score'] > best_by_market[key]['score']:
-            best_by_market[key] = s
+            # Match token by price proximity to whale's trade price
+            prices   = parse_prices(m)
+            token_id = toks[0]
+            for i, p in enumerate(prices):
+                if abs(float(p) - price) < 0.06 and i < len(toks):
+                    token_id = toks[i]
+                    break
 
-    # Collect all tokens for top markets (both YES and NO)
-    top_markets = sorted(best_by_market.values(), key=lambda x: -x['score'])
-    seen_tids = set()
-    result = []
-    for m in top_markets:
-        for s in scored:
-            if s['market'] == m['market'] and s['token_id'] not in seen_tids:
-                seen_tids.add(s['token_id'])
-                result.append(s)
-        if len(result) >= max_tokens:
+            # Use CURRENT live CLOB price — not whale's stale price
+            live_price = clob_mid(token_id)
+            if live_price <= 0:
+                live_price = price   # fallback to whale's price if CLOB unavailable
+            # Don't chase if price moved >15% against us since whale's trade
+            if live_price > price * 1.15:
+                log.info(f"[COPY] {wallet[:14]} price chased too far {price:.2f}→{live_price:.2f}, skip")
+                continue
+            if not (0.10 <= live_price <= 0.90):
+                continue
+
+            # Scale to 10% of whale's trade — place_order applies its own caps (max_usd, Kelly)
+            our_usd = usd_size * 0.10
+            q = (m.get("question") or "")[:60]
+
+            log.info(f"[COPY] {wallet[:14]}... ${usd_size:.0f} → copy ${our_usd:.1f} @ {live_price:.3f} | {q}")
+            tg(f"COPY whale ${usd_size:.0f} → ${our_usd:.1f} @ {live_price:.2f} | {q}", "COPY")
+
+            place_order(token_id, live_price, our_usd, q, "COPY")
+            _copy_seen[cid] = now_ts
+
+    except Exception as e:
+        log.debug(f"[COPY] {wallet[:14]}: {e}")
+
+def copy_loop():
+    _load_whales()
+    _refresh_whale_list()   # filter inactive + discover fresh on startup
+    log.info(f"[COPY] Started — tracking {len(COPY_WALLETS)} wallets | copies at 10% size")
+    last_refresh = time.time()
+    while True:
+        try:
+            # Refresh whale list every 4 hours
+            if time.time() - last_refresh > 4 * 3600:
+                _refresh_whale_list()
+                last_refresh = time.time()
+            copy_scan()
+        except Exception as e:
+            log.error(f"[COPY] loop: {e}")
+        time.sleep(15)   # check one wallet per 15s — faster reaction to whale moves
+
+def top_tokens(n=50):
+    tokens = []
+    for limit in [100, 200, 500]:
+        data = fetch(f"https://gamma-api.polymarket.com/markets?active=true&limit={limit}&sort=volume24hr&ascending=false")
+        if not data:
             break
+        markets = data if isinstance(data, list) else data.get("markets", [])
+        tokens = []
+        for m in markets:
+            prices = parse_prices(m)
+            if len(prices) < 2:
+                continue
+            yes = float(prices[0])
+            if yes < 0.02 or yes > 0.98:   # only skip fully resolved
+                continue
+            vol24 = float(m.get("volume24hr", 0) or 0)
+            if vol24 < 100:
+                continue
+            toks = parse_tokens(m)
+            if toks:
+                tokens.append({"token_id": toks[0], "market": (m.get("question") or "")[:60], "yes": yes})
+            if len(tokens) >= n:
+                break
+        if len(tokens) >= n:
+            break
+    return tokens[:n]
 
-    log.info(f"[SCAN] Selected {len(result)} tokens across {len(top_markets[:max_tokens//2])} markets:")
-    for m in top_markets[:8]:
-        ml_str = f" ML:{m.get('ml_side','?')}+{m.get('ml_edge',0)*100:.0f}pp" if m.get('ml_edge', 0) > 0.03 else ""
-        log.info(f"[SCAN]  score={m['score']:.0f} yes={m['yes']:.2f} "
-                 f"vol24=${m['vol24']:,.0f} edge={m['edge']*100:.1f}pp{ml_str} | {m['market']}")
-    return result[:max_tokens]
+def momentum_signal(token_id: str) -> dict | None:
+    prices = list(price_history[token_id])
+    if len(prices) < CFG["lookback"]:
+        return None
+    book = order_books.get(token_id, {})
+    bids = book.get("bids", [])
+    asks = book.get("asks", [])
+    if not bids or not asks:
+        return None
+    bid = max(float(b["price"]) for b in bids)
+    ask = min(float(a["price"]) for a in asks)
+    if ask - bid > 0.08:
+        return None
+    mid = (bid + ask) / 2
+    if mid > 0.80 or mid < 0.20:
+        return None
+    old  = sum(prices[:5]) / 5
+    new  = sum(prices[-5:]) / 5
+    move = (new - old) / max(old, 0.001)
+    if move > CFG["momentum_thresh"] and new > old:
+        return {"token_id": token_id, "price": ask, "side": "UP", "move": move}
+    return None
 
 def on_open(ws):
-    log.info("WebSocket connected — subscribing to markets...")
-    try:
-        watched = fetch_top_markets(max_tokens=25)
-        WATCHED_TOKENS.extend(watched)
-        for w in watched:
-            ws.send(json.dumps({"assets_ids": [w["token_id"]], "type": "Market"}))
-        log.info(f"Subscribed to {len(watched)} tokens")
-    except Exception as e:
-        log.error(f"on_open error: {e}")
+    log.info(f"[WS] Connected — subscribing to {len(WATCHED_TOKENS)} tokens")
+    for t in WATCHED_TOKENS:
+        ws.send(json.dumps({"assets_ids": [t["token_id"]], "type": "Market"}))
 
 def on_message(ws, message):
     try:
-        if not message or not isinstance(message, str): return
-        message = message.strip()
-        if not message or message[0] not in ('{', '['): return
-        data = json.loads(message)
-        if not isinstance(data, list): data = [data]
+        if not message or message[0] not in ("{", "["):
+            return
+        for event in json.loads(message) if message[0] == "[" else [json.loads(message)]:
+            tid = event.get("asset_id") or event.get("token_id", "")
+            if not tid:
+                continue
+            bids = event.get("bids", [])
+            asks = event.get("asks", [])
+            if bids: order_books[tid]["bids"] = bids
+            if asks: order_books[tid]["asks"] = asks
 
-        for event in data:
-            token_id = event.get('asset_id', event.get('token_id', ''))
-            if not token_id: continue
-
-            bids = event.get('bids', []); asks = event.get('asks', [])
-            if bids: order_books[token_id]['bids'] = bids
-            if asks: order_books[token_id]['asks'] = asks
-
+            # Single price write per event — prefer order book mid, fallback to trade price
+            # (was double-writing both which corrupted momentum history)
+            price_written = False
             if bids or asks:
-                all_bids = order_books[token_id].get('bids', [])
-                all_asks = order_books[token_id].get('asks', [])
+                all_bids = order_books[tid].get("bids", [])
+                all_asks = order_books[tid].get("asks", [])
                 try:
-                    bid = max(float(b['price']) for b in all_bids) if all_bids else None
-                    ask = min(float(a['price']) for a in all_asks) if all_asks else None
-                    if bid and ask:
-                        price_history[token_id].append((bid + ask) / 2)
+                    b = max(float(x["price"]) for x in all_bids) if all_bids else None
+                    a = min(float(x["price"]) for x in all_asks) if all_asks else None
+                    if b and a:
+                        price_history[tid].append((b + a) / 2)
+                        price_written = True
                 except Exception:
                     pass
+            if not price_written:
+                p = float(event.get("price", 0) or 0)
+                if p > 0:
+                    price_history[tid].append(p)
 
-            price = float(event.get('price', 0) or 0)
-            if price > 0 and token_id not in order_books:
-                price_history[token_id].append(price)
-
-            if len(price_history[token_id]) >= CFG["lookback"]:
-                mkt = next((t['market'] for t in WATCHED_TOKENS if t['token_id'] == token_id), token_id[:16])
-                sig = momentum_signal(token_id, mkt)
-                if sig:
-                    place_order(sig, source="MOMENTUM")
-
+            if len(price_history[tid]) >= CFG["lookback"]:
+                if time.time() - _mtum_cooldown.get(tid, 0) > 300:
+                    sig = momentum_signal(tid)
+                    if sig:
+                        mkt = next((t["market"] for t in WATCHED_TOKENS if t["token_id"] == tid), tid[:16])
+                        tg(f"MOMENTUM {sig['move']*100:+.2f}% @ {sig['price']:.3f} | {mkt}", "INFO")
+                        # Enqueue signal — never call place_order() on the WS thread
+                        # (place_order blocks 5-10s on HTTP → heartbeat fails → WS drops)
+                        try:
+                            _ws_order_queue.put_nowait((tid, sig["price"], mkt))
+                            _mtum_cooldown[tid] = time.time()
+                        except _queue.Full:
+                            pass
     except Exception as e:
-        log.error(f"on_message error: {e}")
+        log.error(f"[WS] message error: {e}")
 
-def on_error(ws, error):
-    log.error(f"WebSocket error: {error}")
+def on_error(ws, error): log.error(f"[WS] {error}")
+def on_close(ws, *_):    log.warning("[WS] closed — will reconnect")
 
-def on_close(ws, code, msg):
-    log.warning(f"WebSocket closed — will reconnect")
-
-# ── STATUS THREAD ─────────────────────────────────────────────────────────────
-def status_loop():
+def ws_order_worker():
+    """Drain the WS momentum signal queue off the WS thread to avoid blocking heartbeats."""
     while True:
-        time.sleep(30)
-        mode = "[DRY RUN]" if CFG["dry_run"] else "[LIVE]"
         try:
-            ks = load_state()
-            update_vol_ema(ks)
+            tid, price, mkt = _ws_order_queue.get(timeout=5)
+            place_order(tid, price, CFG["max_usd"], mkt, "MTUM")
+        except _queue.Empty:
+            pass
+        except Exception as e:
+            log.error(f"[MTUM] order worker: {e}")
+
+def ws_loop():
+    while True:
+        try:
+            WATCHED_TOKENS.clear()
+            tokens = top_tokens(50)
+            WATCHED_TOKENS.extend(tokens)
+            log.info(f"[WS] Pre-fetched {len(tokens)} tokens")
+            saved = {k: os.environ.pop(k, None) for k in _ws_proxy_keys}
+            try:
+                ws = websocket.WebSocketApp(CFG["ws_url"],
+                    on_open=on_open, on_message=on_message,
+                    on_error=on_error, on_close=on_close)
+                ws.run_forever(ping_interval=30, ping_timeout=20)
+            finally:
+                for k, v in saved.items():
+                    if v is not None:
+                        os.environ[k] = v
+        except Exception as e:
+            log.error(f"[WS] crashed: {e}")
+        log.info("[WS] Reconnecting in 5s...")
+        time.sleep(5)
+
+# ── SERVER WATCHDOG ───────────────────────────────────────────────────────────
+_server_proc = None
+
+def server_watchdog():
+    global _server_proc
+    import subprocess as _sp
+    server_path = BASE / "server.py"
+    while True:
+        try:
+            alive = _server_proc and _server_proc.poll() is None
+            if not alive:
+                _server_proc = _sp.Popen(
+                    ["python", str(server_path)],
+                    cwd=str(BASE),
+                    stdout=_sp.DEVNULL, stderr=_sp.DEVNULL
+                )
+                log.info(f"[SERVER] Started PID {_server_proc.pid}")
+        except Exception as e:
+            log.error(f"[SERVER] watchdog: {e}")
+        time.sleep(30)
+
+# ── STATUS LOOP ───────────────────────────────────────────────────────────────
+def _load_equity_history():
+    try:
+        if STATUS_FILE.exists():
+            h = json.loads(STATUS_FILE.read_text()).get("equity_history", [])
+            return [x for x in h if isinstance(x, list) and len(x) == 2][-120:]
+    except Exception:
+        pass
+    return []
+
+_equity_history = _load_equity_history()
+_last_day = datetime.now(timezone.utc).date()
+
+def status_loop():
+    global _equity_history, _last_day, _cached_portfolio_val, _cached_portfolio_ts
+    while True:
+        time.sleep(10)
+        # Daily reset check
+        today = datetime.now(timezone.utc).date()
+        if today != _last_day:
+            _last_day = today
+            reset_daily()
+
+        val = portfolio_val()
+        # Keep cached value fresh so check_halt() never blocks the order lock on HTTP
+        if val > 0:
+            _cached_portfolio_val = val
+            _cached_portfolio_ts  = time.time()
+
+        if val > 0 and _day_start_val is None:
+            init_baseline()
+
+        # Poll open position exits here (10s cadence) so UPDN wins are claimed fast
+        try:
+            check_profit_exits()
         except Exception:
             pass
-        halt_str = f" | HALTED:{_halt_reason}" if _bot_halted else ""
-        # Daily P&L — use true portfolio value (cash + positions)
-        val = get_true_portfolio_value()
-        daily_pnl = ""
-        if val is not None and _day_start_portfolio:
-            pct = (val - _day_start_portfolio) / _day_start_portfolio * 100
-            daily_pnl = f" | day_pnl:{pct:+.1f}%"
-        log.info(f"{mode} STATUS — ws_tokens:{len(price_history)} | "
-                 f"trades:{len(trade_log)} | positions:{len(open_positions)} | "
-                 f"arb_alerts:{len(arb_alerts)} | copy_pos:{len(copy_positions)}"
-                 f"{daily_pnl}{halt_str}")
-        # Write live status for terminal dashboard
+        day_pct = 0.0
+        if val and _day_start_val:
+            day_pct = (val - _day_start_val) / _day_start_val * 100
+        session_pnl = round(val - _session_start, 4) if val and _session_start else 0.0
+
+        halt_str = f" HALTED:{_halt_reason}" if _bot_halted else ""
+        redeem_str = f" REDEEM:{len(_redeemed_cids)}done" if _redeemed_cids else ""
+        log.info(f"[STATUS] bal=${val:.2f} day={day_pct:+.1f}% session={session_pnl:+.2f} "
+                 f"trades={len(trade_log)} pos={len(open_positions)} "
+                 f"ws={len(WATCHED_TOKENS)}/{len(price_history)}{halt_str}{redeem_str}")
+
+        ts = datetime.now(timezone.utc).strftime("%H:%M")
+        # Only record plausible values — reject extreme outliers (API glitches)
+        if val and val > 1.0:
+            last_val = _equity_history[-1][1] if _equity_history else val
+            if last_val <= 0 or 0.1 <= val / last_val <= 10.0:
+                _equity_history.append([ts, round(val, 4)])
+        if len(_equity_history) > 120:
+            _equity_history = _equity_history[-120:]
+
         try:
-            day_pct = 0.0
-            if val is not None and _day_start_portfolio:
-                day_pct = (val - _day_start_portfolio) / _day_start_portfolio * 100
-            status = {
-                "updated":    datetime.now(timezone.utc).strftime("%H:%M:%S"),
-                "balance":    round(val or 0, 2),
-                "day_pnl":    round(day_pct, 2),
-                "trades":     len(trade_log),
-                "positions":  len(open_positions),
-                "halted":     _bot_halted,
-                "halt_reason": _halt_reason,
-                "wallet":     TRADING_ADDR,
-                "mode":       "DRY RUN" if CFG["dry_run"] else "LIVE",
-            }
-            STATUS_FILE.write_text(json.dumps(status, indent=2))
+            pos_details = []
+            for tid, p in open_positions.items():
+                mid = clob_mid(tid)
+                entry = float(p.get("entry", 0))
+                pnl_pct = round((mid - entry) / max(entry, 0.001) * 100, 1) if mid > 0 and entry > 0 else 0
+                pos_details.append({
+                    "token_id": tid[:20],
+                    "market":   (p.get("market") or "")[:45],
+                    "source":   p.get("source", "?"),
+                    "entry":    round(entry, 3),
+                    "current":  round(mid, 3),
+                    "pnl_pct":  pnl_pct,
+                    "size":     round(float(p.get("size", 0)), 2),
+                })
+            STATUS_FILE.write_text(json.dumps({
+                "updated":       datetime.now(timezone.utc).strftime("%H:%M:%S"),
+                "balance":       round(val or 0, 4),
+                "day_pnl":       round(day_pct, 2),
+                "session_pnl":   session_pnl,
+                "trades":        len(trade_log),
+                "positions":     len(open_positions),
+                "open_positions": pos_details,
+                "halted":        _bot_halted,
+                "halt_reason":   _halt_reason,
+                "wallet":        FUNDER,
+                "mode":          "DRY RUN" if CFG["dry_run"] else "LIVE",
+                "ws_subscribed": len(WATCHED_TOKENS),
+                "ws_active":     len(price_history),
+                "equity_history": _equity_history,
+            }, indent=2))
         except Exception:
             pass
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
-def start_ws():
-    while True:
-        try:
-            WATCHED_TOKENS.clear()
-            ws = websocket.WebSocketApp(
-                CFG["ws_url"],
-                on_open=on_open, on_message=on_message,
-                on_error=on_error, on_close=on_close,
-            )
-            ws.run_forever(ping_interval=30, ping_timeout=20)
-        except Exception as e:
-            log.error(f"WS crashed: {e}")
-        log.info("Reconnecting in 5s...")
-        time.sleep(5)
-
 if __name__ == "__main__":
-    # Single-instance lock
-    import pathlib, sys, os
-    LOCK = pathlib.Path(__file__).parent / "bot.lock"
-    if LOCK.exists():
+    # Single-instance lock — kills any previous instance
+    if LOCK_FILE.exists():
         try:
-            old_pid = int(LOCK.read_text().strip())
-            os.kill(old_pid, 9)
-            log.info(f"Killed old bot instance (PID {old_pid})")
+            os.kill(int(LOCK_FILE.read_text().strip()), 9)
+            log.info("[BOOT] Killed previous instance")
         except Exception:
             pass
-        LOCK.unlink(missing_ok=True)
-    LOCK.write_text(str(os.getpid()))
+    LOCK_FILE.write_text(str(os.getpid()))
     import atexit
-    atexit.register(lambda: LOCK.unlink(missing_ok=True))
+    atexit.register(lambda: LOCK_FILE.unlink(missing_ok=True))
 
-    mode = "DRY RUN (paper trading)" if CFG["dry_run"] else "LIVE TRADING"
-    log.info(f"POLY//BOT v3 — {mode}")
-    log.info(f"Engines: MOMENTUM | ARB | UPDOWN | CERT | COPY | MARB | 4MIN | 3-AGENT")
-    log.info(f"Max pos: ${CFG['max_position_usd']} ({CFG['max_position_pct']*100:.0f}% portfolio)")
-    log.info(f"CopyTrade: {CFG['copy_wallet'][:12]}... ratio={CFG['copy_ratio']*100:.0f}%")
-    log.info(f"Arb: exec when gap >= {CFG['arb_min_edge']*100:.1f}%")
-    log.info(f"UpDown: scan every {CFG['updown_scan_secs']}s | min move {CFG['updown_min_change']*100:.1f}%")
-    log.info(f"4MIN: scan every {CFG['fourmin_scan_secs']}s | window ≤{CFG['fourmin_max_mins']}min | leader ≥{CFG['fourmin_min_leader']:.0%}")
+    log.info("=" * 55)
+    log.info("POLY//BOT v7 — LIVE  [6 active engines]")
+    log.info("  E1: UPDN  — 15m/1h/4h crypto, 0.25%/0.5%/0.5% edge, price≥0.55")
+    log.info("  E2: LIVE  — any binary ≤6min, leader 78-97%, $500 liq  [5s]")
+    log.info("  E3: SPORT — sports/UPDN 6-45min, 90-98% conviction     [10s]")
+    log.info("  E4: NEAR  — 72-88% leader, $5K vol, ≤7d horizon        [3min]")
+    log.info("  E5: COPY  — 46 whales, $50+ trades, 15s scan           [live]")
+    log.info("  E6: MTUM  — WebSocket momentum, top 50 markets         [live]")
+    log.info(f"  Positions: {CFG['max_positions']} max (COPY≤2, UPDN≤3) | Max/trade: ${CFG['max_usd']} | Halt: {CFG['daily_halt_pct']*100:.0f}%")
+    log.info("=" * 55)
 
-    # Initialize risk baseline
-    init_risk_baseline()
+    init_baseline()
+    _load_targets()
 
-    # Launch all engines as background threads
-    for target, name in [
-        (status_loop,        "status"),
-        (copytrade_loop,     "copytrade"),
-        (arb_loop,           "arb"),
-        (updown_loop,        "updown"),        # 5/15-min crypto markets
-        (near_certainty_loop,"certainty"),     # 87-96% YES scalper
-        (fourmin_loop,       "4min-rule"),     # 4-minute rule — final minutes edge
-        (agent_loop,         "3-agent"),       # 3-agent 2/3 vote — 4-48h window
-        (multi_arb_loop,     "multi-arb"),     # multi-outcome event arb
-        (day_reset_loop,     "day-reset"),
+    for fn, name in [
+        (status_loop,    "status"),
+        (updn_loop,      "updn"),        # 15m + 1h + 4h, min_edge 0.25%/0.5%/0.5%, price ≥0.55
+        (live_loop,      "live"),        # ≤6min binary, leader 78-97%, $500 liq
+        (sports_loop,    "sport"),       # 6-45min sports/UPDN, 90-98% conviction
+        (near_loop,      "near"),        # 72-88% leader, $5K vol, ≤7 days, CLOB verified
+        (copy_loop,      "copy"),        # active whales, refreshed every 4h, 15s scan
+        (redeem_loop,    "redeem"),
+        (server_watchdog,"server"),
+        (ws_order_worker,"mtum-orders"),
     ]:
-        t = threading.Thread(target=target, name=name, daemon=True)
+        t = threading.Thread(target=fn, name=name, daemon=True)
         t.start()
-        log.info(f"Thread [{name}] started")
+        log.info(f"[BOOT] Thread [{name}] started")
 
-    # WebSocket main loop (momentum signals)
-    start_ws()
+    ws_loop()   # runs on main thread, reconnects forever

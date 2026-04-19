@@ -168,7 +168,7 @@ def record_temporal(state, won: bool):
     save_state(state)
 
 # ── KELLY CALCULATOR ──────────────────────────────────────────────────────────
-def kelly_size(portfolio_usd, p_win, yes_price, min_trade_usd=2.0):
+def kelly_size(portfolio_usd, p_win, yes_price, min_trade_usd=0.50):
     """
     Full Kelly: f* = (bp - q) / b
       b = net odds = (1 - yes_price) / yes_price   (payout per $ risked on YES)
