@@ -516,11 +516,16 @@ def _refresh_updn_cache():
 def updn_scan():
     now = datetime.now(timezone.utc)
     traded_this_scan = False   # one trade per scan — prevent multi-crypto simultaneous drain
+    scan_total = 0
+    scan_in_window = 0
+    scan_token_ready = 0
+    scan_nonflat = 0
 
     for cid, entry in list(_updn_market_cache.items()):
         try:
             if cid in _updn_traded or traded_this_scan:
                 continue
+            scan_total += 1
 
             end_dt = entry.get("end_dt")
             if not end_dt:
@@ -535,6 +540,7 @@ def updn_scan():
             if not (tf_cfg["window_min"] <= mins_left <= tf_cfg["window_max"]):
                 _skip_record(f"UPDN/{tf_key}", "out_of_window")
                 continue
+            scan_in_window += 1
 
             sym      = entry["sym"]
             outcomes = entry["outcomes"]
@@ -542,6 +548,7 @@ def updn_scan():
             if len(toks) < 2:
                 _skip_record(f"UPDN/{tf_key}", "missing_tokens")
                 continue
+            scan_token_ready += 1
 
             try:
                 up_i   = [str(o).lower() for o in outcomes].index("up")
@@ -554,6 +561,7 @@ def updn_scan():
             if abs(change) < 0.00005:
                 _skip_record(f"UPDN/{tf_key}", "flat")
                 continue   # truly flat
+            scan_nonflat += 1
 
             direction = "Up" if change > 0 else "Down"
             bet_i     = up_i if direction == "Up" else down_i
@@ -596,6 +604,13 @@ def updn_scan():
 
         except Exception as e:
             log.error(f"[UPDN] {e}")
+
+    _scan_record("UPDN", {
+        "cache_entries": scan_total,
+        "in_window": scan_in_window,
+        "token_ready": scan_token_ready,
+        "nonflat": scan_nonflat,
+    })
 
 _updn_refresh_lock = threading.Lock()
 
@@ -727,10 +742,16 @@ _consensus_stats = {
 }
 _skip_stats_lock = threading.Lock()
 _skip_stats = defaultdict(lambda: defaultdict(int))
+_scan_stats_lock = threading.Lock()
+_scan_stats = {}
 
 def _skip_record(engine: str, reason: str, count: int = 1):
     with _skip_stats_lock:
         _skip_stats[engine][reason] += count
+
+def _scan_record(engine: str, stats: dict):
+    with _scan_stats_lock:
+        _scan_stats[engine] = stats
 
 def _consensus_record(engine: str, size_factor: float, reason: str):
     with _consensus_stats_lock:
@@ -896,17 +917,22 @@ def politics_scan():
     markets = _fetch_live_markets(max_age=12)
     if not markets:
         return
+    scan_total = 0
+    scan_keyword = 0
+    scan_horizon = 0
 
     for m in markets:
         try:
             cid = m.get("conditionId") or m.get("id") or ""
             if not cid:
                 continue
+            scan_total += 1
 
             q = (m.get("question") or "")
             q_low = q.lower()
             if not any(k in q_low for k in _POLITICS_KEYWORDS):
                 continue
+            scan_keyword += 1
 
             end_str = m.get("endDate") or ""
             if not end_str:
@@ -915,6 +941,7 @@ def politics_scan():
             hours_left = (end_dt - now).total_seconds() / 3600
             if not (CFG["politics_min_hours"] <= hours_left <= CFG["politics_max_hours"]):
                 continue
+            scan_horizon += 1
 
             liq = float(m.get("liquidity", 0) or 0)
             vol24 = float(m.get("volume24hr", 0) or 0)
@@ -983,6 +1010,12 @@ def politics_scan():
         except Exception as e:
             log.error(f"[POL] {e}")
 
+    _scan_record("POL", {
+        "markets_seen": scan_total,
+        "keyword_matches": scan_keyword,
+        "horizon_matches": scan_horizon,
+    })
+
 def politics_loop():
     log.info("[POL] Started — politics directional follow | high liq/vol only")
     while True:
@@ -1018,12 +1051,16 @@ def live_scan():
     markets = _fetch_live_markets()
     if not markets:
         return
+    scan_total = 0
+    scan_time_ok = 0
+    scan_binary_ok = 0
 
     for m in markets:
         try:
             cid = m.get("conditionId") or m.get("id") or ""
             if not cid or cid in _live_traded:
                 continue
+            scan_total += 1
 
             end_str = m.get("endDate") or ""
             if not end_str:
@@ -1035,10 +1072,12 @@ def live_scan():
                 continue
             if mins_left < 0.4:
                 continue
+            scan_time_ok += 1
 
             outcomes = parse_outcomes(m)
             if len(outcomes) != 2:
                 continue
+            scan_binary_ok += 1
 
             prices = parse_prices(m)
             toks   = parse_tokens(m)
@@ -1106,6 +1145,12 @@ def live_scan():
 
         except Exception as e:
             log.error(f"[LIVE] {e}")
+
+    _scan_record("LIVE", {
+        "markets_seen": scan_total,
+        "time_ok": scan_time_ok,
+        "binary_ok": scan_binary_ok,
+    })
 
 def live_loop():
     log.info("[LIVE] Started — any binary market ≤6min where leader 78–97%")
@@ -2241,6 +2286,8 @@ def status_loop():
                 consensus_snapshot = json.loads(json.dumps(_consensus_stats))
             with _skip_stats_lock:
                 skip_snapshot = json.loads(json.dumps(_skip_stats))
+            with _scan_stats_lock:
+                scan_snapshot = json.loads(json.dumps(_scan_stats))
             STATUS_FILE.write_text(json.dumps({
                 "updated":       datetime.now(timezone.utc).strftime("%H:%M:%S"),
                 "balance":       round(val or 0, 4),
@@ -2257,6 +2304,7 @@ def status_loop():
                 "ws_active":     len(price_history),
                 "consensus":     consensus_snapshot,
                 "skip_stats":    skip_snapshot,
+                "scan_stats":    scan_snapshot,
                 "equity_history": _equity_history,
             }, indent=2))
         except Exception:
