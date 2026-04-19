@@ -22,6 +22,11 @@ import websocket
 from py_clob_client.client import ClobClient
 from py_clob_client.clob_types import OrderArgs, BalanceAllowanceParams, AssetType
 from py_clob_client.order_builder.constants import BUY, SELL
+try:
+    from strategy_consensus import ArbitrageAgent, ConvergenceAgent, WhaleCopyAgent
+    _CONSENSUS_OK = True
+except Exception:
+    _CONSENSUS_OK = False
 
 # ── LOGGING ───────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s', datefmt='%H:%M:%S')
@@ -37,6 +42,12 @@ try:
 except Exception:
     pass
 
+# Fast mode only increases scan cadence; risk caps and filters remain unchanged.
+_FAST_MODE = os.environ.get("POLY_FAST_MODE", "1").strip().lower() not in ("0", "false", "no", "off")
+
+def _pace(normal, fast):
+    return fast if _FAST_MODE else normal
+
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 CFG = {
     "dry_run":         False,
@@ -47,8 +58,8 @@ CFG = {
 
     # UPDN — only trade when market AGREES with our signal (proven from trade history)
     # Losses at 0.30-0.44, wins at 0.55+. Market calibration > Binance signal alone.
-    "updn_max_price":  0.82,   # skip if already 82%+ priced in (diminishing ROI)
-    "updn_min_price":  0.55,   # HARD FLOOR: market must price our direction at 55%+
+    "updn_max_price":  0.88,   # soft cap guidance; timeframe caps below are authoritative
+    "updn_min_price":  0.52,   # slightly wider acceptance while keeping market-agreement guard
 
     # WEATHER
     "wx_buy_under":    0.20,   # buy YES when price < 20¢ and forecast says it'll happen
@@ -59,9 +70,36 @@ CFG = {
 
     # LIVE (6-min rule)
     "live_max_mins":   6.0,
-    "live_min_leader": 0.78,   # leader priced ≥78%
-    "live_max_leader": 0.97,   # not yet fully resolved
+    "live_min_leader": 0.75,   # slightly wider for more opportunities
+    "live_max_leader": 0.985,  # still avoids near-resolved tails
     "live_min_liq":    500,    # min $500 liquidity — low liq = bad fills + high price impact
+
+    # SPORT
+    "sports_min_leader": 0.88,
+    "sports_max_leader": 0.985,
+
+    # NEAR
+    "near_min_vol24":  1000,
+    "near_prefilter_vol24": 500,
+    "near_min_liq":    500,
+    "near_min_leader": 0.70,
+    "near_max_leader": 0.92,
+    "near_min_days":   0.25,
+    "near_max_days":   3.0,
+    "near_prefilter_limit": 150,
+    "near_blacklist_sec": 900,
+    "near_vol_skip_blacklist_hits": 8,
+
+    # WEATHER / POLITICS category expansion
+    "wx_scan_sleep_sec": _pace(120, 45),
+    "politics_min_liq":  2000,
+    "politics_min_vol24": 8000,
+    "politics_min_leader": 0.68,
+    "politics_max_leader": 0.93,
+    "politics_min_hours": 1,
+    "politics_max_hours": 14 * 24,
+    "politics_scan_sleep_sec": _pace(20, 8),
+    "politics_cooldown_sec": 2 * 3600,
 
     # DRIFT — momentum on top liquid markets
     "drift_min_move":  0.025,  # 2.5% price drift required
@@ -74,6 +112,19 @@ CFG = {
     "ws_url":          "wss://ws-subscriptions-clob.polymarket.com/ws/market",
     "lookback":        20,
     "momentum_thresh": 0.04,
+
+    # Loop pacing (faster polling does NOT change risk sizing/halts)
+    "updn_cache_refresh_sec": _pace(90, 45),
+    "updn_slug_fetch_gap_sec": _pace(0.05, 0.03),
+    "updn_scan_sleep_sec": _pace(5, 2),
+    "live_scan_sleep_sec": _pace(5, 2),
+    "sports_scan_sleep_sec": _pace(10, 4),
+    "near_scan_sleep_sec": _pace(180, 45),
+    "copy_scan_sleep_sec": _pace(15, 5),
+    "copy_wallets_per_scan": max(1, int(_pace(1, 3))),
+    "status_sleep_sec": _pace(10, 5),
+    "server_watchdog_sleep_sec": _pace(30, 15),
+    "ws_reconnect_sleep_sec": _pace(5, 2),
 }
 
 # ── PROXY SETUP ───────────────────────────────────────────────────────────────
@@ -322,14 +373,14 @@ UPDN_TF = {
     # 5m DISABLED — 60% win rate, too low. All losses came from 5m at cheap prices.
     # "5m": { ... }
 
-    # 15m: 68% base → 75%+ with 0.25% min edge + 0.55 price floor (was 0.40%)
+    # 15m: loosened for a low-vol regime while preserving market-agreement price checks.
     "15m": {
         "interval_min":  15,
-        "window_min":    1.5,
-        "window_max":    3.5,
+        "window_min":    1.0,
+        "window_max":    4.5,
         "bin_interval":  "1m",
-        "min_edge":      0.0025,  # 0.25% — balanced between signal and frequency
-        "max_price":     0.82,
+        "min_edge":      0.0015,  # 0.15% — targeted loosen after repeated edge-low starvation
+        "max_price":     0.88,
         "slug_rnd":      15,
     },
     # 1h: new timeframe — 50+ min confirmed move, enter last 5-10 min
@@ -338,18 +389,18 @@ UPDN_TF = {
         "window_min":    5,
         "window_max":    10,
         "bin_interval":  "5m",
-        "min_edge":      0.0050,  # 0.5% over 1h is a clear directional signal
-        "max_price":     0.81,
+        "min_edge":      0.0040,  # 0.4% over 1h keeps directionality while increasing candidates
+        "max_price":     0.87,
         "slug_rnd":      60,
     },
     # 4h: 75%+ base win rate — require strong sustained trend
     "4h": {
         "interval_min":  240,
-        "window_min":    30,
-        "window_max":    60,
+        "window_min":    20,
+        "window_max":    75,
         "bin_interval":  "15m",
-        "min_edge":      0.0050,  # 0.5% over 4h — sustained, still strong (was 0.80%)
-        "max_price":     0.80,
+        "min_edge":      0.0040,  # 0.4% over 4h — still requires sustained trend
+        "max_price":     0.86,
         "slug_rnd":      240,
     },
 }
@@ -438,7 +489,7 @@ def _refresh_updn_cache():
             for slug_key, sym in UPDN_CRYPTOS.items():
                 slug = f"{slug_key}-updown-{tf_key}-{ts}"
                 d    = fetch(f"https://gamma-api.polymarket.com/markets?slug={slug}")
-                time.sleep(0.05)  # 50ms between calls — ~60 calls/refresh → 3s total, avoids rate limit
+                time.sleep(CFG["updn_slug_fetch_gap_sec"])
                 if not d:
                     continue
                 for m in (d if isinstance(d, list) else d.get("markets", [])):
@@ -482,12 +533,14 @@ def updn_scan():
             mins_left = (end_dt - now).total_seconds() / 60
 
             if not (tf_cfg["window_min"] <= mins_left <= tf_cfg["window_max"]):
+                _skip_record(f"UPDN/{tf_key}", "out_of_window")
                 continue
 
             sym      = entry["sym"]
             outcomes = entry["outcomes"]
             toks     = entry["toks"]
             if len(toks) < 2:
+                _skip_record(f"UPDN/{tf_key}", "missing_tokens")
                 continue
 
             try:
@@ -499,6 +552,7 @@ def updn_scan():
             elapsed_min = max(1, round(tf_cfg["interval_min"] - mins_left))
             change      = binance_change(sym, elapsed_min, tf_cfg["bin_interval"])
             if abs(change) < 0.00005:
+                _skip_record(f"UPDN/{tf_key}", "flat")
                 continue   # truly flat
 
             direction = "Up" if change > 0 else "Down"
@@ -507,6 +561,7 @@ def updn_scan():
 
             # Edge check — must clear the per-timeframe minimum move
             if abs(change) < tf_cfg["min_edge"]:
+                _skip_record(f"UPDN/{tf_key}", "edge_low")
                 log.info(f"[UPDN/{tf_key}] {sym} {direction} {change*100:+.3f}% < {tf_cfg['min_edge']*100:.2f}% needed — skip")
                 continue
 
@@ -517,9 +572,11 @@ def updn_scan():
                 live_price = float(cached_prices[bet_i]) if len(cached_prices) > bet_i else 0.5
 
             if live_price > tf_cfg["max_price"]:
+                _skip_record(f"UPDN/{tf_key}", "priced_in")
                 log.info(f"[UPDN/{tf_key}] {sym} {direction}@{live_price:.2f} priced in — skip")
                 continue
             if live_price < CFG["updn_min_price"]:
+                _skip_record(f"UPDN/{tf_key}", "market_disagrees")
                 log.info(f"[UPDN/{tf_key}] {sym} {direction}@{live_price:.2f} market disagrees — skip")
                 continue
 
@@ -556,13 +613,13 @@ def updn_loop():
     _refresh_updn_cache()   # blocking load on startup (need cache before first scan)
     while True:
         try:
-            # Kick off async refresh every 90s — scan continues uninterrupted using old cache
-            if time.time() - _updn_cache_ts > 90:
+            # Kick off async refresh periodically — scan continues uninterrupted using old cache
+            if time.time() - _updn_cache_ts > CFG["updn_cache_refresh_sec"]:
                 _refresh_updn_cache_async()
             updn_scan()
         except Exception as e:
             log.error(f"[UPDN] loop: {e}")
-        time.sleep(5)
+        time.sleep(CFG["updn_scan_sleep_sec"])
 
 # ── ENGINE 2: WEATHER MARKETS ─────────────────────────────────────────────────
 # Strategy documented: $1K → $24K buying when price <15¢, selling at 45¢.
@@ -649,6 +706,61 @@ def whale_in_market(token_id: str) -> bool:
         return False
     holders = {str(p.get("proxyWallet", "") or p.get("user", "")).lower() for p in data}
     return bool(holders & _target_wallets)
+
+_whale_token_cache = {}  # token_id -> (ts, bool)
+
+def whale_in_market_cached(token_id: str, ttl_sec: float = 90.0) -> bool:
+    now = time.time()
+    cached = _whale_token_cache.get(token_id)
+    if cached and now - cached[0] < ttl_sec:
+        return cached[1]
+    val = whale_in_market(token_id)
+    _whale_token_cache[token_id] = (now, val)
+    return val
+
+_consensus_agents = [ArbitrageAgent(), ConvergenceAgent(), WhaleCopyAgent(delay_seconds=60)] if _CONSENSUS_OK else []
+_consensus_stats_lock = threading.Lock()
+_consensus_stats = {
+    "POL":  {"evaluated": 0, "full": 0, "half": 0, "skip": 0, "passthrough": 0},
+    "LIVE": {"evaluated": 0, "full": 0, "half": 0, "skip": 0, "passthrough": 0},
+    "NEAR": {"evaluated": 0, "full": 0, "half": 0, "skip": 0, "passthrough": 0},
+}
+_skip_stats_lock = threading.Lock()
+_skip_stats = defaultdict(lambda: defaultdict(int))
+
+def _skip_record(engine: str, reason: str, count: int = 1):
+    with _skip_stats_lock:
+        _skip_stats[engine][reason] += count
+
+def _consensus_record(engine: str, size_factor: float, reason: str):
+    with _consensus_stats_lock:
+        s = _consensus_stats.setdefault(engine, {"evaluated": 0, "full": 0, "half": 0, "skip": 0, "passthrough": 0})
+        s["evaluated"] += 1
+        r = (reason or "").lower()
+        if "pass-through" in r:
+            s["passthrough"] += 1
+        elif size_factor >= 1:
+            s["full"] += 1
+        elif size_factor > 0:
+            s["half"] += 1
+        else:
+            s["skip"] += 1
+
+def consensus_decision(market_payload: dict):
+    """Return (size_factor, p_win, reason). size_factor is 0, 0.5, or 1.0."""
+    if not _consensus_agents:
+        return 1.0, 0.0, "consensus module unavailable — pass-through"
+
+    votes = [agent.evaluate(market_payload) for agent in _consensus_agents]
+    buy_votes = [v for v in votes if v.get("action") == "BUY"]
+    buy_count = len(buy_votes)
+    p_win = sum(float(v.get("confidence", 0.5)) for v in buy_votes) / buy_count if buy_count else 0.0
+
+    if buy_count >= 2:
+        return 1.0, p_win, "2+ BUY votes"
+    if buy_count == 1:
+        return 0.5, p_win, "1 BUY vote"
+    return 0.0, 0.0, "agents disagree"
 
 def openmeteo(lat: float, lon: float) -> dict:
     url = (f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
@@ -770,7 +882,115 @@ def wx_loop():
             wx_scan()
         except Exception as e:
             log.error(f"[WX] loop: {e}")
-        time.sleep(120)
+        time.sleep(CFG["wx_scan_sleep_sec"])
+
+# ── ENGINE: POLITICS — HIGH-LIQUIDITY DIRECTIONAL FOLLOW ─────────────────────
+_politics_traded = {}   # token_id -> last trade ts
+_POLITICS_KEYWORDS = (
+    "election", "president", "senate", "congress", "governor", "mayor",
+    "primary", "nominee", "parliament", "poll", "white house", "trump", "biden",
+)
+
+def politics_scan():
+    now = datetime.now(timezone.utc)
+    markets = _fetch_live_markets(max_age=12)
+    if not markets:
+        return
+
+    for m in markets:
+        try:
+            cid = m.get("conditionId") or m.get("id") or ""
+            if not cid:
+                continue
+
+            q = (m.get("question") or "")
+            q_low = q.lower()
+            if not any(k in q_low for k in _POLITICS_KEYWORDS):
+                continue
+
+            end_str = m.get("endDate") or ""
+            if not end_str:
+                continue
+            end_dt = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            hours_left = (end_dt - now).total_seconds() / 3600
+            if not (CFG["politics_min_hours"] <= hours_left <= CFG["politics_max_hours"]):
+                continue
+
+            liq = float(m.get("liquidity", 0) or 0)
+            vol24 = float(m.get("volume24hr", 0) or 0)
+            if liq < CFG["politics_min_liq"] or vol24 < CFG["politics_min_vol24"]:
+                _skip_record("POL", "liq_or_vol_low")
+                continue
+
+            prices = parse_prices(m)
+            toks = parse_tokens(m)
+            if len(prices) < 2 or len(toks) < 2:
+                continue
+
+            leader_price = max(float(prices[0]), float(prices[1]))
+            if not (CFG["politics_min_leader"] <= leader_price <= CFG["politics_max_leader"]):
+                _skip_record("POL", "leader_out_of_band")
+                continue
+
+            leader_i = 0 if float(prices[0]) >= float(prices[1]) else 1
+            token_id = toks[leader_i]
+            if token_id in open_positions:
+                _skip_record("POL", "already_open")
+                continue
+            if time.time() - _politics_traded.get(token_id, 0) < CFG["politics_cooldown_sec"]:
+                _skip_record("POL", "cooldown")
+                continue
+
+            live_price = clob_mid(token_id)
+            if live_price <= 0:
+                live_price = leader_price
+            if not (CFG["politics_min_leader"] <= live_price <= CFG["politics_max_leader"]):
+                _skip_record("POL", "clob_out_of_band")
+                continue
+
+            # Consensus gate across arbitrage/convergence/whale-copy agents.
+            # Fail-open to current behavior if consensus module/import is unavailable.
+            arb_gap = abs((float(prices[0]) + float(prices[1])) - 1.0)
+            whale_signal = whale_in_market_cached(token_id)
+            market_payload = {
+                "question": q,
+                "midpoint": live_price,
+                "estimate": leader_price,
+                "arb_gap": arb_gap,
+                "whale_signal": whale_signal,
+                "whale_confidence": 0.79 if whale_signal else 0.5,
+            }
+            size_factor, p_win, c_reason = consensus_decision(market_payload)
+            _consensus_record("POL", size_factor, c_reason)
+            if size_factor <= 0:
+                _skip_record("POL", "consensus_skip")
+                log.info(f"[POL] consensus skip — {c_reason} | {(q or '')[:60]}")
+                continue
+
+            outcomes = parse_outcomes(m)
+            side = outcomes[leader_i] if leader_i < len(outcomes) else ("YES" if leader_i == 0 else "NO")
+            roi = (1 - live_price) / max(live_price, 0.01) * 100
+
+            mode = "FULL" if size_factor >= 1 else "HALF"
+            log.info(f"[POL] {mode} {side} @ {live_price:.2f} +{roi:.1f}%ROI liq=${liq:,.0f} vol=${vol24:,.0f} | {(q or '')[:60]}")
+            tg(f"POL {mode} {side} @ {live_price:.0%} +{roi:.1f}%ROI | {(q or '')[:60]}", "POL")
+
+            size_usd = CFG["max_usd"] * size_factor
+            place_order(token_id, live_price, size_usd, (q or "")[:60], "POL", p_win=p_win)
+            _politics_traded[token_id] = time.time()
+            return  # one trade per scan
+
+        except Exception as e:
+            log.error(f"[POL] {e}")
+
+def politics_loop():
+    log.info("[POL] Started — politics directional follow | high liq/vol only")
+    while True:
+        try:
+            politics_scan()
+        except Exception as e:
+            log.error(f"[POL] loop: {e}")
+        time.sleep(CFG["politics_scan_sleep_sec"])
 
 # ── ENGINE 3: LIVE / 4-MIN RULE ───────────────────────────────────────────────
 # Bet on the leading side (82–96%) of ANY binary market closing in ≤4 min.
@@ -829,14 +1049,17 @@ def live_scan():
             leader_i     = prices.index(leader_price)
 
             if not (CFG["live_min_leader"] <= leader_price <= CFG["live_max_leader"]):
+                _skip_record("LIVE", "leader_out_of_band")
                 continue
 
             liq = float(m.get("liquidity", 0) or 0)
             if liq < CFG["live_min_liq"]:
+                _skip_record("LIVE", "liq_low")
                 continue
 
             token_id = toks[leader_i]
             if token_id in open_positions:
+                _skip_record("LIVE", "already_open")
                 continue
 
             q = (m.get("question") or "")[:60]
@@ -847,16 +1070,37 @@ def live_scan():
                 live_price = leader_price   # fallback to gamma
             # Re-check price bounds with live price
             if not (CFG["live_min_leader"] <= live_price <= CFG["live_max_leader"]):
+                _skip_record("LIVE", "clob_out_of_band")
                 log.info(f"[LIVE] {q[:40]} — CLOB {live_price:.2f} outside bounds, skip")
                 continue
 
+            arb_gap = abs((float(prices[0]) + float(prices[1])) - 1.0)
+            whale_signal = whale_in_market_cached(token_id)
+            est = min(0.99, live_price + max(0.01, (CFG["live_max_leader"] - live_price) * 0.35))
+            market_payload = {
+                "question": q,
+                "midpoint": live_price,
+                "estimate": est,
+                "arb_gap": arb_gap,
+                "whale_signal": whale_signal,
+                "whale_confidence": 0.79 if whale_signal else 0.5,
+            }
+            size_factor, p_win, c_reason = consensus_decision(market_payload)
+            _consensus_record("LIVE", size_factor, c_reason)
+            if size_factor <= 0:
+                _skip_record("LIVE", "consensus_skip")
+                log.info(f"[LIVE] consensus skip — {c_reason} | {q[:50]}")
+                continue
+
             roi = (1 - live_price) / live_price * 100
+            mode = "FULL" if size_factor >= 1 else "HALF"
 
-            log.info(f"[LIVE] {mins_left:.1f}min | CLOB @ {live_price:.2f} +{roi:.1f}%ROI "
+            log.info(f"[LIVE] {mode} {mins_left:.1f}min | CLOB @ {live_price:.2f} +{roi:.1f}%ROI "
                      f"| liq=${liq:,.0f} | {q}")
-            tg(f"LIVE {outcomes[leader_i]} @ {live_price:.0%} +{roi:.1f}%ROI | {mins_left:.1f}min | {q}", "FOUR")
+            tg(f"LIVE {mode} {outcomes[leader_i]} @ {live_price:.0%} +{roi:.1f}%ROI | {mins_left:.1f}min | {q}", "FOUR")
 
-            place_order(token_id, live_price, CFG["max_usd"], q, "FOUR")
+            size_usd = CFG["max_usd"] * size_factor
+            place_order(token_id, live_price, size_usd, q, "FOUR", p_win=p_win)
             _live_traded.add(cid)
             return   # one trade per scan — prevents draining balance in one pass
 
@@ -874,7 +1118,7 @@ def live_loop():
             live_scan()
         except Exception as e:
             log.error(f"[LIVE] loop: {e}")
-        time.sleep(5)
+        time.sleep(CFG["live_scan_sleep_sec"])
 
 # ── ENGINE 4: DRIFT — MOMENTUM ON LIQUID MARKETS ──────────────────────────────
 # Works 24/7 on whatever is liquid. Polls top 20 markets every 5 min.
@@ -1132,8 +1376,8 @@ def sports_scan():
             leader_price = max(prices[0], prices[1])
             leader_i     = prices.index(leader_price)
 
-            # For this engine: require very high conviction (90-98%)
-            if not (0.90 <= leader_price <= 0.98):
+            # For this engine: high conviction, slightly widened for throughput
+            if not (CFG["sports_min_leader"] <= leader_price <= CFG["sports_max_leader"]):
                 continue
 
             token_id = toks[leader_i]
@@ -1166,7 +1410,7 @@ def sports_loop():
             sports_scan()
         except Exception as e:
             log.error(f"[SPORT] loop: {e}")
-        time.sleep(10)
+        time.sleep(CFG["sports_scan_sleep_sec"])
 
 # ── ENGINE 5: NEAR — HIGH-CONVICTION DIRECTIONAL BIAS ─────────────────────────
 # Scans top liquid markets RIGHT NOW. If a market has a strong directional bias
@@ -1192,6 +1436,34 @@ def near_scan():
     if not markets:
         return
 
+    now_dt = datetime.now(timezone.utc)
+    near_candidates = []
+    for market in markets:
+        try:
+            q_low = (market.get("question") or "").lower()
+            if any(bk in q_low for bk in BANNED_KEYWORDS):
+                continue
+            end_str = market.get("endDate") or ""
+            if not end_str:
+                continue
+            end_dt = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            days_left = (end_dt - now_dt).total_seconds() / 86400
+            if not (CFG["near_min_days"] <= days_left <= CFG["near_max_days"]):
+                continue
+            liq = float(market.get("liquidity", 0) or 0)
+            if liq < CFG["near_min_liq"]:
+                continue
+            vol24 = float(market.get("volume24hr", 0) or 0)
+            if vol24 < CFG["near_prefilter_vol24"]:
+                continue
+            score = vol24 + liq * 0.25
+            near_candidates.append((score, market))
+        except Exception:
+            continue
+    markets = [market for _, market in sorted(near_candidates, key=lambda item: item[0], reverse=True)[:CFG["near_prefilter_limit"]]]
+    if not markets:
+        return
+
     # Purge expired blacklist entries
     for k in [k for k, exp in list(_near_blacklist.items()) if now > exp]:
         del _near_blacklist[k]
@@ -1205,6 +1477,7 @@ def near_scan():
 
             # Skip blacklisted markets (repeatedly filtered — find better ones)
             if cid in _near_blacklist:
+                _skip_record("NEAR", "blacklisted")
                 continue
 
             q_low = (m.get("question") or "").lower()
@@ -1212,19 +1485,22 @@ def near_scan():
                 continue
 
             vol24 = float(m.get("volume24hr", 0) or 0)
-            if vol24 < 5000:   # raised from $2K — high volume = real conviction signal
+            if vol24 < CFG["near_min_vol24"]:
+                _skip_record("NEAR", "vol_low")
                 _near_skip_count[cid] += 1
-                if _near_skip_count[cid] >= 4:
-                    _near_blacklist[cid] = now + 1800
-                    log.info(f"[NEAR] Blacklisted vol-low market for 30min | {q_low[:50]}")
+                if _near_skip_count[cid] >= CFG["near_vol_skip_blacklist_hits"]:
+                    _near_blacklist[cid] = now + CFG["near_blacklist_sec"]
+                    mins = max(1, int(CFG["near_blacklist_sec"] // 60))
+                    log.info(f"[NEAR] Blacklisted vol-low market for {mins}min | {q_low[:50]}")
                 continue
 
             end_str = m.get("endDate") or ""
             if not end_str:
                 continue
             end_dt   = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
-            days_left = (end_dt - datetime.now(timezone.utc)).total_seconds() / 86400
-            if days_left < 0.25 or days_left > 7:  # 6h–7d: short enough to limit reversal risk
+            days_left = (end_dt - now_dt).total_seconds() / 86400
+            if days_left < CFG["near_min_days"] or days_left > CFG["near_max_days"]:
+                _skip_record("NEAR", "horizon_out_of_band")
                 continue
 
             prices = parse_prices(m)
@@ -1235,19 +1511,21 @@ def near_scan():
             yes_p   = float(prices[0])
             no_p    = float(prices[1])
             liq     = float(m.get("liquidity", 0) or 0)
-            if liq < 500:
+            if liq < CFG["near_min_liq"]:
+                _skip_record("NEAR", "liq_low")
                 _near_skip_count[cid] += 1
                 if _near_skip_count[cid] >= 4:
                     _near_blacklist[cid] = now + 1800
                     log.info(f"[NEAR] Blacklisted liq-low market for 30min | {q_low[:50]}")
                 continue
 
-            # Raised floor from 60% to 72% — reduces low-confidence noise trades
-            if 0.72 <= yes_p <= 0.88:
+            # High-conviction directional band, slightly widened for throughput
+            if CFG["near_min_leader"] <= yes_p <= CFG["near_max_leader"]:
                 bet_tid, bet_price, side = toks[0], yes_p, "YES"
-            elif 0.72 <= no_p <= 0.88:
+            elif CFG["near_min_leader"] <= no_p <= CFG["near_max_leader"]:
                 bet_tid, bet_price, side = toks[1], no_p, "NO"
             else:
+                _skip_record("NEAR", "leader_out_of_band")
                 _near_skip_count[cid] += 1
                 if _near_skip_count[cid] >= 6:
                     _near_blacklist[cid] = now + 1800
@@ -1257,9 +1535,11 @@ def near_scan():
             # Verify tight spread on CLOB (liquid enough to enter/exit)
             mid = clob_mid(bet_tid)
             if mid <= 0:
+                _skip_record("NEAR", "mid_unavailable")
                 continue
             spread_ratio = abs(mid - bet_price) / max(bet_price, 0.01)
             if spread_ratio > 0.05:   # mid must be within 5% of gamma price
+                _skip_record("NEAR", "wide_gap")
                 _near_skip_count[cid] += 1
                 if _near_skip_count[cid] >= 4:
                     _near_blacklist[cid] = now + 1800
@@ -1268,16 +1548,38 @@ def near_scan():
 
             # Cooldown: 4 hours per token
             if now - _near_traded.get(bet_tid, 0) < 14400:
+                _skip_record("NEAR", "cooldown")
                 continue
             if bet_tid in open_positions:
+                _skip_record("NEAR", "already_open")
+                continue
+
+            arb_gap = abs((yes_p + no_p) - 1.0)
+            whale_signal = whale_in_market_cached(bet_tid)
+            est = min(0.99, bet_price + 0.06)
+            market_payload = {
+                "question": (m.get("question") or "")[:200],
+                "midpoint": bet_price,
+                "estimate": est,
+                "arb_gap": arb_gap,
+                "whale_signal": whale_signal,
+                "whale_confidence": 0.79 if whale_signal else 0.5,
+            }
+            size_factor, p_win, c_reason = consensus_decision(market_payload)
+            _consensus_record("NEAR", size_factor, c_reason)
+            if size_factor <= 0:
+                _skip_record("NEAR", "consensus_skip")
+                log.info(f"[NEAR] consensus skip — {c_reason} | {(m.get('question') or '')[:50]}")
                 continue
 
             roi = (1 - bet_price) / bet_price * 100
             q   = (m.get("question") or "")[:60]
-            log.info(f"[NEAR] {side} @ {bet_price:.2f} +{roi:.0f}%ROI liq=${liq:,.0f} vol=${vol24:,.0f} | {q}")
-            tg(f"NEAR {side} @ {bet_price:.2f} +{roi:.0f}%ROI | vol=${vol24:,.0f} | {q}", "NEAR")
+            mode = "FULL" if size_factor >= 1 else "HALF"
+            log.info(f"[NEAR] {mode} {side} @ {bet_price:.2f} +{roi:.0f}%ROI liq=${liq:,.0f} vol=${vol24:,.0f} | {q}")
+            tg(f"NEAR {mode} {side} @ {bet_price:.2f} +{roi:.0f}%ROI | vol=${vol24:,.0f} | {q}", "NEAR")
 
-            place_order(bet_tid, bet_price, CFG["max_usd"], q, "NEAR")
+            size_usd = CFG["max_usd"] * size_factor
+            place_order(bet_tid, bet_price, size_usd, q, "NEAR", p_win=p_win)
             _near_traded[bet_tid] = now
             _near_skip_count[cid] = 0   # reset on trade
             return  # one trade per scan cycle
@@ -1286,13 +1588,13 @@ def near_scan():
             log.error(f"[NEAR] {e}")
 
 def near_loop():
-    log.info("[NEAR] Started — high-conviction bias on top-volume markets | 60-88% leader")
+    log.info(f"[NEAR] Started — high-conviction bias on top-volume markets | {CFG['near_min_leader']:.0%}-{CFG['near_max_leader']:.0%} leader")
     while True:
         try:
             near_scan()
         except Exception as e:
             log.error(f"[NEAR] loop: {e}")
-        time.sleep(180)   # every 3 minutes
+        time.sleep(CFG["near_scan_sleep_sec"])
 
 # ── ENGINE 8: AUTO-REDEMPTION — CLAIM WON POSITIONS FOR USDC ─────────────────
 # Polymarket settles most positions automatically, but some require an on-chain
@@ -1697,10 +1999,11 @@ def copy_loop():
             if time.time() - last_refresh > 4 * 3600:
                 _refresh_whale_list()
                 last_refresh = time.time()
-            copy_scan()
+            for _ in range(CFG["copy_wallets_per_scan"]):
+                copy_scan()
         except Exception as e:
             log.error(f"[COPY] loop: {e}")
-        time.sleep(15)   # check one wallet per 15s — faster reaction to whale moves
+        time.sleep(CFG["copy_scan_sleep_sec"])
 
 def top_tokens(n=50):
     tokens = []
@@ -1838,8 +2141,8 @@ def ws_loop():
                         os.environ[k] = v
         except Exception as e:
             log.error(f"[WS] crashed: {e}")
-        log.info("[WS] Reconnecting in 5s...")
-        time.sleep(5)
+        log.info(f"[WS] Reconnecting in {CFG['ws_reconnect_sleep_sec']:.0f}s...")
+        time.sleep(CFG["ws_reconnect_sleep_sec"])
 
 # ── SERVER WATCHDOG ───────────────────────────────────────────────────────────
 _server_proc = None
@@ -1860,7 +2163,7 @@ def server_watchdog():
                 log.info(f"[SERVER] Started PID {_server_proc.pid}")
         except Exception as e:
             log.error(f"[SERVER] watchdog: {e}")
-        time.sleep(30)
+        time.sleep(CFG["server_watchdog_sleep_sec"])
 
 # ── STATUS LOOP ───────────────────────────────────────────────────────────────
 def _load_equity_history():
@@ -1878,7 +2181,7 @@ _last_day = datetime.now(timezone.utc).date()
 def status_loop():
     global _equity_history, _last_day, _cached_portfolio_val, _cached_portfolio_ts
     while True:
-        time.sleep(10)
+        time.sleep(CFG["status_sleep_sec"])
         # Daily reset check
         today = datetime.now(timezone.utc).date()
         if today != _last_day:
@@ -1934,6 +2237,10 @@ def status_loop():
                     "pnl_pct":  pnl_pct,
                     "size":     round(float(p.get("size", 0)), 2),
                 })
+            with _consensus_stats_lock:
+                consensus_snapshot = json.loads(json.dumps(_consensus_stats))
+            with _skip_stats_lock:
+                skip_snapshot = json.loads(json.dumps(_skip_stats))
             STATUS_FILE.write_text(json.dumps({
                 "updated":       datetime.now(timezone.utc).strftime("%H:%M:%S"),
                 "balance":       round(val or 0, 4),
@@ -1948,6 +2255,8 @@ def status_loop():
                 "mode":          "DRY RUN" if CFG["dry_run"] else "LIVE",
                 "ws_subscribed": len(WATCHED_TOKENS),
                 "ws_active":     len(price_history),
+                "consensus":     consensus_snapshot,
+                "skip_stats":    skip_snapshot,
                 "equity_history": _equity_history,
             }, indent=2))
         except Exception:
@@ -1967,13 +2276,15 @@ if __name__ == "__main__":
     atexit.register(lambda: LOCK_FILE.unlink(missing_ok=True))
 
     log.info("=" * 55)
-    log.info("POLY//BOT v7 — LIVE  [6 active engines]")
-    log.info("  E1: UPDN  — 15m/1h/4h crypto, 0.25%/0.5%/0.5% edge, price≥0.55")
-    log.info("  E2: LIVE  — any binary ≤6min, leader 78-97%, $500 liq  [5s]")
-    log.info("  E3: SPORT — sports/UPDN 6-45min, 90-98% conviction     [10s]")
-    log.info("  E4: NEAR  — 72-88% leader, $5K vol, ≤7d horizon        [3min]")
-    log.info("  E5: COPY  — 46 whales, $50+ trades, 15s scan           [live]")
+    log.info("POLY//BOT v7 — LIVE  [8 active engines]")
+    log.info(f"  E1: UPDN  — 15m/1h/4h crypto, {UPDN_TF['15m']['min_edge']*100:.2f}%/{UPDN_TF['1h']['min_edge']*100:.2f}%/{UPDN_TF['4h']['min_edge']*100:.2f}% edge, price≥{CFG['updn_min_price']:.2f}")
+    log.info(f"  E2: LIVE  — any binary ≤6min, leader {CFG['live_min_leader']:.0%}-{CFG['live_max_leader']:.1%}, $500 liq  [{CFG['live_scan_sleep_sec']:g}s]")
+    log.info(f"  E3: SPORT — sports/UPDN 6-45min, {CFG['sports_min_leader']:.0%}-{CFG['sports_max_leader']:.1%} conviction     [{CFG['sports_scan_sleep_sec']:g}s]")
+    log.info(f"  E4: NEAR  — {CFG['near_min_leader']:.0%}-{CFG['near_max_leader']:.0%} leader, ${CFG['near_min_vol24']/1000:.0f}K vol, ≤{CFG['near_max_days']:.0f}d horizon        [{CFG['near_scan_sleep_sec']/60:.2g}m]")
+    log.info(f"  E5: COPY  — 46 whales, $50+ trades, {CFG['copy_scan_sleep_sec']:g}s scan x{CFG['copy_wallets_per_scan']} wallets")
     log.info("  E6: MTUM  — WebSocket momentum, top 50 markets         [live]")
+    log.info(f"  E7: WX    — weather forecast edge, cheap entries        [{CFG['wx_scan_sleep_sec']:g}s]")
+    log.info(f"  E8: POL   — politics directional, high liq/vol          [{CFG['politics_scan_sleep_sec']:g}s]")
     log.info(f"  Positions: {CFG['max_positions']} max (COPY≤2, UPDN≤3) | Max/trade: ${CFG['max_usd']} | Halt: {CFG['daily_halt_pct']*100:.0f}%")
     log.info("=" * 55)
 
@@ -1987,6 +2298,8 @@ if __name__ == "__main__":
         (sports_loop,    "sport"),       # 6-45min sports/UPDN, 90-98% conviction
         (near_loop,      "near"),        # 72-88% leader, $5K vol, ≤7 days, CLOB verified
         (copy_loop,      "copy"),        # active whales, refreshed every 4h, 15s scan
+        (wx_loop,        "wx"),
+        (politics_loop,  "pol"),
         (redeem_loop,    "redeem"),
         (server_watchdog,"server"),
         (ws_order_worker,"mtum-orders"),

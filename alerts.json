@@ -1,5 +1,10 @@
 [
   {
+    "time": "23:00:11",
+    "level": "UPDN",
+    "msg": "UPDN/4h BNB: -0.906% \u2192 Down @ 64% +55.0% | 60.0min"
+  },
+  {
     "time": "21:04:03",
     "level": "UPDN",
     "msg": "UPDN/5m ETH: -0.133% \u2192 Down @ 54% +86.9% | 1.0min"
@@ -993,10 +998,5 @@
     "time": "20:45:36",
     "level": "UPDN",
     "msg": "5MIN SOL: +0.093% \u2192 Up @ 82% +21.2% | 4.5min"
-  },
-  {
-    "time": "20:45:34",
-    "level": "UPDN",
-    "msg": "5MIN ETH: +0.100% \u2192 Up @ 88% +14.3% | 4.5min"
   }
 ]
