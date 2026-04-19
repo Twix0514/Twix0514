@@ -68,6 +68,7 @@ Instructions for AI coding agents working in this repository.
 - Custom agent spec: [.github/agents/trading-change-risk-reviewer.md](.github/agents/trading-change-risk-reviewer.md)
 - Custom agent spec: [.github/agents/dependency-drift-checker.md](.github/agents/dependency-drift-checker.md)
 - Instruction: [.github/instructions/commit-and-release-hygiene.md](.github/instructions/commit-and-release-hygiene.md)
+- Instruction: [.github/instructions/customization-routing-guide.md](.github/instructions/customization-routing-guide.md)
 - Prompt: [.github/prompts/incident-triage.prompt.md](.github/prompts/incident-triage.prompt.md)
 - Prompt: [.github/prompts/dependency-drift-check.prompt.md](.github/prompts/dependency-drift-check.prompt.md)
 - Prompt: [.github/prompts/watchdog-lock-recovery.prompt.md](.github/prompts/watchdog-lock-recovery.prompt.md)
