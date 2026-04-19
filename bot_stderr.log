@@ -794,3 +794,67 @@
 18:52:26 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
 18:52:37 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
 18:52:37 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:55:25 [INFO] HTTP Request: POST https://clob.polymarket.com/auth/api-key "HTTP/2 400 Bad Request"
+18:55:25 [INFO] HTTP Request: GET https://clob.polymarket.com/auth/derive-api-key "HTTP/2 200 OK"
+18:55:25 [INFO] [AUTH] API creds derived
+18:55:25 [INFO] =======================================================
+18:55:25 [INFO] POLY//BOT v7 — LIVE  [6 active engines]
+18:55:25 [INFO]   E1: UPDN  — 15m/1h/4h crypto, 0.25%/0.5%/0.5% edge, price\u22650.55
+18:55:25 [INFO]   E2: LIVE  — any binary \u22646min, leader 78-97%, $500 liq  [5s]
+18:55:25 [INFO]   E3: SPORT — sports/UPDN 6-45min, 90-98% conviction     [10s]
+18:55:25 [INFO]   E4: NEAR  — 72-88% leader, $5K vol, \u22647d horizon        [3min]
+18:55:25 [INFO]   E5: COPY  — 46 whales, $50+ trades, 15s scan           [live]
+18:55:25 [INFO]   E6: MTUM  — WebSocket momentum, top 50 markets         [live]
+18:55:25 [INFO]   Positions: 6 max (COPY\u22642, UPDN\u22643) | Max/trade: $0.75 | Halt: -15%
+18:55:25 [INFO] =======================================================
+18:55:26 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:55:26 [INFO] [RISK] Baseline $21.44 | halt@-20%=$17.15
+18:55:26 [INFO] [TARGETS] Loaded 30 elite wallets
+18:55:26 [INFO] [BOOT] Thread [status] started
+18:55:26 [INFO] [UPDN] Started — BTC ETH SOL XRP DOGE BNB | 24/7 | cache-based slug lookup
+18:55:26 [INFO] [BOOT] Thread [updn] started
+18:55:26 [INFO] [LIVE] Started — any binary market \u22646min where leader 78–97%
+18:55:26 [INFO] [BOOT] Thread [live] started
+18:55:26 [INFO] [SPORT] Started — live sports/events + UPDN in 6-45min window at 90-98% conviction
+18:55:26 [INFO] [BOOT] Thread [sport] started
+18:55:26 [INFO] [NEAR] Started — high-conviction bias on top-volume markets | 60-88% leader
+18:55:26 [INFO] [BOOT] Thread [near] started
+18:55:26 [INFO] [BOOT] Thread [copy] started
+18:55:26 [INFO] [BOOT] Thread [redeem] started
+18:55:26 [INFO] [BOOT] Thread [server] started
+18:55:26 [INFO] [COPY] Loaded 46 whale wallets
+18:55:26 [INFO] [BOOT] Thread [mtum-orders] started
+18:55:26 [INFO] [REDEEM] Started — EOA=0x7803Bf930F669b... | checks every 5min
+18:55:26 [INFO] [SERVER] Started PID 21420
+18:55:29 [INFO] [WS] Pre-fetched 50 tokens
+18:55:30 [INFO] Websocket connected
+18:55:30 [INFO] [WS] Connected — subscribing to 50 tokens
+18:55:37 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:55:37 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:55:48 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:55:48 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:55:59 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:55:59 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:56:01 [INFO] [COPY] Whale list refreshed: 33 active (0 new discovered)
+18:56:01 [INFO] [COPY] Started — tracking 33 wallets | copies at 10% size
+18:56:11 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:56:11 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:56:18 [INFO] [UPDN] Cache: 48 markets — 15m:24 | 1h:0 | 4h:24
+18:56:22 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:56:22 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:56:33 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:56:33 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:56:34 [INFO] [UPDN/15m] BTC Up +0.024% < 0.25% needed — skip
+18:56:35 [INFO] [UPDN/15m] ETH Up +0.127% < 0.25% needed — skip
+18:56:36 [INFO] [UPDN/15m] SOL Up +0.119% < 0.25% needed — skip
+18:56:36 [INFO] [UPDN/15m] XRP Down -0.043% < 0.25% needed — skip
+18:56:37 [INFO] [UPDN/15m] DOGE Down -0.096% < 0.25% needed — skip
+18:56:38 [INFO] [UPDN/15m] BNB Down -0.032% < 0.25% needed — skip
+18:56:44 [INFO] [UPDN/15m] BTC Up +0.024% < 0.25% needed — skip
+18:56:44 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:56:44 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:56:45 [INFO] [UPDN/15m] ETH Up +0.127% < 0.25% needed — skip
+18:56:45 [INFO] [UPDN/15m] SOL Up +0.119% < 0.25% needed — skip
+18:56:46 [INFO] [UPDN/15m] XRP Down -0.043% < 0.25% needed — skip
+18:56:47 [INFO] [UPDN/15m] DOGE Down -0.096% < 0.25% needed — skip
+18:56:48 [INFO] [UPDN/15m] BNB Down -0.032% < 0.25% needed — skip
