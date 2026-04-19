@@ -858,3 +858,33 @@
 18:56:46 [INFO] [UPDN/15m] XRP Down -0.043% < 0.25% needed — skip
 18:56:47 [INFO] [UPDN/15m] DOGE Down -0.096% < 0.25% needed — skip
 18:56:48 [INFO] [UPDN/15m] BNB Down -0.032% < 0.25% needed — skip
+18:56:53 [INFO] [UPDN/15m] BTC Up +0.024% < 0.25% needed — skip
+18:56:54 [INFO] [UPDN/15m] ETH Up +0.127% < 0.25% needed — skip
+18:56:55 [INFO] [UPDN/15m] SOL Up +0.119% < 0.25% needed — skip
+18:56:55 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:56:55 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:56:56 [INFO] [UPDN/15m] XRP Down -0.043% < 0.25% needed — skip
+18:56:56 [INFO] [UPDN/15m] DOGE Down -0.096% < 0.25% needed — skip
+18:56:57 [INFO] [UPDN/15m] BNB Down -0.032% < 0.25% needed — skip
+18:57:03 [INFO] [UPDN/15m] BTC Down -0.027% < 0.25% needed — skip
+18:57:04 [INFO] [UPDN/15m] ETH Up +0.028% < 0.25% needed — skip
+18:57:04 [INFO] [UPDN/15m] SOL Up +0.084% < 0.25% needed — skip
+18:57:05 [INFO] [UPDN/15m] XRP Down -0.064% < 0.25% needed — skip
+18:57:06 [INFO] [UPDN/15m] DOGE Down -0.075% < 0.25% needed — skip
+18:57:07 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:57:07 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:57:08 [INFO] [UPDN/15m] BNB Down -0.006% < 0.25% needed — skip
+18:57:13 [INFO] [UPDN/15m] BTC Down -0.027% < 0.25% needed — skip
+18:57:14 [INFO] [UPDN/15m] ETH Up +0.028% < 0.25% needed — skip
+18:57:15 [INFO] [UPDN/15m] SOL Up +0.084% < 0.25% needed — skip
+18:57:16 [INFO] [UPDN/15m] XRP Down -0.064% < 0.25% needed — skip
+18:57:16 [INFO] [UPDN/15m] DOGE Down -0.075% < 0.25% needed — skip
+18:57:17 [INFO] [UPDN/15m] BNB Down -0.006% < 0.25% needed — skip
+18:57:18 [INFO] HTTP Request: GET https://clob.polymarket.com/balance-allowance?asset_type=COLLATERAL&signature_type=2 "HTTP/2 200 OK"
+18:57:18 [INFO] [STATUS] bal=$21.44 day=+0.0% session=+0.00 trades=0 pos=0 ws=50/1
+18:57:23 [INFO] [UPDN/15m] BTC Down -0.027% < 0.25% needed — skip
+18:57:24 [INFO] [UPDN/15m] ETH Up +0.028% < 0.25% needed — skip
+18:57:25 [INFO] [UPDN/15m] SOL Up +0.084% < 0.25% needed — skip
+18:57:25 [INFO] [UPDN/15m] XRP Down -0.064% < 0.25% needed — skip
+18:57:26 [INFO] [UPDN/15m] DOGE Down -0.075% < 0.25% needed — skip
+18:57:27 [INFO] [UPDN/15m] BNB Down -0.006% < 0.25% needed — skip
