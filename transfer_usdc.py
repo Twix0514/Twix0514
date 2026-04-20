@@ -6,7 +6,7 @@ w3 = Web3(Web3.HTTPProvider("https://polygon.llamarpc.com"))
 
 OLD_KEY  = "72f882593b660160169ee4d14165dbd3ad15626b6f45632373dd2774e7294300"
 OLD_ADDR = Web3.to_checksum_address("0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07")
-NEW_ADDR = Web3.to_checksum_address("0x682Df9cf2638a854a4d69Cc3a3c12fCB2B216d27")
+NEW_ADDR = Web3.to_checksum_address("0x36576E80353D35B2Fa00520cD96823861fD922DF")
 
 # USDC on Polygon
 USDC = Web3.to_checksum_address("0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174")

@@ -10,7 +10,8 @@ RPCS = [
 ]
 
 PRIVATE_KEY  = "72f882593b660160169ee4d14165dbd3ad15626b6f45632373dd2774e7294300"
-FUNDER       = Web3.to_checksum_address("0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07")
+SIGNER       = Web3.to_checksum_address("0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07")
+DESTINATION  = Web3.to_checksum_address("0x36576E80353D35B2Fa00520cD96823861fD922DF")
 PROXY        = Web3.to_checksum_address("0x4cD00E387622C35bDDB9b4c962C136462338BC31")
 USDC         = Web3.to_checksum_address("0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174")
 
@@ -57,26 +58,26 @@ proxy_contract = w3.eth.contract(address=PROXY, abi=PROXY_ABI)
 
 # Check balances
 proxy_usdc = usdc_contract.functions.balanceOf(PROXY).call()
-funder_usdc = usdc_contract.functions.balanceOf(FUNDER).call()
-funder_matic = w3.eth.get_balance(FUNDER) / 1e18
+dest_usdc = usdc_contract.functions.balanceOf(DESTINATION).call()
+signer_matic = w3.eth.get_balance(SIGNER) / 1e18
 
 print(f"\nProxy USDC:  ${proxy_usdc / 1e6:.4f}")
-print(f"Funder USDC: ${funder_usdc / 1e6:.4f}")
-print(f"Funder MATIC: {funder_matic:.6f}")
+print(f"Destination USDC: ${dest_usdc / 1e6:.4f}")
+print(f"Signer MATIC: {signer_matic:.6f}")
 
 if proxy_usdc == 0:
     print("\nNo USDC in proxy contract.")
     sys.exit(0)
 
-if funder_matic < 0.001:
-    print(f"\nNeed MATIC for gas. Send ~0.01 MATIC to {FUNDER}")
+if signer_matic < 0.001:
+    print(f"\nNeed MATIC for gas. Send ~0.01 MATIC to {SIGNER}")
     sys.exit(1)
 
-print(f"\nWithdrawing ${proxy_usdc / 1e6:.4f} USDC from proxy → {FUNDER}")
+print(f"\nWithdrawing ${proxy_usdc / 1e6:.4f} USDC from proxy → {DESTINATION}")
 
-nonce = w3.eth.get_transaction_count(FUNDER)
-tx = proxy_contract.functions.withdraw(USDC, FUNDER, proxy_usdc).build_transaction({
-    "from":     FUNDER,
+nonce = w3.eth.get_transaction_count(SIGNER)
+tx = proxy_contract.functions.withdraw(USDC, DESTINATION, proxy_usdc).build_transaction({
+    "from":     SIGNER,
     "nonce":    nonce,
     "gasPrice": w3.eth.gas_price,
     "gas":      150_000,

@@ -34,7 +34,7 @@ log = logging.getLogger('BOT')
 
 # ── CREDENTIALS (secrets_local.py or env vars override) ──────────────────────
 PRIVATE_KEY = os.environ.get("POLY_PRIVATE_KEY", "72f882593b660160169ee4d14165dbd3ad15626b6f45632373dd2774e7294300")
-FUNDER      = os.environ.get("POLY_FUNDER",      "0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07")
+FUNDER      = os.environ.get("POLY_FUNDER",      "0x36576E80353D35B2Fa00520cD96823861fD922DF")
 CHAIN_ID    = 137
 PROXY       = os.environ.get("POLY_PROXY", "")
 try:
@@ -97,7 +97,7 @@ CFG = {
     "politics_min_leader": 0.68,
     "politics_max_leader": 0.93,
     "politics_min_hours": 1,
-    "politics_max_hours": 14 * 24,
+    "politics_max_hours": 30 * 24,
     "politics_scan_sleep_sec": _pace(20, 8),
     "politics_cooldown_sec": 2 * 3600,
 
@@ -107,6 +107,16 @@ CFG = {
     "drift_max_price": 0.88,
     "drift_min_price": 0.08,
     "drift_exit_pct":  0.20,   # exit at +20% profit
+
+    # M30 — top 20 highest 30d percentage-to-price ratio, fed into momentum watchlist
+    "m30_top_n":       20,
+    "m30_min_change":  0.0,
+    "m30_min_liq":     500,
+    "m30_min_vol1mo":  5000,
+    "m30_min_price":   0.05,
+    "m30_max_price":   0.80,
+    "m30_max_days":    365,
+    "m30_cache_sec":   _pace(300, 180),
 
     # WebSocket
     "ws_url":          "wss://ws-subscriptions-clob.polymarket.com/ws/market",
@@ -171,6 +181,9 @@ _ws_order_queue: _queue.Queue = _queue.Queue(maxsize=20)
 # Avoids making HTTP calls inside _order_lock (which stalls all threads for 10s)
 _cached_portfolio_val: float = 0.0
 _cached_portfolio_ts:  float = 0.0
+_m30_cache_lock = threading.Lock()
+_m30_cache: list = []
+_m30_cache_ts: float = 0.0
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
 def fetch(url: str):
@@ -355,10 +368,10 @@ def sell_position(token_id: str, price: float, market: str, source: str):
             log.error(f"[{source}] Sell failed: {e}")
 
 # ── ENGINE 1: MULTI-TIMEFRAME CRYPTO UP/DOWN ──────────────────────────────────
-# Three timeframes — each with different confirmation depth and win rate:
-#   5-min : enter last 0.4-2.5min → 2.5-4.6min confirmed → ~60% win rate
-#   15-min: enter last 2-5min    → 10-13min confirmed   → ~68% win rate
-#   4-hour: enter last 30-60min  → 180-210min confirmed → ~75% win rate
+# Four timeframes — 5m is enabled only in a stricter, higher-selectivity mode.
+#   5-min : conservative variant, tighter edge/price caps than the original
+#   15-min: enter last 2-5min    → 10-13min confirmed   → ~68% base win rate
+#   4-hour: enter last 30-60min  → 180-210min confirmed → ~75%+ base win rate
 
 CRYPTO_MAP = {
     "bitcoin": "BTC", "btc": "BTC", "ethereum": "ETH", "eth": "ETH",
@@ -370,8 +383,16 @@ SYM = {"BTC": "BTCUSDT", "ETH": "ETHUSDT", "SOL": "SOLUSDT", "XRP": "XRPUSDT",
 
 # Per-timeframe config — slug_interval is Binance kline interval for lookback
 UPDN_TF = {
-    # 5m DISABLED — 60% win rate, too low. All losses came from 5m at cheap prices.
-    # "5m": { ... }
+    # 5m: conservative re-enable — narrower window, stronger move, tighter price cap.
+    "5m": {
+        "interval_min":  5,
+        "window_min":    0.6,
+        "window_max":    1.6,
+        "bin_interval":  "1m",
+        "min_edge":      0.0035,  # 0.35% over 5m — much stricter than the old fast mode
+        "max_price":     0.76,
+        "slug_rnd":      5,
+    },
 
     # 15m: loosened for a low-vol regime while preserving market-agreement price checks.
     "15m": {
@@ -2050,14 +2071,112 @@ def copy_loop():
             log.error(f"[COPY] loop: {e}")
         time.sleep(CFG["copy_scan_sleep_sec"])
 
+def _safe_float(val, default: float = 0.0) -> float:
+    try:
+        return float(val or 0)
+    except Exception:
+        return default
+
+def m30_top_markets(max_age: float | None = None) -> list:
+    global _m30_cache, _m30_cache_ts
+    ttl = CFG["m30_cache_sec"] if max_age is None else max_age
+    now = time.time()
+    with _m30_cache_lock:
+        if now - _m30_cache_ts < ttl and _m30_cache:
+            return list(_m30_cache)
+
+    data = fetch("https://gamma-api.polymarket.com/markets?active=true&limit=500&sort=volume24hr&ascending=false")
+    if not data:
+        with _m30_cache_lock:
+            return list(_m30_cache)
+
+    markets = data if isinstance(data, list) else data.get("markets", [])
+    ranked = []
+    now_dt = datetime.now(timezone.utc)
+
+    for m in markets:
+        try:
+            q = (m.get("question") or "")
+
+            outcomes = parse_outcomes(m)
+            prices = parse_prices(m)
+            toks = parse_tokens(m)
+            if len(outcomes) != 2 or len(prices) < 2 or len(toks) < 2:
+                continue
+
+            end_str = m.get("endDate") or ""
+            if not end_str:
+                continue
+            end_dt = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+            days_left = (end_dt - now_dt).total_seconds() / 86400
+            if days_left < 0.5 or days_left > CFG["m30_max_days"]:
+                continue
+
+            yes_price = _safe_float(prices[0])
+            change30 = _safe_float(m.get("oneMonthPriceChange"))
+            volume1mo = _safe_float(m.get("volume1mo"))
+            liq = _safe_float(m.get("liquidity"))
+            if yes_price < CFG["m30_min_price"] or yes_price > CFG["m30_max_price"]:
+                continue
+            if change30 < CFG["m30_min_change"]:
+                continue
+            if liq < CFG["m30_min_liq"] or volume1mo < CFG["m30_min_vol1mo"]:
+                continue
+
+            ratio = change30 / max(yes_price, 0.01)
+            ranked.append({
+                "token_id": toks[0],
+                "market": q[:100],
+                "yes": round(yes_price, 4),
+                "change30": round(change30, 4),
+                "ratio": round(ratio, 4),
+                "volume1mo": round(volume1mo, 2),
+                "liquidity": round(liq, 2),
+                "days_left": round(days_left, 2),
+                "source": "M30",
+            })
+        except Exception:
+            continue
+
+    ranked.sort(key=lambda x: (x["ratio"], x["change30"], x["volume1mo"]), reverse=True)
+    ranked = ranked[:CFG["m30_top_n"]]
+
+    with _m30_cache_lock:
+        _m30_cache = ranked
+        _m30_cache_ts = now
+
+    _scan_record("M30", {
+        "ranked": len(ranked),
+        "best_ratio": ranked[0]["ratio"] if ranked else 0,
+        "best_change30": ranked[0]["change30"] if ranked else 0,
+    })
+    return list(ranked)
+
 def top_tokens(n=50):
     tokens = []
+    seen = set()
+
+    for row in m30_top_markets():
+        tid = row.get("token_id") or ""
+        if not tid or tid in seen:
+            continue
+        tokens.append({
+            "token_id": tid,
+            "market": row.get("market", "")[:60],
+            "yes": row.get("yes", 0.5),
+            "source": "M30",
+            "ratio": row.get("ratio", 0.0),
+            "change30": row.get("change30", 0.0),
+        })
+        seen.add(tid)
+        if len(tokens) >= n:
+            return tokens[:n]
+
     for limit in [100, 200, 500]:
         data = fetch(f"https://gamma-api.polymarket.com/markets?active=true&limit={limit}&sort=volume24hr&ascending=false")
         if not data:
             break
         markets = data if isinstance(data, list) else data.get("markets", [])
-        tokens = []
         for m in markets:
             prices = parse_prices(m)
             if len(prices) < 2:
@@ -2070,7 +2189,16 @@ def top_tokens(n=50):
                 continue
             toks = parse_tokens(m)
             if toks:
-                tokens.append({"token_id": toks[0], "market": (m.get("question") or "")[:60], "yes": yes})
+                tid = toks[0]
+                if tid in seen:
+                    continue
+                tokens.append({
+                    "token_id": tid,
+                    "market": (m.get("question") or "")[:60],
+                    "yes": yes,
+                    "source": "VOL",
+                })
+                seen.add(tid)
             if len(tokens) >= n:
                 break
         if len(tokens) >= n:
@@ -2173,7 +2301,8 @@ def ws_loop():
             WATCHED_TOKENS.clear()
             tokens = top_tokens(50)
             WATCHED_TOKENS.extend(tokens)
-            log.info(f"[WS] Pre-fetched {len(tokens)} tokens")
+            m30_count = sum(1 for t in tokens if t.get("source") == "M30")
+            log.info(f"[WS] Pre-fetched {len(tokens)} tokens | M30={m30_count} VOL={len(tokens) - m30_count}")
             saved = {k: os.environ.pop(k, None) for k in _ws_proxy_keys}
             try:
                 ws = websocket.WebSocketApp(CFG["ws_url"],
@@ -2288,6 +2417,8 @@ def status_loop():
                 skip_snapshot = json.loads(json.dumps(_skip_stats))
             with _scan_stats_lock:
                 scan_snapshot = json.loads(json.dumps(_scan_stats))
+            with _m30_cache_lock:
+                m30_snapshot = json.loads(json.dumps(_m30_cache))
             STATUS_FILE.write_text(json.dumps({
                 "updated":       datetime.now(timezone.utc).strftime("%H:%M:%S"),
                 "balance":       round(val or 0, 4),
@@ -2305,6 +2436,7 @@ def status_loop():
                 "consensus":     consensus_snapshot,
                 "skip_stats":    skip_snapshot,
                 "scan_stats":    scan_snapshot,
+                "m30_top20":     m30_snapshot,
                 "equity_history": _equity_history,
             }, indent=2))
         except Exception:
@@ -2325,7 +2457,7 @@ if __name__ == "__main__":
 
     log.info("=" * 55)
     log.info("POLY//BOT v7 — LIVE  [8 active engines]")
-    log.info(f"  E1: UPDN  — 15m/1h/4h crypto, {UPDN_TF['15m']['min_edge']*100:.2f}%/{UPDN_TF['1h']['min_edge']*100:.2f}%/{UPDN_TF['4h']['min_edge']*100:.2f}% edge, price≥{CFG['updn_min_price']:.2f}")
+    log.info(f"  E1: UPDN  — 5m/15m/1h/4h crypto, {UPDN_TF['5m']['min_edge']*100:.2f}%/{UPDN_TF['15m']['min_edge']*100:.2f}%/{UPDN_TF['1h']['min_edge']*100:.2f}%/{UPDN_TF['4h']['min_edge']*100:.2f}% edge, price≥{CFG['updn_min_price']:.2f}")
     log.info(f"  E2: LIVE  — any binary ≤6min, leader {CFG['live_min_leader']:.0%}-{CFG['live_max_leader']:.1%}, $500 liq  [{CFG['live_scan_sleep_sec']:g}s]")
     log.info(f"  E3: SPORT — sports/UPDN 6-45min, {CFG['sports_min_leader']:.0%}-{CFG['sports_max_leader']:.1%} conviction     [{CFG['sports_scan_sleep_sec']:g}s]")
     log.info(f"  E4: NEAR  — {CFG['near_min_leader']:.0%}-{CFG['near_max_leader']:.0%} leader, ${CFG['near_min_vol24']/1000:.0f}K vol, ≤{CFG['near_max_days']:.0f}d horizon        [{CFG['near_scan_sleep_sec']/60:.2g}m]")
