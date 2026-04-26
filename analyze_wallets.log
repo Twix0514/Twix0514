@@ -1,0 +1,31 @@
+=======================================================
+  Polymarket Wallet Analyzer
+  Filter: 20+ trades, 65%+ win rate, top 50
+=======================================================
+[SEED] 40 wallets from bot.py
+[DISCOVER] Scanning top markets for more traders...
+[DISCOVER] 40 total wallets to score
+
+[SCAN] Scoring 40 wallets...
+  PASS 0xe1d6b51521bd4365... trades=318 wr=73% pnl~$9416
+  PASS 0x019782cab5d844f0... trades=37 wr=100% pnl~$2945746
+  PASS 0xb27bc932bf8110d8... trades=270 wr=74% pnl~$20652
+  PASS 0x78b9ac44a6d7d7a0... trades=95 wr=71% pnl~$1264638
+  PASS 0xde17f7144fbd0edd... trades=429 wr=65% pnl~$86024
+  PASS 0xc2e7800b5af46e60... trades=174 wr=84% pnl~$18956558
+  PASS 0xd84c2b6d65dc596f... trades=186 wr=87% pnl~$95459
+  PASS 0xdc876e6873772d38... trades=265 wr=78% pnl~$678201
+  PASS 0x1f0ebc543b2d411f... trades=293 wr=75% pnl~$9429
+  PASS 0x6a72f61820b26b1f... trades=289 wr=68% pnl~$586075
+  PASS 0xc8075693f48668a2... trades=72 wr=78% pnl~$506875
+Traceback (most recent call last):
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\analyze_wallets.py", line 166, in <module>
+    run()
+    ~~~^^
+  File "C:\Users\ojeku\OneDrive\Documents\GitHub\Twix0514\analyze_wallets.py", line 158, in run
+    print(f"\n[DONE] {len(results)} qualified \u2192 top {len(top)} saved to {OUT.name}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 22: character maps to <undefined>

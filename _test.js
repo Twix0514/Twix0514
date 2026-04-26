@@ -20,7 +20,7 @@
 
 // ── ACCOUNT (loaded from gitignored config.js) ───────────────────────────────
 const CFG       = window.POLY_CONFIG || {};
-const MY_ADDR   = CFG.address       || '0x361A9c14e3aD1B8Ed9ef35014fD1B5dCcB72eC07';
+const MY_ADDR   = CFG.address       || '0x36576E80353D35B2Fa00520cD96823861fD922DF';
 const API_KEY   = CFG.apiKey        || '';
 const KEY_ADDR  = CFG.apiKeyAddress || '';
 

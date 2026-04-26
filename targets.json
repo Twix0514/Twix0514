@@ -1,393 +1,86 @@
 [
   {
-    "rank": 1,
-    "wallet": "0x56687bf447db6ffa42ffe2204a05edaa20f55839",
-    "name": "Theo4",
-    "tier": "T3-alltime",
-    "pnl_all": 22053933.75,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 2,
-    "wallet": "0x1f2dd6d473f3e824cd2f8a89d9c69fb96f6ad0cf",
-    "name": "Fredi9999",
-    "tier": "T3-alltime",
-    "pnl_all": 16619506.63,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 3,
-    "wallet": "0x6a72f61820b26b1fe4d956e17b6dc2a1ea3033ee",
-    "name": "kch123",
-    "tier": "T1",
-    "pnl_all": 11860311.8,
-    "pnl_month": 1032850.65,
-    "active_positions": 17,
-    "total_value": 511208.81,
-    "top_markets": [
-      "Will the Tampa Bay Lightning win the 2026 NHL Stan",
-      "Will the Oklahoma City Thunder win the 2026 NBA Fi",
-      "Will the Minnesota Wild win the 2026 NHL Stanley C"
-    ]
-  },
-  {
-    "rank": 4,
-    "wallet": "0x78b9ac44a6d7d7a076c14e0ad518b301b63c6b76",
-    "name": "Len9311238",
-    "tier": "T3-alltime",
-    "pnl_all": 8709972.99,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 5,
-    "wallet": "0xd235973291b2b75ff4070e9c0b01728c520b0f29",
-    "name": "zxgngl",
-    "tier": "T3-alltime",
-    "pnl_all": 7807265.59,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0,
-    "top_markets": []
-  },
-  {
-    "rank": 6,
-    "wallet": "0x863134d00841b2e200492805a01e1e2f5defaa53",
-    "name": "RepTrump",
-    "tier": "T3-alltime",
-    "pnl_all": 7532409.67,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 7,
-    "wallet": "0x2005d16a84ceefa912d4e380cd32e7ff827875ea",
-    "name": "RN1",
-    "tier": "T1",
-    "pnl_all": 7329063.59,
-    "pnl_month": 2075768.89,
-    "active_positions": 123,
-    "total_value": 398100.29,
-    "top_markets": [
-      "Red Bull Bragantino vs. Clube do Remo: O/U 2.5",
-      "Will 1. FSV Mainz 05 win on 2026-04-19?",
-      "Will Olympique Lyonnais win on 2026-04-19?"
-    ]
-  },
-  {
-    "rank": 8,
-    "wallet": "0x204f72f35326db932158cba6adff0b9a1da95e14",
-    "name": "swisstony",
-    "tier": "T1",
-    "pnl_all": 6128534.42,
-    "pnl_month": 1482922.41,
-    "active_positions": 357,
-    "total_value": 1254611.51,
-    "top_markets": [
-      "Will NEC win on 2026-04-19?",
-      "Will Arsenal FC win on 2026-04-19?",
-      "Will M\u00e1laga CF win on 2026-04-19?"
-    ]
-  },
-  {
-    "rank": 9,
-    "wallet": "0x8119010a6e589062aa03583bb3f39ca632d9f887",
-    "name": "PrincessCaro",
-    "tier": "T3-alltime",
-    "pnl_all": 6083643.1,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 10,
-    "wallet": "0xe9ad918c7678cd38b12603a762e638a5d1ee7091",
-    "name": "walletmobile",
-    "tier": "T3-alltime",
-    "pnl_all": 5942685.45,
-    "pnl_month": 0.0,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 11,
-    "wallet": "0x507e52ef684ca2dd91f90a9d26d149dd3288beae",
-    "name": "GamblingIsAllYouNeed",
-    "tier": "T1",
-    "pnl_all": 4673646.7,
-    "pnl_month": 866433.59,
-    "active_positions": 349,
-    "total_value": 2981792.88,
-    "top_markets": [
-      "Will JD Vance win the 2028 US Presidential Electio",
-      "Will JD Vance win the 2028 US Presidential Electio",
-      "Indian Premier League: Kolkata Knight Riders vs Ra"
-    ]
-  },
-  {
-    "rank": 12,
-    "wallet": "0xdc876e6873772d38716fda7f2452a78d426d7ab6",
-    "name": "432614799197",
-    "tier": "T1",
-    "pnl_all": 4526176.05,
-    "pnl_month": 1495977.46,
-    "active_positions": 0,
-    "total_value": 0.0,
-    "top_markets": []
-  },
-  {
-    "rank": 13,
-    "wallet": "0xefbc5fec8d7b0acdc8911bdd9a98d6964308f9a2",
-    "name": "reachingthesky",
-    "tier": "T1",
-    "pnl_all": 3742635.16,
-    "pnl_month": 3742635.16,
-    "active_positions": 0,
-    "total_value": 0.0,
-    "top_markets": []
-  },
-  {
-    "rank": 14,
-    "wallet": "0x019782cab5d844f02bafb71f512758be78579f3c",
-    "name": "majorexploiter",
-    "tier": "T1",
-    "pnl_all": 3668541.58,
-    "pnl_month": 2416975.03,
-    "active_positions": 0,
-    "total_value": 0.0
-  },
-  {
-    "rank": 15,
-    "wallet": "0xee613b3fc183ee44f9da9c05f53e2da107e3debf",
-    "name": "sovereign2013",
-    "tier": "T1",
-    "pnl_all": 3487737.99,
-    "pnl_month": 1841791.45,
-    "active_positions": 178,
-    "total_value": 260369.8,
-    "top_markets": [
-      "Spread: Thunder (-13.5)",
-      "Suns vs. Thunder: O/U 215.5",
-      "Magic vs. Pistons"
-    ]
-  },
-  {
-    "rank": 16,
     "wallet": "0xc2e7800b5af46e6093872b177b7a5e7f0563be51",
-    "name": "beachboy4",
-    "tier": "T1",
-    "pnl_all": 3046951.11,
-    "pnl_month": 2667154.52,
-    "active_positions": 2,
-    "total_value": 4919.88,
-    "top_markets": [
-      "Will Donald Trump win the 2028 Republican presiden",
-      "Will J.D. Vance win the 2028 Republican presidenti"
-    ]
+    "trades": 174,
+    "buy_count": 497,
+    "win_rate": 0.8448,
+    "profit_proxy": 18956557.68
   },
   {
-    "rank": 17,
-    "wallet": "0x2a2c53bd278c04da9962fcf96490e17f3dfb9bc1",
-    "name": "0x2a2C53bD278c04DA9962Fcf96490E17F3DfB9Bc1-1772479215461",
-    "tier": "T1",
-    "pnl_all": 2697742.89,
-    "pnl_month": 2697742.89,
-    "active_positions": 31,
-    "total_value": 813911.68,
-    "top_markets": [
-      "Spread: Thunder (-15.5)",
-      "Counter-Strike: Spirit vs Vitality (BO5) - IEM Rio",
-      "Spread: Thunder (-13.5)"
-    ]
+    "wallet": "0x019782cab5d844f02bafb71f512758be78579f3c",
+    "trades": 37,
+    "buy_count": 60,
+    "win_rate": 1.0,
+    "profit_proxy": 2945745.65
   },
   {
-    "rank": 18,
-    "wallet": "0x93abbc022ce98d6f45d4444b594791cc4b7a9723",
-    "name": "gatorr",
-    "tier": "T1",
-    "pnl_all": 2224337.94,
-    "pnl_month": 1435606.81,
-    "active_positions": 13,
-    "total_value": 137129.21,
-    "top_markets": [
-      "Will Gavin Newsom win the 2028 Democratic presiden",
-      "Will the Detroit Pistons win the 2026 NBA Finals?",
-      "Will the Detroit Pistons win the NBA Eastern Confe"
-    ]
+    "wallet": "0x78b9ac44a6d7d7a076c14e0ad518b301b63c6b76",
+    "trades": 95,
+    "buy_count": 194,
+    "win_rate": 0.7053,
+    "profit_proxy": 1264638.46
   },
   {
-    "rank": 19,
-    "wallet": "0x02227b8f5a9636e895607edd3185ed6ee5598ff7",
-    "name": "HorizonSplendidView",
-    "tier": "T1",
-    "pnl_all": 1991767.51,
-    "pnl_month": 4016107.83,
-    "active_positions": 0,
-    "total_value": 0.0,
-    "top_markets": []
+    "wallet": "0xdc876e6873772d38716fda7f2452a78d426d7ab6",
+    "trades": 265,
+    "buy_count": 500,
+    "win_rate": 0.7774,
+    "profit_proxy": 678201.19
   },
   {
-    "rank": 20,
-    "wallet": "0x8c80d213c0cbad777d06ee3f58f6ca4bc03102c3",
-    "name": "SecondWindCapital",
-    "tier": "T1",
-    "pnl_all": 1872258.23,
-    "pnl_month": 786395.63,
-    "active_positions": 8,
-    "total_value": 449925.56,
-    "top_markets": [
-      "Will the U.S. invade Iran before 2027?",
-      "Will Stephen A. Smith win the 2028 Democratic pres",
-      "Putin out as President of Russia by December 31, 2"
-    ]
+    "wallet": "0x6a72f61820b26b1fe4d956e17b6dc2a1ea3033ee",
+    "trades": 329,
+    "buy_count": 500,
+    "win_rate": 0.7599,
+    "profit_proxy": 567999.69
   },
   {
-    "rank": 21,
-    "wallet": "0x492442eab586f242b53bda933fd5de859c8a3782",
-    "name": "0x492442EaB586F242B53bDa933fD5dE859c8A3782-1766317541188",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 7127605.12,
-    "active_positions": 4,
-    "total_value": 279948.13,
-    "top_markets": [
-      "Spread: Thunder (-15.5)",
-      "Spread: Celtics (-13.5)",
-      "Spread: Celtics (-12.5)"
-    ]
-  },
-  {
-    "rank": 22,
-    "wallet": "0xf195721ad850377c96cd634457c70cd9e8308057",
-    "name": "lo34567Taipe",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1459445.37,
-    "active_positions": 2,
-    "total_value": 13712.78,
-    "top_markets": [
-      "Will the Tampa Bay Lightning win the 2026 NHL Stan",
-      "Will the Vegas Golden Knights win the 2026 NHL Sta"
-    ]
-  },
-  {
-    "rank": 23,
-    "wallet": "0xa5ea13a81d2b7e8e424b182bdc1db08e756bd96a",
-    "name": "bossoskil1",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1449154.82,
-    "active_positions": 8,
-    "total_value": 123437.07,
-    "top_markets": [
-      "Counter-Strike: Spirit vs Vitality (BO5) - IEM Rio",
-      "Map Handicap: VIT (-1.5) vs Spirit (+1.5)",
-      "Counter-Strike: Spirit vs Vitality - Map 2 Winner"
-    ]
-  },
-  {
-    "rank": 24,
     "wallet": "0xc8075693f48668a264b9fa313b47f52712fcc12b",
-    "name": "texaskid",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1298928.44,
-    "active_positions": 10,
-    "total_value": 459618.77,
-    "top_markets": [
-      "Milwaukee Brewers vs. Miami Marlins",
-      "Spread: Avalanche (-1.5)",
-      "San Francisco Giants vs. Washington Nationals"
-    ]
+    "trades": 77,
+    "buy_count": 500,
+    "win_rate": 0.7662,
+    "profit_proxy": 564078.91
   },
   {
-    "rank": 25,
+    "wallet": "0xd84c2b6d65dc596f49c7b6aadd6d74ca91e407b9",
+    "trades": 186,
+    "buy_count": 500,
+    "win_rate": 0.871,
+    "profit_proxy": 95459.43
+  },
+  {
+    "wallet": "0x6e1d5040d0ac73709b0621f620d2a60b80d2d0fa",
+    "trades": 405,
+    "buy_count": 500,
+    "win_rate": 0.7877,
+    "profit_proxy": 92513.4
+  },
+  {
+    "wallet": "0xde17f7144fbd0eddb2679132c10ff5e74b120988",
+    "trades": 429,
+    "buy_count": 500,
+    "win_rate": 0.6503,
+    "profit_proxy": 86023.59
+  },
+  {
+    "wallet": "0xb27bc932bf8110d8f78e55da7d5f0497a18b5b82",
+    "trades": 257,
+    "buy_count": 500,
+    "win_rate": 0.7315,
+    "profit_proxy": 18175.47
+  },
+  {
     "wallet": "0xead152b855effa6b5b5837f53b24c0756830c76a",
-    "name": "elkmonkey",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1212392.51,
-    "active_positions": 210,
-    "total_value": 1081311.72,
-    "top_markets": [
-      "Will the Oklahoma City Thunder win the 2026 NBA Fi",
-      "Will the Los Angeles Lakers win the 2026 NBA Final",
-      "Will the San Antonio Spurs win the 2026 NBA Finals"
-    ]
+    "trades": 150,
+    "buy_count": 500,
+    "win_rate": 0.7933,
+    "profit_proxy": 13875.43
   },
   {
-    "rank": 26,
-    "wallet": "0x59a0744db1f39ff3afccd175f80e6e8dfc239a09",
-    "name": "Blessed-Sunshine",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1202926.54,
-    "active_positions": 0,
-    "total_value": 0.0,
-    "top_markets": []
-  },
-  {
-    "rank": 27,
-    "wallet": "0x8f037a2e4fd49d11267f4ab874ab7ba745ac64d6",
-    "name": "Anointed-Connect",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1169464.17,
-    "active_positions": 1,
-    "total_value": 4867.46,
-    "top_markets": [
-      "Russia x Ukraine ceasefire by end of 2026?"
-    ]
-  },
-  {
-    "rank": 28,
-    "wallet": "0x777d9f00c2b4f7b829c9de0049ca3e707db05143",
-    "name": "CarlosMC",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1144796.85,
-    "active_positions": 16,
-    "total_value": 124765.38,
-    "top_markets": [
-      "Will the Philadelphia 76ers win the 2026 NBA Final",
-      "Will Netherlands win the 2026 FIFA World Cup?",
-      "Will the New York Knicks win the 2026 NBA Finals?"
-    ]
-  },
-  {
-    "rank": 29,
-    "wallet": "0xbaa2bcb5439e985ce4ccf815b4700027d1b92c73",
-    "name": "denizz",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1020934.08,
-    "active_positions": 66,
-    "total_value": 1563399.62,
-    "top_markets": [
-      "US x Iran permanent peace deal by April 22, 2026?",
-      "Will the Iranian regime fall before 2027?",
-      "Will the U.S. invade Iran before 2027?"
-    ]
-  },
-  {
-    "rank": 30,
-    "wallet": "0x37c1874a60d348903594a96703e0507c518fc53a",
-    "name": "CemeterySun",
-    "tier": "T2",
-    "pnl_all": 0.0,
-    "pnl_month": 1020371.68,
-    "active_positions": 38,
-    "total_value": 728787.46,
-    "top_markets": [
-      "Magic vs. Pistons",
-      "Texas Rangers vs. Seattle Mariners",
-      "Spread: Pistons (-8.5)"
-    ]
+    "wallet": "0x1f0ebc543b2d411f66947041625c0aa1ce61cf86",
+    "trades": 293,
+    "buy_count": 500,
+    "win_rate": 0.7543,
+    "profit_proxy": 9428.81
   }
 ]

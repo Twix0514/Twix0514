@@ -1,1002 +1,1002 @@
 [
   {
-    "time": "23:00:11",
+    "time": "23:40:49",
     "level": "UPDN",
-    "msg": "UPDN/4h BNB: -0.906% \u2192 Down @ 64% +55.0% | 60.0min"
+    "msg": "UPDN/15m DOGE: +0.061% \u2192 Up @ 84% +19.0% | 4.3min"
   },
   {
-    "time": "21:04:03",
+    "time": "23:38:16",
     "level": "UPDN",
-    "msg": "UPDN/5m ETH: -0.133% \u2192 Down @ 54% +86.9% | 1.0min"
+    "msg": "UPDN/15m BNB: +0.046% \u2192 Up @ 84% +18.3% | 7.3min"
   },
   {
-    "time": "21:02:53",
+    "time": "23:37:42",
+    "level": "UPDN",
+    "msg": "UPDN/15m SOL: +0.081% \u2192 Up @ 77% +29.9% | 7.7min"
+  },
+  {
+    "time": "23:27:51",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.049% \u2192 Down @ 76% +32.5% | 2.7min"
+  },
+  {
+    "time": "23:09:49",
+    "level": "UPDN",
+    "msg": "UPDN/15m BTC: +0.060% \u2192 Up @ 68% +48.1% | 5.2min"
+  },
+  {
+    "time": "23:09:46",
+    "level": "UPDN",
+    "msg": "UPDN/15m XRP: -0.084% \u2192 Down @ 52% +94.2% | 5.4min"
+  },
+  {
+    "time": "22:58:02",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.011% \u2192 Down @ 82% +22.7% | 2.4min"
+  },
+  {
+    "time": "22:54:36",
     "level": "EXIT",
-    "msg": "EXIT +3.7% TARGET | 7162147579979090"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "21:02:50",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.800 ($4.0) | Dogecoin Up or Down - April 19, 5:00PM-5:05PM ET | live"
-  },
-  {
-    "time": "21:02:49",
-    "level": "UPDN",
-    "msg": "UPDN/5m DOGE: -0.106% \u2192 Down @ 80% +25.0% | 2.3min"
-  },
-  {
-    "time": "20:59:36",
-    "level": "INFO",
-    "msg": "CLAIMED 4.75 shares | Solana Up or Down - April 19, 4:45PM-4:50PM ET"
-  },
-  {
-    "time": "20:59:36",
-    "level": "INFO",
-    "msg": "REDEEMED 0x4cef7dea3b6c7d... | tx=dbb482b16af6dbfc... | gas=101359"
-  },
-  {
-    "time": "20:54:42",
-    "level": "INFO",
-    "msg": "CLAIMED 4.86 shares | Ethereum Up or Down - April 19, 4:45PM-4:50PM ET"
-  },
-  {
-    "time": "20:54:42",
-    "level": "INFO",
-    "msg": "REDEEMED 0x206746b81fea09... | tx=8b339b719c9fbd31... | gas=114346"
-  },
-  {
-    "time": "20:48:58",
-    "level": "UPDN",
-    "msg": "UPDN/5m DOGE: -0.223% \u2192 Down @ 46% +115.1% | 1.1min"
-  },
-  {
-    "time": "20:48:36",
+    "time": "22:54:22",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +22.8% profit | 6745121322123798"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "20:48:25",
-    "level": "WARN",
-    "msg": "BOT HALTED \u2014 daily loss -92.3%. Resumes at midnight UTC."
-  },
-  {
-    "time": "20:48:25",
-    "level": "UPDN",
-    "msg": "UPDN/5m BTC: -0.183% \u2192 Down @ 38% +159.7% | 1.6min"
-  },
-  {
-    "time": "20:48:19",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.395 ($1.98) | Solana Up or Down - April 19, 4:45PM-4:50PM ET | matched"
-  },
-  {
-    "time": "20:48:17",
-    "level": "UPDN",
-    "msg": "UPDN/5m SOL: -0.165% \u2192 Down @ 40% +153.2% | 1.8min"
-  },
-  {
-    "time": "20:48:09",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.615 ($3.08) | Ethereum Up or Down - April 19, 4:45PM-4:50PM ET | matched"
-  },
-  {
-    "time": "20:48:07",
-    "level": "UPDN",
-    "msg": "UPDN/5m ETH: -0.253% \u2192 Down @ 62% +62.6% | 1.9min"
-  },
-  {
-    "time": "17:13:53",
-    "level": "INFO",
-    "msg": "CLAIMED 4.79 shares | Ethereum Up or Down - April 19, 12:35PM-12:40PM ET"
-  },
-  {
-    "time": "17:13:53",
-    "level": "INFO",
-    "msg": "REDEEMED 0x453a28d3c94472... | tx=f2e3b11bc644af76... | gas=93930"
-  },
-  {
-    "time": "17:13:48",
-    "level": "INFO",
-    "msg": "CLAIMED 5.00 shares | XRP Up or Down - April 19, 12:35PM-12:40PM ET"
-  },
-  {
-    "time": "17:13:48",
-    "level": "INFO",
-    "msg": "REDEEMED 0x72f5d46cd687e9... | tx=bc9bd4c131ec73ff... | gas=86486"
-  },
-  {
-    "time": "16:42:25",
-    "level": "UPDN",
-    "msg": "UPDN/15m BTC: -0.150% \u2192 Down @ 46% +119.8% | 2.6min"
-  },
-  {
-    "time": "16:39:52",
-    "level": "INFO",
-    "msg": "CLAIMED 5.00 shares | Bitcoin Up or Down - April 19, 12:30PM-12:35PM ET"
-  },
-  {
-    "time": "16:39:52",
-    "level": "INFO",
-    "msg": "REDEEMED 0xa875ebd00d4ff7... | tx=c6c25a6480184c2c... | gas=138456"
-  },
-  {
-    "time": "16:38:54",
+    "time": "22:54:08",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +28.9% profit | 8617424149039665"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "16:38:50",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.585 ($2.92) | Dogecoin Up or Down - April 19, 12:35PM-12:40PM ET | live"
-  },
-  {
-    "time": "16:38:48",
-    "level": "UPDN",
-    "msg": "UPDN/5m DOGE: +0.137% \u2192 Up @ 58% +70.9% | 1.2min"
-  },
-  {
-    "time": "16:38:40",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.415 ($2.07) | Ethereum Up or Down - April 19, 12:35PM-12:40PM ET | matched"
-  },
-  {
-    "time": "16:38:38",
-    "level": "UPDN",
-    "msg": "UPDN/5m ETH: +0.101% \u2192 Up @ 42% +141.0% | 1.4min"
-  },
-  {
-    "time": "16:38:22",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.400 ($2.0) | XRP Up or Down - April 19, 12:35PM-12:40PM ET | live"
-  },
-  {
-    "time": "16:38:21",
-    "level": "UPDN",
-    "msg": "UPDN/5m XRP: +0.105% \u2192 Up @ 40% +150.0% | 1.7min"
-  },
-  {
-    "time": "16:32:43",
-    "level": "UPDN",
-    "msg": "UPDN/5m SOL: -0.197% \u2192 Down @ 40% +153.2% | 2.3min"
-  },
-  {
-    "time": "16:32:43",
+    "time": "22:53:54",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +28.6% profit | 1718791160571873"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "16:32:35",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.385 ($1.93) | Bitcoin Up or Down - April 19, 12:30PM-12:35PM ET | live"
-  },
-  {
-    "time": "16:32:34",
-    "level": "UPDN",
-    "msg": "UPDN/5m BTC: -0.119% \u2192 Down @ 38% +159.7% | 2.5min"
-  },
-  {
-    "time": "16:25:28",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: -0.221% \u2192 Down @ 78% +28.2% | 4.6min"
-  },
-  {
-    "time": "16:24:38",
+    "time": "22:53:41",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +22.8% profit | 1546639086930429"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "16:24:10",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.745 ($3.73) | Dogecoin Up or Down - April 19, 12:20PM-12:25PM ET | live"
-  },
-  {
-    "time": "16:24:08",
-    "level": "UPDN",
-    "msg": "UPDN/5m DOGE: -0.200% \u2192 Down @ 74% +34.2% | 0.9min"
-  },
-  {
-    "time": "16:23:29",
-    "level": "INFO",
-    "msg": "CLAIMED 4.78 shares | BNB Up or Down - April 19, 12:15PM-12:20PM ET"
-  },
-  {
-    "time": "16:23:29",
-    "level": "INFO",
-    "msg": "REDEEMED 0x2e15f0ca81349e... | tx=73ea10d830065fb6... | gas=108760"
-  },
-  {
-    "time": "16:23:02",
-    "level": "UPDN",
-    "msg": "UPDN/5m BNB: -0.139% \u2192 Down @ 82% +22.0% | 2.0min"
-  },
-  {
-    "time": "16:22:54",
-    "level": "UPDN",
-    "msg": "UPDN/5m XRP: -0.322% \u2192 Down @ 68% +48.1% | 2.1min"
-  },
-  {
-    "time": "16:22:48",
-    "level": "UPDN",
-    "msg": "UPDN/5m SOL: -0.232% \u2192 Down @ 76% +31.6% | 2.2min"
-  },
-  {
-    "time": "16:22:42",
-    "level": "UPDN",
-    "msg": "UPDN/5m ETH: -0.252% \u2192 Down @ 60% +65.3% | 2.3min"
-  },
-  {
-    "time": "16:22:35",
-    "level": "WARN",
-    "msg": "BOT HALTED \u2014 daily loss -99.5%. Resumes at midnight UTC."
-  },
-  {
-    "time": "16:22:35",
-    "level": "UPDN",
-    "msg": "UPDN/5m BTC: -0.188% \u2192 Down @ 74% +36.1% | 2.4min"
-  },
-  {
-    "time": "16:18:58",
+    "time": "22:53:27",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +37.9% profit | 1022165273898416"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "16:18:45",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.580 ($2.9) | Dogecoin Up or Down - April 19, 12:15PM-12:20PM ET | live"
-  },
-  {
-    "time": "16:18:44",
-    "level": "UPDN",
-    "msg": "UPDN/5m DOGE: -0.179% \u2192 Down @ 58% +72.4% | 1.3min"
-  },
-  {
-    "time": "16:18:34",
-    "level": "UPDN",
-    "msg": "UPDN/5m ETH: -0.115% \u2192 Down @ 82% +22.7% | 1.5min"
-  },
-  {
-    "time": "16:18:10",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.405 ($2.03) | BNB Up or Down - April 19, 12:15PM-12:20PM ET | matched"
-  },
-  {
-    "time": "16:18:08",
-    "level": "UPDN",
-    "msg": "UPDN/5m BNB: +0.107% \u2192 Up @ 40% +146.9% | 2.0min"
-  },
-  {
-    "time": "16:14:44",
+    "time": "22:53:14",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +35.0% profit | 7621820639829676"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "16:13:38",
-    "level": "WARN",
-    "msg": "BOT HALTED \u2014 daily loss -63.5%. Resumes at midnight UTC."
-  },
-  {
-    "time": "16:13:38",
-    "level": "UPDN",
-    "msg": "UPDN/5m BNB: -0.115% \u2192 Down @ 74% +34.2% | 1.4min"
-  },
-  {
-    "time": "16:13:19",
-    "level": "UPDN",
-    "msg": "UPDN/5m XRP: -0.175% \u2192 Down @ 66% +52.7% | 1.7min"
-  },
-  {
-    "time": "16:13:11",
-    "level": "UPDN",
-    "msg": "UPDN/5m ETH: -0.122% \u2192 Down @ 52% +94.2% | 1.8min"
-  },
-  {
-    "time": "16:13:05",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.715 ($3.57) | Bitcoin Up or Down - April 19, 12:10PM-12:15PM ET | matched"
-  },
-  {
-    "time": "16:13:03",
-    "level": "UPDN",
-    "msg": "UPDN/5m BTC: -0.145% \u2192 Down @ 72% +39.9% | 2.0min"
-  },
-  {
-    "time": "16:09:07",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.535 ($2.68) | BNB Up or Down - April 19, 12:05PM-12:10PM ET | live"
-  },
-  {
-    "time": "16:09:05",
-    "level": "UPDN",
-    "msg": "UPDN/5m BNB: +0.134% \u2192 Up @ 54% +86.9% | 1.0min"
-  },
-  {
-    "time": "15:54:02",
-    "level": "UPDN",
-    "msg": "UPDN/5m ETH: +0.116% \u2192 Up @ 56% +80.2% | 1.0min"
-  },
-  {
-    "time": "15:53:18",
+    "time": "22:53:09",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +31.2% profit | 1891752135271632"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "15:53:15",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.620 ($3.1) | Solana Up or Down - April 19, 11:50AM-11:55AM ET | live"
-  },
-  {
-    "time": "15:53:12",
-    "level": "UPDN",
-    "msg": "UPDN/5m SOL: +0.140% \u2192 Up @ 62% +61.3% | 1.8min"
-  },
-  {
-    "time": "15:53:04",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/5m] BUY 5.0sh @ 0.705 ($3.52) | Dogecoin Up or Down - April 19, 11:50AM-11:55AM ET | live"
-  },
-  {
-    "time": "15:53:02",
-    "level": "UPDN",
-    "msg": "UPDN/5m DOGE: +0.211% \u2192 Up @ 70% +41.8% | 2.0min"
-  },
-  {
-    "time": "15:42:33",
-    "level": "UPDN",
-    "msg": "5MIN ETH: +0.170% \u2192 Up @ 76% +32.5% | 2.5min"
-  },
-  {
-    "time": "15:39:00",
+    "time": "22:53:00",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +36.9% profit | 9991163767238359"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "15:37:53",
-    "level": "INFO",
-    "msg": "CLAIMED 5.00 shares | Dogecoin Up or Down - April 19, 11:25AM-11:30AM ET"
-  },
-  {
-    "time": "15:37:53",
-    "level": "INFO",
-    "msg": "REDEEMED 0xee301dbd0af303... | tx=af536e127aac0ebf... | gas=86533"
-  },
-  {
-    "time": "15:37:51",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.700 ($3.5) | BNB Up or Down - April 19, 11:35AM-11:40AM ET | live"
-  },
-  {
-    "time": "15:37:49",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.316% \u2192 Down @ 70% +42.9% | 2.5min"
-  },
-  {
-    "time": "15:37:47",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.750 ($3.75) | Dogecoin Up or Down - April 19, 11:35AM-11:40AM ET | live"
-  },
-  {
-    "time": "15:37:45",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.620% \u2192 Down @ 75% +33.3% | 2.5min"
-  },
-  {
-    "time": "15:37:42",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.770 ($3.85) | Solana Up or Down - April 19, 11:35AM-11:40AM ET | live"
-  },
-  {
-    "time": "15:37:40",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.603% \u2192 Down @ 77% +29.9% | 2.5min"
-  },
-  {
-    "time": "15:37:39",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.705 ($3.52) | Ethereum Up or Down - April 19, 11:35AM-11:40AM ET | live"
-  },
-  {
-    "time": "15:37:35",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.531% \u2192 Down @ 70% +41.8% | 2.5min"
-  },
-  {
-    "time": "15:27:40",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.570 ($2.85) | Dogecoin Up or Down - April 19, 11:25AM-11:30AM ET | live"
-  },
-  {
-    "time": "15:27:38",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.263% \u2192 Up @ 57% +75.4% | 2.5min"
-  },
-  {
-    "time": "15:17:47",
-    "level": "INFO",
-    "msg": "CLAIMED 4.91 shares | Dogecoin Up or Down - April 19, 11:10AM-11:15AM ET"
-  },
-  {
-    "time": "15:17:47",
-    "level": "INFO",
-    "msg": "REDEEMED 0xb5e8b99b5d1627... | tx=6319b0e7ff9ffd4b... | gas=136568"
-  },
-  {
-    "time": "15:15:41",
+    "time": "22:52:47",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +29.2% | 1515668657505471"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "15:13:08",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.770 ($3.85) | Dogecoin Up or Down - April 19, 11:10AM-11:15AM ET | matched"
-  },
-  {
-    "time": "15:13:05",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.262% \u2192 Down @ 77% +29.9% | 2.0min"
-  },
-  {
-    "time": "15:07:46",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.210% \u2192 Up @ 66% +52.7% | 2.3min"
-  },
-  {
-    "time": "15:07:39",
-    "level": "INFO",
-    "msg": "CLAIMED 4.90 shares | Dogecoin Up or Down - April 19, 9:30AM-9:35AM ET"
-  },
-  {
-    "time": "15:07:39",
-    "level": "INFO",
-    "msg": "REDEEMED 0xf273dcd0f7071a... | tx=9678ffefec93b5ed... | gas=101341"
-  },
-  {
-    "time": "14:57:37",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.345% \u2192 Down @ 59% +69.5% | 2.5min"
-  },
-  {
-    "time": "14:57:33",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.219% \u2192 Down @ 64% +55.0% | 2.5min"
-  },
-  {
-    "time": "14:52:35",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.195% \u2192 Down @ 76% +30.7% | 2.5min"
-  },
-  {
-    "time": "14:42:37",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.189% \u2192 Up @ 77% +29.9% | 2.5min"
-  },
-  {
-    "time": "14:22:33",
-    "level": "UPDN",
-    "msg": "5MIN SOL: +0.267% \u2192 Up @ 68% +46.0% | 2.5min"
-  },
-  {
-    "time": "13:52:37",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.221% \u2192 Up @ 52% +94.2% | 2.5min"
-  },
-  {
-    "time": "13:49:00",
-    "level": "UPDN",
-    "msg": "5MIN XRP: +0.153% \u2192 Up @ 74% +35.1% | 1.1min"
-  },
-  {
-    "time": "13:44:43",
-    "level": "UPDN",
-    "msg": "5MIN SOL: +0.093% \u2192 Up @ 61% +63.9% | 0.4min"
-  },
-  {
-    "time": "13:40:42",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.094% \u2192 Down @ 72% +37.9% | 4.4min"
-  },
-  {
-    "time": "13:36:58",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.097% \u2192 Down @ 60% +65.3% | 3.1min"
-  },
-  {
-    "time": "13:35:24",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.515 ($2.58) | Dogecoin Up or Down - April 19, 9:35AM-9:40AM ET | live"
-  },
-  {
-    "time": "13:35:21",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.157% \u2192 Up @ 52% +94.2% | 4.8min"
-  },
-  {
-    "time": "13:35:09",
+    "time": "22:52:32",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +22.1% | 9612731767746382"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "13:34:28",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.104% \u2192 Down @ 88% +14.3% | 0.6min"
-  },
-  {
-    "time": "13:33:36",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.730 ($3.65) | Dogecoin Up or Down - April 19, 9:30AM-9:35AM ET | matched"
-  },
-  {
-    "time": "13:33:33",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.262% \u2192 Down @ 73% +37.0% | 1.6min"
-  },
-  {
-    "time": "13:33:29",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.815 ($4.07) | Ethereum Up or Down - April 19, 9:30AM-9:35AM ET | live"
-  },
-  {
-    "time": "13:33:26",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.097% \u2192 Down @ 82% +22.7% | 1.6min"
-  },
-  {
-    "time": "02:11:35",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.148% \u2192 Up @ 50% +102.0% | 1.8min"
-  },
-  {
-    "time": "01:21:46",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.081% \u2192 Down @ 81% +23.5% | 3.3min"
-  },
-  {
-    "time": "01:20:27",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.137% \u2192 Down @ 66% +52.7% | 4.8min"
-  },
-  {
-    "time": "01:20:24",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.132% \u2192 Down @ 58% +72.4% | 4.8min"
-  },
-  {
-    "time": "01:20:22",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.0sh @ 0.565 ($2.82) | Solana Up or Down - April 18, 9:20PM-9:25PM ET | matched"
-  },
-  {
-    "time": "01:20:18",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.093% \u2192 Down @ 56% +77.0% | 4.8min"
-  },
-  {
-    "time": "01:16:13",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 5.05sh @ 0.495 ($2.5) | XRP Up or Down - April 18, 9:15PM-9:20PM ET | matched"
-  },
-  {
-    "time": "01:16:09",
-    "level": "UPDN",
-    "msg": "5MIN XRP: +0.084% \u2192 Up @ 50% +102.0% | 3.9min"
-  },
-  {
-    "time": "01:13:33",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.083% \u2192 Down @ 58% +72.4% | 1.5min"
-  },
-  {
-    "time": "01:11:56",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.087% \u2192 Down @ 73% +37.0% | 3.1min"
-  },
-  {
-    "time": "01:11:45",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.137% \u2192 Down @ 50% +102.0% | 3.4min"
-  },
-  {
-    "time": "01:11:41",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.093% \u2192 Down @ 48% +110.5% | 3.4min"
-  },
-  {
-    "time": "01:11:38",
-    "level": "UPDN",
-    "msg": "5MIN BTC: -0.096% \u2192 Down @ 72% +39.9% | 3.4min"
-  },
-  {
-    "time": "01:11:24",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.097% \u2192 Down @ 76% +30.7% | 3.7min"
-  },
-  {
-    "time": "01:10:39",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.091% \u2192 Down @ 75% +33.3% | 4.4min"
-  },
-  {
-    "time": "01:10:38",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.104% \u2192 Down @ 58% +72.4% | 4.4min"
-  },
-  {
-    "time": "01:10:22",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.158% \u2192 Down @ 54% +85.2% | 4.8min"
-  },
-  {
-    "time": "01:10:18",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.105% \u2192 Down @ 52% +90.5% | 4.8min"
-  },
-  {
-    "time": "01:10:17",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.117% \u2192 Down @ 54% +86.9% | 4.8min"
-  },
-  {
-    "time": "01:10:15",
-    "level": "UPDN",
-    "msg": "5MIN BTC: -0.087% \u2192 Down @ 57% +73.9% | 4.8min"
-  },
-  {
-    "time": "01:09:36",
+    "time": "22:52:19",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +27.1% | 4580645748757837"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "01:08:41",
-    "level": "WARN",
-    "msg": "BOT HALTED \u2014 daily loss -42.2%. Resumes at midnight UTC."
-  },
-  {
-    "time": "01:08:40",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.105% \u2192 Down @ 82% +22.7% | 1.4min"
-  },
-  {
-    "time": "01:07:57",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.097% \u2192 Down @ 80% +25.0% | 2.2min"
-  },
-  {
-    "time": "01:07:54",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.093% \u2192 Down @ 52% +94.2% | 2.2min"
-  },
-  {
-    "time": "01:07:50",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 6.45sh @ 0.775 ($5.0) | Bitcoin Up or Down - April 18, 9:05PM-9:10PM ET | matched"
-  },
-  {
-    "time": "01:07:47",
-    "level": "UPDN",
-    "msg": "5MIN BTC: -0.090% \u2192 Down @ 78% +29.0% | 2.2min"
-  },
-  {
-    "time": "01:06:38",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.084% \u2192 Down @ 68% +47.1% | 3.4min"
-  },
-  {
-    "time": "01:05:58",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.083% \u2192 Down @ 74% +35.1% | 4.2min"
-  },
-  {
-    "time": "01:05:52",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.093% \u2192 Down @ 56% +80.2% | 4.2min"
-  },
-  {
-    "time": "01:05:48",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.102% \u2192 Down @ 70% +41.8% | 4.2min"
-  },
-  {
-    "time": "01:05:17",
-    "level": "UPDN",
-    "msg": "5MIN BTC: -0.080% \u2192 Down @ 66% +50.4% | 4.7min"
-  },
-  {
-    "time": "01:04:13",
-    "level": "UPDN",
-    "msg": "5MIN SOL: +0.093% \u2192 Up @ 88% +13.6% | 0.8min"
-  },
-  {
-    "time": "01:00:40",
-    "level": "UPDN",
-    "msg": "5MIN ETH: +0.123% \u2192 Up @ 88% +13.6% | 4.4min"
-  },
-  {
-    "time": "01:00:34",
-    "level": "UPDN",
-    "msg": "5MIN BTC: +0.097% \u2192 Up @ 56% +77.0% | 4.4min"
-  },
-  {
-    "time": "01:00:17",
-    "level": "UPDN",
-    "msg": "5MIN ETH: +0.094% \u2192 Up @ 72% +37.9% | 4.8min"
-  },
-  {
-    "time": "01:00:16",
-    "level": "UPDN",
-    "msg": "5MIN BTC: +0.083% \u2192 Up @ 50% +98.0% | 4.8min"
-  },
-  {
-    "time": "00:57:03",
-    "level": "WARN",
-    "msg": "BOT HALTED \u2014 daily loss -96.6%. Resumes at midnight UTC."
-  },
-  {
-    "time": "00:57:02",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.105% \u2192 Down @ 76% +32.5% | 3.0min"
-  },
-  {
-    "time": "00:53:09",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.084% \u2192 Down @ 78% +27.4% | 1.9min"
-  },
-  {
-    "time": "00:50:40",
-    "level": "UPDN",
-    "msg": "5MIN BNB: +0.092% \u2192 Up @ 50% +98.0% | 4.6min"
-  },
-  {
-    "time": "00:50:35",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 2.41sh @ 0.415 ($1.0) | Solana Up or Down - April 18, 8:50PM-8:55PM ET | matched"
-  },
-  {
-    "time": "00:50:31",
-    "level": "UPDN",
-    "msg": "5MIN SOL: +0.116% \u2192 Up @ 42% +141.0% | 4.6min"
-  },
-  {
-    "time": "00:48:50",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.084% \u2192 Up @ 88% +13.6% | 1.3min"
-  },
-  {
-    "time": "00:46:20",
-    "level": "UPDN",
-    "msg": "5MIN SOL: +0.093% \u2192 Up @ 82% +22.7% | 3.7min"
-  },
-  {
-    "time": "00:46:04",
-    "level": "UPDN",
-    "msg": "5MIN ETH: +0.116% \u2192 Up @ 82% +21.2% | 4.0min"
-  },
-  {
-    "time": "00:45:52",
-    "level": "UPDN",
-    "msg": "5MIN BNB: +0.108% \u2192 Up @ 84% +19.0% | 4.3min"
-  },
-  {
-    "time": "00:41:28",
+    "time": "22:52:06",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +94.1% | 1379900417433358"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "00:41:15",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.084% \u2192 Up @ 76% +31.6% | 3.9min"
-  },
-  {
-    "time": "00:39:21",
+    "time": "22:51:52",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +91.3% | 1379900417433358"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "00:37:13",
+    "time": "22:51:38",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +54.4% | 1379900417433358"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "00:35:38",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 1.94sh @ 0.515 ($1.0) | BNB Up or Down - April 18, 8:35PM-8:40PM ET | matched"
-  },
-  {
-    "time": "00:35:35",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.097% \u2192 Down @ 52% +94.2% | 4.8min"
-  },
-  {
-    "time": "00:35:31",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.158% \u2192 Down @ 57% +73.9% | 4.8min"
-  },
-  {
-    "time": "00:35:26",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.126% \u2192 Down @ 68% +48.1% | 4.8min"
-  },
-  {
-    "time": "00:35:22",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.151% \u2192 Down @ 64% +55.0% | 4.8min"
-  },
-  {
-    "time": "00:35:18",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.115% \u2192 Down @ 34% +189.9% | 4.8min"
-  },
-  {
-    "time": "00:35:17",
-    "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 1.8sh @ 0.555 ($1.0) | Bitcoin Up or Down - April 18, 8:35PM-8:40PM ET | matched"
-  },
-  {
-    "time": "00:35:14",
-    "level": "UPDN",
-    "msg": "5MIN BTC: -0.104% \u2192 Down @ 56% +80.2% | 4.8min"
-  },
-  {
-    "time": "00:35:06",
+    "time": "22:51:24",
     "level": "EXIT",
-    "msg": "PROFIT EXIT +25.2% | 9192914141844177"
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
   },
   {
-    "time": "00:33:42",
+    "time": "22:51:11",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:51:03",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:50:58",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:50:44",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:50:31",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:50:18",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:50:04",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:49:50",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:49:36",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:49:23",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:49:10",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:48:57",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:48:56",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:48:44",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:48:30",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:48:17",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:48:04",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:47:50",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:47:37",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:47:23",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+  },
+  {
+    "time": "22:47:10",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:46:57",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:46:50",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:46:45",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:46:31",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:46:17",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:46:04",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+  },
+  {
+    "time": "22:45:50",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +2.1% | 1460483533671461"
+  },
+  {
+    "time": "22:45:37",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
+  },
+  {
+    "time": "22:45:24",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
+  },
+  {
+    "time": "22:45:12",
     "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 1.26sh @ 0.795 ($1.0) | Dogecoin Up or Down - April 18, 8:30PM-8:35PM ET | matched"
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.940 ($4.7) | Bitcoin Up or Down - April 25, 4:00PM-8:00PM ET | matched"
   },
   {
-    "time": "00:33:38",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.106% \u2192 Up @ 80% +25.8% | 1.4min"
+    "time": "22:45:12",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
   },
   {
-    "time": "00:25:50",
-    "level": "UPDN",
-    "msg": "5MIN BNB: -0.091% \u2192 Down @ 70% +42.9% | 4.3min"
-  },
-  {
-    "time": "00:22:09",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.098% \u2192 Down @ 87% +14.9% | 3.0min"
-  },
-  {
-    "time": "00:21:22",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: -0.084% \u2192 Down @ 86% +16.3% | 3.7min"
-  },
-  {
-    "time": "00:20:30",
+    "time": "22:45:11",
     "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 1.57sh @ 0.635 ($1.0) | Solana Up or Down - April 18, 8:20PM-8:25PM ET | matched"
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.920 ($4.6) | Bitcoin Up or Down - April 25, 4:00PM-8:00PM ET | live"
   },
   {
-    "time": "00:20:27",
+    "time": "22:45:10",
     "level": "UPDN",
-    "msg": "5MIN SOL: +0.093% \u2192 Up @ 64% +57.5% | 4.7min"
+    "msg": "UPDN/4h BTC: +0.446% \u2192 Up @ 92% +8.7% | 74.9min"
   },
   {
-    "time": "00:20:21",
-    "level": "UPDN",
-    "msg": "5MIN ETH: +0.100% \u2192 Up @ 62% +60.0% | 4.7min"
+    "time": "22:44:59",
+    "level": "EXIT",
+    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
   },
   {
-    "time": "00:18:17",
+    "time": "22:44:59",
     "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 1.2sh @ 0.835 ($1.0) | Ethereum Up or Down - April 18, 8:15PM-8:20PM ET | matched"
+    "msg": "SELL [PROFIT_TARGET] 4sh @ 0.965 | Bitcoin Up or Down - April 25, 6:30PM-6:45PM ET | matched"
   },
   {
-    "time": "00:18:14",
+    "time": "22:44:57",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +118.9% | 4766143683367000"
+  },
+  {
+    "time": "22:44:15",
     "level": "UPDN",
-    "msg": "5MIN ETH: -0.081% \u2192 Down @ 84% +19.8% | 1.8min"
+    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 80% +25.0% | 76.0min"
   },
   {
-    "time": "00:15:55",
+    "time": "22:44:00",
     "level": "UPDN",
-    "msg": "5MIN DOGE: -0.105% \u2192 Down @ 84% +18.3% | 4.2min"
+    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 86% +16.3% | 76.2min"
   },
   {
-    "time": "00:15:50",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.112% \u2192 Down @ 88% +14.3% | 4.2min"
-  },
-  {
-    "time": "00:15:32",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.116% \u2192 Down @ 72% +38.9% | 4.6min"
-  },
-  {
-    "time": "00:15:28",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.105% \u2192 Down @ 74% +34.2% | 4.6min"
-  },
-  {
-    "time": "00:11:10",
+    "time": "22:43:47",
     "level": "INFO",
-    "msg": "ORDER [UPDN] BUY 1.2sh @ 0.835 ($1.0) | XRP Up or Down - April 18, 8:10PM-8:15PM ET | matched"
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.925 ($4.62) | XRP Up or Down - April 25, 4:00PM-8:00PM ET | matched"
   },
   {
-    "time": "00:11:06",
-    "level": "UPDN",
-    "msg": "5MIN XRP: -0.098% \u2192 Down @ 84% +19.8% | 4.0min"
-  },
-  {
-    "time": "00:07:07",
-    "level": "UPDN",
-    "msg": "5MIN SOL: +0.093% \u2192 Up @ 81% +23.5% | 3.0min"
-  },
-  {
-    "time": "00:03:16",
+    "time": "22:43:47",
     "level": "INFO",
-    "msg": "Daily halt lifted \u2014 new trading day."
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.905 ($4.53) | XRP Up or Down - April 25, 4:00PM-8:00PM ET | live"
   },
   {
-    "time": "21:21:07",
+    "time": "22:43:46",
     "level": "UPDN",
-    "msg": "5MIN XRP: -0.119% \u2192 Down @ 83% +20.5% | 3.9min"
+    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +10.5% | 76.4min"
   },
   {
-    "time": "21:20:28",
-    "level": "UPDN",
-    "msg": "5MIN ETH: -0.109% \u2192 Down @ 72% +37.9% | 4.6min"
+    "time": "22:43:34",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.935 ($4.68) | Solana Up or Down - April 25, 4:00PM-8:00PM ET | matched"
   },
   {
-    "time": "21:20:14",
-    "level": "UPDN",
-    "msg": "5MIN BTC: -0.083% \u2192 Down @ 50% +98.0% | 4.8min"
+    "time": "22:43:34",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.915 ($4.58) | Solana Up or Down - April 25, 4:00PM-8:00PM ET | live"
   },
   {
-    "time": "21:17:52",
+    "time": "22:43:32",
     "level": "UPDN",
-    "msg": "5MIN XRP: -0.084% \u2192 Down @ 74% +35.1% | 2.2min"
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +9.3% | 77.1min"
   },
   {
-    "time": "21:17:50",
-    "level": "UPDN",
-    "msg": "5MIN SOL: -0.081% \u2192 Down @ 86% +17.0% | 2.2min"
+    "time": "22:43:29",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/15m] BUY 5sh @ 0.450 ($2.25) | Bitcoin Up or Down - April 25, 6:30PM-6:45PM ET | matched"
   },
   {
-    "time": "21:16:42",
+    "time": "22:43:27",
     "level": "UPDN",
-    "msg": "5MIN BTC: -0.089% \u2192 Down @ 64% +57.5% | 3.3min"
+    "msg": "UPDN/15m BTC: +0.045% \u2192 Up @ 45% +122.2% | 2.1min"
   },
   {
-    "time": "21:15:45",
-    "level": "UPDN",
-    "msg": "5MIN DOGE: +0.084% \u2192 Up @ 68% +48.1% | 4.4min"
+    "time": "22:42:55",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.930 ($4.65) | Ethereum Up or Down - April 25, 4:00PM-8:00PM ET | matched"
   },
   {
-    "time": "21:11:37",
-    "level": "UPDN",
-    "msg": "5MIN XRP: +0.112% \u2192 Up @ 70% +43.9% | 3.5min"
+    "time": "22:42:55",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.910 ($4.55) | Ethereum Up or Down - April 25, 4:00PM-8:00PM ET | live"
   },
   {
-    "time": "21:10:22",
+    "time": "22:42:53",
     "level": "UPDN",
-    "msg": "5MIN XRP: +0.098% \u2192 Up @ 60% +65.3% | 4.7min"
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 91% +9.9% | 77.8min"
   },
   {
-    "time": "21:08:39",
+    "time": "22:40:28",
     "level": "UPDN",
-    "msg": "5MIN SOL: -0.081% \u2192 Down @ 44% +124.7% | 1.4min"
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 79.8min"
   },
   {
-    "time": "20:45:41",
+    "time": "22:40:26",
     "level": "UPDN",
-    "msg": "5MIN BNB: +0.095% \u2192 Up @ 85% +17.6% | 4.5min"
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 91% +9.9% | 79.8min"
   },
   {
-    "time": "20:45:39",
+    "time": "22:40:22",
     "level": "UPDN",
-    "msg": "5MIN DOGE: +0.179% \u2192 Up @ 86% +15.6% | 4.5min"
+    "msg": "UPDN/15m BNB: +0.044% \u2192 Up @ 62% +61.3% | 4.8min"
   },
   {
-    "time": "20:45:37",
+    "time": "22:40:11",
     "level": "UPDN",
-    "msg": "5MIN XRP: +0.091% \u2192 Up @ 68% +48.1% | 4.5min"
+    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 84% +19.8% | 80.2min"
   },
   {
-    "time": "20:45:36",
+    "time": "22:40:09",
     "level": "UPDN",
-    "msg": "5MIN SOL: +0.093% \u2192 Up @ 82% +21.2% | 4.5min"
+    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 88% +14.3% | 80.2min"
+  },
+  {
+    "time": "22:40:06",
+    "level": "UPDN",
+    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 88% +13.0% | 80.2min"
+  },
+  {
+    "time": "22:40:04",
+    "level": "UPDN",
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 80.2min"
+  },
+  {
+    "time": "22:40:02",
+    "level": "UPDN",
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 91% +9.9% | 80.2min"
+  },
+  {
+    "time": "22:39:58",
+    "level": "UPDN",
+    "msg": "UPDN/15m BNB: +0.025% \u2192 Up @ 62% +62.6% | 5.2min"
+  },
+  {
+    "time": "22:39:47",
+    "level": "UPDN",
+    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 84% +19.8% | 80.6min"
+  },
+  {
+    "time": "22:39:44",
+    "level": "UPDN",
+    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 86% +17.0% | 80.6min"
+  },
+  {
+    "time": "22:39:41",
+    "level": "UPDN",
+    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 80.6min"
+  },
+  {
+    "time": "22:39:39",
+    "level": "UPDN",
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 80.6min"
+  },
+  {
+    "time": "22:39:37",
+    "level": "UPDN",
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +10.5% | 80.6min"
+  },
+  {
+    "time": "22:39:33",
+    "level": "UPDN",
+    "msg": "UPDN/15m BNB: +0.044% \u2192 Up @ 62% +62.6% | 5.6min"
+  },
+  {
+    "time": "22:39:20",
+    "level": "UPDN",
+    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 83% +20.5% | 81.1min"
+  },
+  {
+    "time": "22:39:18",
+    "level": "UPDN",
+    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 84% +18.3% | 81.1min"
+  },
+  {
+    "time": "22:39:16",
+    "level": "UPDN",
+    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 81.1min"
+  },
+  {
+    "time": "22:39:14",
+    "level": "UPDN",
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 81.1min"
+  },
+  {
+    "time": "22:39:11",
+    "level": "UPDN",
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +11.1% | 81.1min"
+  },
+  {
+    "time": "22:39:07",
+    "level": "UPDN",
+    "msg": "UPDN/15m BNB: +0.044% \u2192 Up @ 61% +63.9% | 6.1min"
+  },
+  {
+    "time": "22:38:55",
+    "level": "UPDN",
+    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 64% +57.5% | 81.5min"
+  },
+  {
+    "time": "22:38:53",
+    "level": "UPDN",
+    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 87% +14.9% | 81.5min"
+  },
+  {
+    "time": "22:38:51",
+    "level": "UPDN",
+    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 81.5min"
+  },
+  {
+    "time": "22:38:49",
+    "level": "UPDN",
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 81.5min"
+  },
+  {
+    "time": "22:38:47",
+    "level": "UPDN",
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +10.5% | 81.5min"
+  },
+  {
+    "time": "22:38:44",
+    "level": "UPDN",
+    "msg": "UPDN/15m BNB: +0.043% \u2192 Up @ 60% +66.7% | 6.5min"
+  },
+  {
+    "time": "22:38:30",
+    "level": "UPDN",
+    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 82% +21.2% | 81.9min"
+  },
+  {
+    "time": "22:38:28",
+    "level": "UPDN",
+    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 88% +14.3% | 81.9min"
+  },
+  {
+    "time": "22:38:26",
+    "level": "UPDN",
+    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 81.9min"
+  },
+  {
+    "time": "22:38:24",
+    "level": "UPDN",
+    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 81.9min"
+  },
+  {
+    "time": "22:38:22",
+    "level": "UPDN",
+    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +10.5% | 81.9min"
+  },
+  {
+    "time": "22:38:18",
+    "level": "UPDN",
+    "msg": "UPDN/15m BNB: +0.062% \u2192 Up @ 60% +65.3% | 6.9min"
+  },
+  {
+    "time": "00:53:16",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.122% \u2192 Up @ 91% +9.9% | 7.3min"
+  },
+  {
+    "time": "00:52:38",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.102% \u2192 Up @ 90% +11.7% | 7.8min"
+  },
+  {
+    "time": "00:44:49",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 90% +11.1% | 0.3min"
+  },
+  {
+    "time": "00:44:39",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 90% +11.7% | 0.5min"
+  },
+  {
+    "time": "00:44:28",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 90% +11.7% | 0.7min"
+  },
+  {
+    "time": "00:44:15",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 90% +11.7% | 0.9min"
+  },
+  {
+    "time": "00:44:05",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 90% +11.7% | 1.0min"
+  },
+  {
+    "time": "00:43:54",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 89% +12.4% | 1.2min"
+  },
+  {
+    "time": "00:43:43",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 89% +12.4% | 1.4min"
+  },
+  {
+    "time": "00:43:31",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 89% +12.4% | 1.6min"
+  },
+  {
+    "time": "00:43:21",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 85% +17.6% | 1.8min"
+  },
+  {
+    "time": "00:43:09",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 81% +23.5% | 2.0min"
+  },
+  {
+    "time": "00:42:58",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 80% +24.2% | 2.6min"
+  },
+  {
+    "time": "00:39:22",
+    "level": "UPDN",
+    "msg": "UPDN/15m SOL: +0.081% \u2192 Up @ 90% +10.5% | 5.7min"
+  },
+  {
+    "time": "00:28:49",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.017% \u2192 Down @ 90% +10.5% | 1.2min"
+  },
+  {
+    "time": "00:28:27",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.017% \u2192 Down @ 82% +22.7% | 2.1min"
+  },
+  {
+    "time": "00:27:47",
+    "level": "UPDN",
+    "msg": "UPDN/15m SOL: -0.058% \u2192 Down @ 89% +12.4% | 2.8min"
+  },
+  {
+    "time": "00:10:54",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.039% \u2192 Down @ 84% +18.3% | 4.2min"
+  },
+  {
+    "time": "00:04:09",
+    "level": "INFO",
+    "msg": "CLAIMED 4.99 shares | Solana Up or Down - April 24, 4:00PM-8:00PM ET"
+  },
+  {
+    "time": "00:04:09",
+    "level": "INFO",
+    "msg": "REDEEMED 0x4d45eacee6526c... | tx=483a5a99c4b910ff... | gas=93918"
+  },
+  {
+    "time": "00:01:42",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:01:32",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:01:30",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:01:22",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:01:11",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:01:00",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:00:50",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:00:40",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:00:29",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:00:19",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "00:00:09",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+  },
+  {
+    "time": "23:59:57",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +22.4% | 1065653814129547"
+  },
+  {
+    "time": "23:59:47",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +18.6% | 1065653814129547"
+  },
+  {
+    "time": "23:59:37",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+  },
+  {
+    "time": "23:59:26",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+  },
+  {
+    "time": "23:59:26",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+  },
+  {
+    "time": "23:59:16",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+  },
+  {
+    "time": "23:59:06",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+  },
+  {
+    "time": "23:58:42",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/15m] BUY 5sh @ 0.805 ($4.03) | Solana Up or Down - April 24, 7:45PM-8:00PM ET | live"
+  },
+  {
+    "time": "23:58:41",
+    "level": "UPDN",
+    "msg": "UPDN/15m SOL: -0.012% \u2192 Down @ 80% +24.2% | 1.4min"
+  },
+  {
+    "time": "23:48:59",
+    "level": "INFO",
+    "msg": "CLAIMED 4.89 shares | Bitcoin Up or Down - April 24, 7:30PM-7:45PM ET"
+  },
+  {
+    "time": "23:48:59",
+    "level": "INFO",
+    "msg": "REDEEMED 0x96ecfeb095730b... | tx=d5c4e9d4967b4699... | gas=121730"
+  },
+  {
+    "time": "23:46:46",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:46:38",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:46:29",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:46:20",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:46:12",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:46:03",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:45:55",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:45:46",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:45:37",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+  },
+  {
+    "time": "23:45:28",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+  },
+  {
+    "time": "23:45:20",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+  },
+  {
+    "time": "23:45:11",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+  },
+  {
+    "time": "23:45:04",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+  },
+  {
+    "time": "23:45:03",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+  },
+  {
+    "time": "23:44:55",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +41.7% | 1085869164425045"
+  },
+  {
+    "time": "23:44:46",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +41.7% | 1085869164425045"
+  },
+  {
+    "time": "23:44:37",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +41.7% | 1085869164425045"
+  },
+  {
+    "time": "23:44:29",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +38.8% | 1085869164425045"
+  },
+  {
+    "time": "23:44:20",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +38.8% | 1085869164425045"
+  },
+  {
+    "time": "23:44:12",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +36.0% | 1085869164425045"
+  },
+  {
+    "time": "23:44:03",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+  },
+  {
+    "time": "23:43:55",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+  },
+  {
+    "time": "23:43:46",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +30.2% | 1085869164425045"
+  },
+  {
+    "time": "23:43:37",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +30.2% | 1085869164425045"
+  },
+  {
+    "time": "23:43:29",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +28.8% | 1085869164425045"
+  },
+  {
+    "time": "23:43:20",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +27.3% | 1085869164425045"
+  },
+  {
+    "time": "23:43:11",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +25.9% | 1085869164425045"
+  },
+  {
+    "time": "23:43:03",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +36.0% | 1085869164425045"
+  },
+  {
+    "time": "23:42:58",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+  },
+  {
+    "time": "23:42:54",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+  },
+  {
+    "time": "23:42:45",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +25.9% | 1085869164425045"
+  },
+  {
+    "time": "23:42:35",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +25.9% | 1085869164425045"
+  },
+  {
+    "time": "23:42:26",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +8.6% | 1085869164425045"
+  },
+  {
+    "time": "23:41:30",
+    "level": "INFO",
+    "msg": "ORDER [UPDN/15m] BUY 5sh @ 0.695 ($3.47) | Bitcoin Up or Down - April 24, 7:30PM-7:45PM ET | matched"
+  },
+  {
+    "time": "23:41:28",
+    "level": "UPDN",
+    "msg": "UPDN/15m BTC: +0.037% \u2192 Up @ 70% +43.9% | 4.0min"
+  },
+  {
+    "time": "22:39:55",
+    "level": "EXIT",
+    "msg": "EXIT UPDN STOP -47.4% | 8338087064601701"
+  },
+  {
+    "time": "22:39:44",
+    "level": "EXIT",
+    "msg": "EXIT UPDN STOP -48.1% | 8338087064601701"
+  },
+  {
+    "time": "22:39:34",
+    "level": "EXIT",
+    "msg": "EXIT UPDN STOP -49.6% | 8338087064601701"
+  },
+  {
+    "time": "22:39:24",
+    "level": "EXIT",
+    "msg": "EXIT UPDN STOP -50.4% | 8338087064601701"
+  },
+  {
+    "time": "22:39:13",
+    "level": "EXIT",
+    "msg": "EXIT UPDN STOP -49.6% | 8338087064601701"
+  },
+  {
+    "time": "22:33:50",
+    "level": "INFO",
+    "msg": "SELL [STOP] 5.0sh @ 0.340 | Dogecoin Up or Down - April 24, 4:00PM-8:00PM ET | live"
+  },
+  {
+    "time": "22:33:49",
+    "level": "EXIT",
+    "msg": "EXIT UPDN STOP -44.0% | 5034411714803944"
+  },
+  {
+    "time": "22:28:32",
+    "level": "UPDN",
+    "msg": "UPDN/15m DOGE: +0.142% \u2192 Up @ 92% +9.3% | 2.0min"
+  },
+  {
+    "time": "22:27:19",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.038% \u2192 Down @ 88% +14.3% | 3.2min"
+  },
+  {
+    "time": "22:15:10",
+    "level": "UPDN",
+    "msg": "UPDN/4h ETH: -0.248% \u2192 Down @ 80% +25.8% | 104.9min"
+  },
+  {
+    "time": "22:13:19",
+    "level": "UPDN",
+    "msg": "UPDN/15m ETH: -0.103% \u2192 Down @ 68% +48.1% | 2.1min"
+  },
+  {
+    "time": "22:12:51",
+    "level": "UPDN",
+    "msg": "UPDN/15m SOL: -0.081% \u2192 Down @ 72% +39.9% | 2.7min"
+  },
+  {
+    "time": "22:01:42",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +16.9% | 7649795846949926"
+  },
+  {
+    "time": "22:01:30",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +16.9% | 7649795846949926"
+  },
+  {
+    "time": "22:01:17",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +16.4% | 7649795846949926"
+  },
+  {
+    "time": "22:01:06",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +16.4% | 7649795846949926"
+  },
+  {
+    "time": "22:00:54",
+    "level": "EXIT",
+    "msg": "EXIT UPDN 75\u00a2 TARGET +16.4% | 7649795846949926"
   }
 ]
