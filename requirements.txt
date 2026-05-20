@@ -1,2 +1,8 @@
-﻿Flask
 requests
+httpx[socks]==0.28.1
+websocket-client==1.9.0
+py_clob_client_v2==1.0.1
+web3==7.15.0
+aiohttp
+python-dotenv
+psutil

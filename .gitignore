@@ -3,3 +3,8 @@ client.py
 bot.py
 
 secrets_local.py
+.env
+__pycache__/
+*.pyc
+*.log
+bot.lock

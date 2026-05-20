@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  polybot:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./alerts.json:/app/alerts.json
+      - ./status.json:/app/status.json
+      - ./updn_traded.json:/app/updn_traded.json
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"

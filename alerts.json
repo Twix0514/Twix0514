@@ -1,1002 +1,1504 @@
 [
   {
-    "time": "23:40:49",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.061% \u2192 Up @ 84% +19.0% | 4.3min"
+    "time": "01:29:23",
+    "level": "E0",
+    "msg": "E0/OB imb=0.07 $1.00@0.15 | Will Donald Trump visit Oman in 2026?"
   },
   {
-    "time": "23:38:16",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.046% \u2192 Up @ 84% +18.3% | 7.3min"
+    "time": "01:29:21",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.30 | Will Donald Trump visit Italy in 2026?"
   },
   {
-    "time": "23:37:42",
-    "level": "UPDN",
-    "msg": "UPDN/15m SOL: +0.081% \u2192 Up @ 77% +29.9% | 7.7min"
+    "time": "01:29:20",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.17 | Will Mark Kelly announce a Presidential run before"
   },
   {
-    "time": "23:27:51",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.049% \u2192 Down @ 76% +32.5% | 2.7min"
+    "time": "01:29:17",
+    "level": "E0",
+    "msg": "E0/OB imb=0.10 $1.00@0.15 | Will Donald Trump visit Ukraine in 2026?"
   },
   {
-    "time": "23:09:49",
-    "level": "UPDN",
-    "msg": "UPDN/15m BTC: +0.060% \u2192 Up @ 68% +48.1% | 5.2min"
+    "time": "01:29:17",
+    "level": "E0",
+    "msg": "E0/OB imb=4.01 $1.00@0.06 | Will Michelle Obama announce a Presidential run be"
   },
   {
-    "time": "23:09:46",
-    "level": "UPDN",
-    "msg": "UPDN/15m XRP: -0.084% \u2192 Down @ 52% +94.2% | 5.4min"
+    "time": "01:29:15",
+    "level": "E0",
+    "msg": "E0/OB imb=0.20 $1.00@0.19 | Will Donald Trump visit Russia in 2026?"
   },
   {
-    "time": "22:58:02",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.011% \u2192 Down @ 82% +22.7% | 2.4min"
+    "time": "01:29:14",
+    "level": "E0",
+    "msg": "E0/OB imb=0.13 $1.00@0.09 | Will Tim Walz announce a Presidential run before 2"
   },
   {
-    "time": "22:54:36",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:12",
+    "level": "E0",
+    "msg": "E0/OB imb=200.57 $0.00@0.90 | Will Donald Trump visit France in 2026?"
   },
   {
-    "time": "22:54:22",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:11",
+    "level": "E0",
+    "msg": "E0/OB imb=3.81 $1.00@0.07 | Will Cory Booker announce a Presidential run befor"
   },
   {
-    "time": "22:54:08",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:09",
+    "level": "E0",
+    "msg": "E0/OB imb=8.86 $1.00@0.41 | Will Donald Trump visit South Korea in 2026?"
   },
   {
-    "time": "22:53:54",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:08",
+    "level": "E0",
+    "msg": "E0/OB imb=0.07 $1.00@0.10 | Will Raphael Warnock announce a Presidential run b"
   },
   {
-    "time": "22:53:41",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:07",
+    "level": "E0",
+    "msg": "E0/OB imb=12.07 $1.00@0.54 | Will Donald Trump visit Germany in 2026?"
   },
   {
-    "time": "22:53:27",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:05",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.18 | Will J.B. Pritzker announce a Presidential run bef"
   },
   {
-    "time": "22:53:14",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:05",
+    "level": "E0",
+    "msg": "E0/OB imb=2.22 $1.00@0.48 | Will Donald Trump visit Japan in 2026?"
   },
   {
-    "time": "22:53:09",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:03",
+    "level": "E0",
+    "msg": "E0/OB imb=206.38 $1.00@0.36 | Will Donald Trump visit Saudi Arabia in 2026?"
   },
   {
-    "time": "22:53:00",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:02",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.09 | Will Mark Cuban announce a Presidential run before"
   },
   {
-    "time": "22:52:47",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:29:00",
+    "level": "E0",
+    "msg": "E0/OB imb=2.36 $1.00@0.21 | Will Donald Trump visit Mexico in 2026?"
   },
   {
-    "time": "22:52:32",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:59",
+    "level": "E0",
+    "msg": "E0/OB imb=0.10 $1.00@0.10 | Will Jon Ossoff announce a Presidential run before"
   },
   {
-    "time": "22:52:19",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:58",
+    "level": "E0",
+    "msg": "E0/OB imb=2.13 $1.00@0.27 | Will Donald Trump visit Canada in 2026?"
   },
   {
-    "time": "22:52:06",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:56",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.14 | Will Andy Beshear announce a Presidential run befo"
   },
   {
-    "time": "22:51:52",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:55",
+    "level": "E0",
+    "msg": "E0/OB imb=5.72 $1.00@0.48 | Will Donald Trump visit Israel in 2026?"
   },
   {
-    "time": "22:51:38",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:53",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.12 | Will Gretchen Whitmer announce a Presidential run "
   },
   {
-    "time": "22:51:24",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:53",
+    "level": "E0",
+    "msg": "E0/OB imb=80.85 $0.00@0.82 | Will Donald Trump visit the United Kingdom in 2026"
   },
   {
-    "time": "22:51:11",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:50",
+    "level": "E0",
+    "msg": "E0/OB imb=0.40 $1.00@0.23 | Will Kamala Harris announce a Presidential run bef"
   },
   {
-    "time": "22:51:03",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:49",
+    "level": "E0",
+    "msg": "E0/OB imb=3.34 $1.00@0.15 | Yoon out of custody before 2027?"
   },
   {
-    "time": "22:50:58",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:47",
+    "level": "E0",
+    "msg": "E0/OB imb=0.10 $1.00@0.10 | Will Stephen A. Smith announce a Presidential run "
   },
   {
-    "time": "22:50:44",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:44",
+    "level": "E0",
+    "msg": "E0/OB imb=23.89 $1.00@0.30 | Ukraine signs peace deal with Russia before 2027?"
   },
   {
-    "time": "22:50:31",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:44",
+    "level": "E0",
+    "msg": "E0/OB imb=0.11 $1.00@0.10 | Will Wes Moore announce a Presidential run before "
   },
   {
-    "time": "22:50:18",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:42",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.17 | Israel and Saudi Arabia normalize relations before"
   },
   {
-    "time": "22:50:04",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:41",
+    "level": "E0",
+    "msg": "E0/OB imb=0.21 $1.00@0.10 | Will Josh Shapiro announce a Presidential run befo"
   },
   {
-    "time": "22:49:50",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:37",
+    "level": "E0",
+    "msg": "E0/OB imb=0.43 $1.00@0.29 | US national Bitcoin reserve before 2027?"
   },
   {
-    "time": "22:49:36",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:36",
+    "level": "E0",
+    "msg": "E0/OB imb=0.11 $1.00@0.20 | Will Pete Buttigieg announce a Presidential run be"
   },
   {
-    "time": "22:49:23",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:34",
+    "level": "E0",
+    "msg": "E0/OB imb=2.50 $1.00@0.14 | Will MetaMask launch a token by September 30, 2026"
   },
   {
-    "time": "22:49:10",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:33",
+    "level": "E0",
+    "msg": "E0/OB imb=0.28 $1.00@0.13 | Will Alexandria Ocasio-Cortez announce a President"
   },
   {
-    "time": "22:48:57",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:32",
+    "level": "E0",
+    "msg": "E0/OB imb=2.52 $1.00@0.27 | Will Consensys IPO by December 31 2026?"
   },
   {
-    "time": "22:48:56",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:30",
+    "level": "E0",
+    "msg": "E0/OB imb=0.15 $1.00@0.15 | Will Gavin Newsom announce a Presidential run befo"
   },
   {
-    "time": "22:48:44",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:29",
+    "level": "E0",
+    "msg": "E0/OB imb=1.96 $1.00@0.09 | Will Consensys IPO by September 30 2026?"
   },
   {
-    "time": "22:48:30",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:27",
+    "level": "E0",
+    "msg": "E0/OB imb=16.00 $0.00@0.76 | MicroStrategy sells any Bitcoin by June 30, 2026?"
   },
   {
-    "time": "22:48:17",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:24",
+    "level": "E0",
+    "msg": "E0/OB imb=7.61 $1.00@0.17 | Will the Iranian regime fall before 2027?"
   },
   {
-    "time": "22:48:04",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:20",
+    "level": "E0",
+    "msg": "E0/OB imb=0.41 $0.00@0.43 | Will Trump pardon Donald Brodie before 2027?"
   },
   {
-    "time": "22:47:50",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:19",
+    "level": "E0",
+    "msg": "E0/OB imb=25.55 $1.00@0.07 | Will MetaMask launch a token by June 30?"
   },
   {
-    "time": "22:47:37",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:13",
+    "level": "E0",
+    "msg": "E0/OB imb=14.95 $1.00@0.10 | Kraken IPO closing market cap above $28B?"
   },
   {
-    "time": "22:47:23",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.7% | 1460483533671461"
+    "time": "01:28:10",
+    "level": "E0",
+    "msg": "E0/OB imb=8.99 $1.00@0.15 | Kraken IPO closing market cap above $26B?"
   },
   {
-    "time": "22:47:10",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:28:08",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $0.00@0.51 | Will Conrad Kramer leave OpenAI by December 31, 20"
   },
   {
-    "time": "22:46:57",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:28:07",
+    "level": "E0",
+    "msg": "E0/OB imb=5.63 $1.00@0.18 | Kraken IPO closing market cap above $24B?"
   },
   {
-    "time": "22:46:50",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:28:05",
+    "level": "E0",
+    "msg": "E0/OB imb=5.77 $1.00@0.17 | Will Ari Weinstein leave OpenAI by December 31, 20"
   },
   {
-    "time": "22:46:45",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:28:02",
+    "level": "E0",
+    "msg": "E0/OB imb=0.26 $1.00@0.12 | Will Gavin Newsom announce a Presidential run by D"
   },
   {
-    "time": "22:46:31",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:28:01",
+    "level": "E0",
+    "msg": "E0/OB imb=3.27 $1.00@0.44 | Kraken IPO closing market cap above $20B?"
   },
   {
-    "time": "22:46:17",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:27:57",
+    "level": "E0",
+    "msg": "E0/OB imb=2.14 $1.00@0.47 | Kraken IPO closing market cap above $18B?"
   },
   {
-    "time": "22:46:04",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +3.2% | 1460483533671461"
+    "time": "01:27:56",
+    "level": "E0",
+    "msg": "E0/OB imb=16.91 $0.00@0.88 | Billionaire one-time wealth tax on California ball"
   },
   {
-    "time": "22:45:50",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +2.1% | 1460483533671461"
+    "time": "01:27:54",
+    "level": "E0",
+    "msg": "E0/OB imb=0.21 $0.00@0.49 | Kraken IPO closing market cap above $16B?"
   },
   {
-    "time": "22:45:37",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
+    "time": "01:27:51",
+    "level": "E0",
+    "msg": "E0/OB imb=5.55 $0.00@0.92 | Will Andrei Vasilevskiy win the 2025\u20132026 NHL Vezi"
   },
   {
-    "time": "22:45:24",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
+    "time": "01:27:47",
+    "level": "E0",
+    "msg": "E0/OB imb=2.45 $0.00@0.84 | Will Zach Werenski win the 2025\u20132026 NHL James Nor"
   },
   {
-    "time": "22:45:12",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.940 ($4.7) | Bitcoin Up or Down - April 25, 4:00PM-8:00PM ET | matched"
+    "time": "01:27:44",
+    "level": "E0",
+    "msg": "E0/OB imb=3.75 $1.00@0.33 | Will Base launch a token by December 31, 2026?"
   },
   {
-    "time": "22:45:12",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
+    "time": "01:27:38",
+    "level": "E0",
+    "msg": "E0/OB imb=0.47 $0.00@0.89 | Will Lindy Ruff win the 2025\u20132026 NHL Jack Adams A"
   },
   {
-    "time": "22:45:11",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.920 ($4.6) | Bitcoin Up or Down - April 25, 4:00PM-8:00PM ET | live"
+    "time": "01:27:35",
+    "level": "E0",
+    "msg": "E0/OB imb=4.83 $0.00@0.94 | Will Nick Suzuki win the 2025\u20132026 NHL Frank J. Se"
   },
   {
-    "time": "22:45:10",
-    "level": "UPDN",
-    "msg": "UPDN/4h BTC: +0.446% \u2192 Up @ 92% +8.7% | 74.9min"
+    "time": "01:27:31",
+    "level": "E0",
+    "msg": "E0/OB imb=4.66 $0.00@0.77 | Will Variational launch a token by December 31, 20"
   },
   {
-    "time": "22:44:59",
-    "level": "EXIT",
-    "msg": "EXIT UPDN RESOLVED WIN +1.6% | 1460483533671461"
+    "time": "01:27:29",
+    "level": "E0",
+    "msg": "E0/OB imb=6.50 $1.00@0.24 | Will Nikita Kucherov win the 2025\u20132026 NHL Hart Me"
   },
   {
-    "time": "22:44:59",
-    "level": "INFO",
-    "msg": "SELL [PROFIT_TARGET] 4sh @ 0.965 | Bitcoin Up or Down - April 25, 6:30PM-6:45PM ET | matched"
+    "time": "01:27:28",
+    "level": "E0",
+    "msg": "E0/OB imb=2.98 $0.00@0.73 | Will Arc launch a token by December 31 2026?"
   },
   {
-    "time": "22:44:57",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +118.9% | 4766143683367000"
+    "time": "01:27:27",
+    "level": "E0",
+    "msg": "E0/OB imb=0.35 $1.00@0.11 | Will Nathan MacKinnon win the 2025\u20132026 NHL Hart M"
   },
   {
-    "time": "22:44:15",
-    "level": "UPDN",
-    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 80% +25.0% | 76.0min"
+    "time": "01:27:26",
+    "level": "E0",
+    "msg": "E0/OB imb=18.14 $1.00@0.51 | Will Arc launch a token by September 30 2026?"
   },
   {
-    "time": "22:44:00",
-    "level": "UPDN",
-    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 86% +16.3% | 76.2min"
+    "time": "01:27:24",
+    "level": "E0",
+    "msg": "E0/OB imb=1.65 $1.00@0.49 | Will Connor McDavid win the 2025\u20132026 NHL Hart Mem"
   },
   {
-    "time": "22:43:47",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.925 ($4.62) | XRP Up or Down - April 25, 4:00PM-8:00PM ET | matched"
+    "time": "01:27:22",
+    "level": "E0",
+    "msg": "E0/OB imb=15.31 $1.00@0.27 | Will Arc launch a token by June 30 2026?"
   },
   {
-    "time": "22:43:47",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.905 ($4.53) | XRP Up or Down - April 25, 4:00PM-8:00PM ET | live"
+    "time": "01:27:22",
+    "level": "E0",
+    "msg": "E0/OB imb=1.99 $1.00@0.11 | French election called by June 30, 2026?"
   },
   {
-    "time": "22:43:46",
-    "level": "UPDN",
-    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +10.5% | 76.4min"
+    "time": "01:27:19",
+    "level": "E0",
+    "msg": "E0/OB imb=87.14 $0.00@0.84 | Will prjx launch a token by December 31, 2026?"
   },
   {
-    "time": "22:43:34",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.935 ($4.68) | Solana Up or Down - April 25, 4:00PM-8:00PM ET | matched"
+    "time": "01:27:19",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.09 | Spain snap election called by June 30, 2026?"
   },
   {
-    "time": "22:43:34",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.915 ($4.58) | Solana Up or Down - April 25, 4:00PM-8:00PM ET | live"
+    "time": "01:27:16",
+    "level": "E0",
+    "msg": "E0/OB imb=3.54 $0.00@0.64 | Will Felix Protocol launch a token by December 31,"
   },
   {
-    "time": "22:43:32",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +9.3% | 77.1min"
+    "time": "01:27:13",
+    "level": "E0",
+    "msg": "E0/OB imb=0.51 $1.00@0.27 | Will Mitch McConnell step down from the Senate bef"
   },
   {
-    "time": "22:43:29",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/15m] BUY 5sh @ 0.450 ($2.25) | Bitcoin Up or Down - April 25, 6:30PM-6:45PM ET | matched"
+    "time": "01:27:13",
+    "level": "E0",
+    "msg": "E0/OB imb=2.10 $0.00@0.69 | Will Ostium launch a token by December 31, 2026?"
   },
   {
-    "time": "22:43:27",
-    "level": "UPDN",
-    "msg": "UPDN/15m BTC: +0.045% \u2192 Up @ 45% +122.2% | 2.1min"
+    "time": "01:27:05",
+    "level": "E0",
+    "msg": "E0/OB imb=2.12 $1.00@0.06 | Will Extended launch a token by June 30 2026?"
   },
   {
-    "time": "22:42:55",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.930 ($4.65) | Ethereum Up or Down - April 25, 4:00PM-8:00PM ET | matched"
+    "time": "01:26:57",
+    "level": "E0",
+    "msg": "E0/OB imb=0.21 $1.00@0.10 | Hyperbeat FDV above $200M one day after launch?"
   },
   {
-    "time": "22:42:55",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/4h] BUY 5sh @ 0.910 ($4.55) | Ethereum Up or Down - April 25, 4:00PM-8:00PM ET | live"
+    "time": "01:26:55",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.06 | Will Volodymyr Zelenskyy win the Nobel Peace Prize"
   },
   {
-    "time": "22:42:53",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 91% +9.9% | 77.8min"
+    "time": "01:26:52",
+    "level": "E0",
+    "msg": "E0/OB imb=0.20 $1.00@0.32 | Hyperbeat FDV above $50M one day after launch?"
   },
   {
-    "time": "22:40:28",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 79.8min"
+    "time": "01:26:49",
+    "level": "E0",
+    "msg": "E0/OB imb=6.39 $1.00@0.09 | Will Trump end Department of Education before 2027"
   },
   {
-    "time": "22:40:26",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 91% +9.9% | 79.8min"
+    "time": "01:26:46",
+    "level": "E0",
+    "msg": "E0/OB imb=0.16 $1.00@0.32 | Will the Fed\u2019s lower bound reach 3.25% or lower be"
   },
   {
-    "time": "22:40:22",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.044% \u2192 Up @ 62% +61.3% | 4.8min"
+    "time": "01:26:45",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.07 | Will Yulia Navalnaya win the Nobel Peace Prize in "
   },
   {
-    "time": "22:40:11",
-    "level": "UPDN",
-    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 84% +19.8% | 80.2min"
+    "time": "01:26:43",
+    "level": "E0",
+    "msg": "E0/OB imb=18.20 $1.00@0.12 | Will the Fed\u2019s lower bound reach 3.0% or lower bef"
   },
   {
-    "time": "22:40:09",
-    "level": "UPDN",
-    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 88% +14.3% | 80.2min"
+    "time": "01:26:42",
+    "level": "E0",
+    "msg": "E0/OB imb=0.62 $1.00@0.10 | Will Donald Trump win the Nobel Peace Prize in 202"
   },
   {
-    "time": "22:40:06",
-    "level": "UPDN",
-    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 88% +13.0% | 80.2min"
+    "time": "01:26:40",
+    "level": "E0",
+    "msg": "E0/OB imb=2.00 $1.00@0.09 | Will the Fed\u2019s lower bound reach 2.75% or lower be"
   },
   {
-    "time": "22:40:04",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 80.2min"
+    "time": "01:26:37",
+    "level": "E0",
+    "msg": "E0/OB imb=3.38 $1.00@0.09 | Will the Fed\u2019s lower bound reach 2.5% or lower bef"
   },
   {
-    "time": "22:40:02",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 91% +9.9% | 80.2min"
+    "time": "01:26:35",
+    "level": "E0",
+    "msg": "E0/OB imb=1.65 $1.00@0.10 | Will Jonathan Kreiss-Tomkins win the 2026 Alaska g"
   },
   {
-    "time": "22:39:58",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.025% \u2192 Up @ 62% +62.6% | 5.2min"
+    "time": "01:26:33",
+    "level": "E0",
+    "msg": "E0/OB imb=4.27 $1.00@0.07 | Will the Fed\u2019s lower bound reach 2.25% or lower be"
   },
   {
-    "time": "22:39:47",
-    "level": "UPDN",
-    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 84% +19.8% | 80.6min"
+    "time": "01:26:30",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.05 | Will the Fed\u2019s lower bound reach 0% or lower befor"
   },
   {
-    "time": "22:39:44",
-    "level": "UPDN",
-    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 86% +17.0% | 80.6min"
+    "time": "01:26:27",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.05 | Will the Fed\u2019s lower bound reach 0.25% or lower be"
   },
   {
-    "time": "22:39:41",
-    "level": "UPDN",
-    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 80.6min"
+    "time": "01:26:25",
+    "level": "E0",
+    "msg": "E0/OB imb=0.58 $1.00@0.24 | Will Bernadette Wilson win the 2026 Alaska governo"
   },
   {
-    "time": "22:39:39",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 80.6min"
+    "time": "01:26:23",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.06 | Will the Fed\u2019s lower bound reach 0.5% or lower bef"
   },
   {
-    "time": "22:39:37",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +10.5% | 80.6min"
+    "time": "01:26:22",
+    "level": "E0",
+    "msg": "E0/OB imb=1.84 $1.00@0.10 | Will Treg Taylor win the 2026 Alaska governor elec"
   },
   {
-    "time": "22:39:33",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.044% \u2192 Up @ 62% +62.6% | 5.6min"
+    "time": "01:26:19",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.06 | Will the Fed\u2019s lower bound reach 0.75% or lower be"
   },
   {
-    "time": "22:39:20",
-    "level": "UPDN",
-    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 83% +20.5% | 81.1min"
+    "time": "01:26:15",
+    "level": "E0",
+    "msg": "E0/OB imb=4.35 $1.00@0.06 | Will Nancy Dahlstrom win the 2026 Alaska governor "
   },
   {
-    "time": "22:39:18",
-    "level": "UPDN",
-    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 84% +18.3% | 81.1min"
+    "time": "01:26:11",
+    "level": "E0",
+    "msg": "E0/OB imb=2.49 $1.00@0.05 | Will David Bronson win the 2026 Alaska governor el"
   },
   {
-    "time": "22:39:16",
-    "level": "UPDN",
-    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 81.1min"
+    "time": "01:26:10",
+    "level": "E0",
+    "msg": "E0/OB imb=0.59 $1.00@0.07 | Will the Fed\u2019s lower bound reach 1.5% or lower bef"
   },
   {
-    "time": "22:39:14",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 81.1min"
+    "time": "01:26:07",
+    "level": "E0",
+    "msg": "E0/OB imb=2.59 $1.00@0.07 | Will Click Bishop win the 2026 Alaska governor ele"
   },
   {
-    "time": "22:39:11",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +11.1% | 81.1min"
+    "time": "01:26:06",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.06 | Will the Fed\u2019s lower bound reach 1.25% or lower be"
   },
   {
-    "time": "22:39:07",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.044% \u2192 Up @ 61% +63.9% | 6.1min"
+    "time": "01:26:03",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.06 | Will the Fed\u2019s lower bound reach 1.0% or lower bef"
   },
   {
-    "time": "22:38:55",
-    "level": "UPDN",
-    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 64% +57.5% | 81.5min"
+    "time": "01:26:02",
+    "level": "E0",
+    "msg": "E0/OB imb=0.40 $0.00@0.63 | Will Mary Peltola win the Alaska Senate race in 20"
   },
   {
-    "time": "22:38:53",
-    "level": "UPDN",
-    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 87% +14.9% | 81.5min"
+    "time": "01:26:00",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.07 | Will the Fed\u2019s lower bound reach 2.0% or lower bef"
   },
   {
-    "time": "22:38:51",
-    "level": "UPDN",
-    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 81.5min"
+    "time": "01:25:59",
+    "level": "E0",
+    "msg": "E0/OB imb=0.31 $1.00@0.37 | Will Dan Sullivan win the Alaska Senate race in 20"
   },
   {
-    "time": "22:38:49",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 81.5min"
+    "time": "01:25:57",
+    "level": "E0",
+    "msg": "E0/OB imb=6.73 $1.00@0.07 | Will the Fed\u2019s upper bound reach 4.25% or higher b"
   },
   {
-    "time": "22:38:47",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +10.5% | 81.5min"
+    "time": "01:25:52",
+    "level": "E0",
+    "msg": "E0/OB imb=6.85 $1.00@0.06 | Will the Fed\u2019s upper bound reach 4.5% or higher be"
   },
   {
-    "time": "22:38:44",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.043% \u2192 Up @ 60% +66.7% | 6.5min"
+    "time": "01:25:51",
+    "level": "E0",
+    "msg": "E0/OB imb=37.21 $0.00@0.91 | Will the Republicans win the Louisiana Senate race"
   },
   {
-    "time": "22:38:30",
-    "level": "UPDN",
-    "msg": "UPDN/4h BNB: +0.228% \u2192 Up @ 82% +21.2% | 81.9min"
+    "time": "01:25:49",
+    "level": "E0",
+    "msg": "E0/OB imb=0.07 $1.00@0.10 | Will the Democrats win the Louisiana Senate race i"
   },
   {
-    "time": "22:38:28",
-    "level": "UPDN",
-    "msg": "UPDN/4h DOGE: +0.430% \u2192 Up @ 88% +14.3% | 81.9min"
+    "time": "01:25:43",
+    "level": "E0",
+    "msg": "E0/OB imb=0.07 $1.00@0.10 | Will Alphabet be the largest company in the world "
   },
   {
-    "time": "22:38:26",
-    "level": "UPDN",
-    "msg": "UPDN/4h XRP: +0.303% \u2192 Up @ 90% +11.7% | 81.9min"
+    "time": "01:25:38",
+    "level": "E0",
+    "msg": "E0/OB imb=0.41 $0.00@0.89 | Will NVIDIA be the largest company in the world by"
   },
   {
-    "time": "22:38:24",
-    "level": "UPDN",
-    "msg": "UPDN/4h SOL: +0.514% \u2192 Up @ 92% +8.7% | 81.9min"
+    "time": "01:25:28",
+    "level": "E0",
+    "msg": "E0/OB imb=0.29 $1.00@0.18 | Will GMGN launch a token by December 31, 2026?"
   },
   {
-    "time": "22:38:22",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: +0.324% \u2192 Up @ 90% +10.5% | 81.9min"
+    "time": "01:25:25",
+    "level": "E0",
+    "msg": "E0/OB imb=3.91 $1.00@0.07 | Will Trump meet with Nick Fuentes in 2026?"
   },
   {
-    "time": "22:38:18",
-    "level": "UPDN",
-    "msg": "UPDN/15m BNB: +0.062% \u2192 Up @ 60% +65.3% | 6.9min"
+    "time": "01:25:21",
+    "level": "E0",
+    "msg": "E0/OB imb=1.68 $1.00@0.09 | Will OpenAI have the second best AI model at the e"
   },
   {
-    "time": "00:53:16",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.122% \u2192 Up @ 91% +9.9% | 7.3min"
+    "time": "01:25:18",
+    "level": "E0",
+    "msg": "E0/OB imb=0.18 $0.00@0.70 | Will Anthropic have the second best AI model at th"
   },
   {
-    "time": "00:52:38",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.102% \u2192 Up @ 90% +11.7% | 7.8min"
+    "time": "01:25:17",
+    "level": "E0",
+    "msg": "E0/OB imb=3.16 $1.00@0.08 | Will Trump pardon Do Kwon before 2027?"
   },
   {
-    "time": "00:44:49",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 90% +11.1% | 0.3min"
+    "time": "01:25:15",
+    "level": "E0",
+    "msg": "E0/OB imb=0.09 $1.00@0.17 | Will Google have the second best AI model at the e"
   },
   {
-    "time": "00:44:39",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 90% +11.7% | 0.5min"
+    "time": "01:25:14",
+    "level": "E0",
+    "msg": "E0/OB imb=0.40 $1.00@0.12 | Will Trump pardon Ghislaine Maxwell before 2027?"
   },
   {
-    "time": "00:44:28",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 90% +11.7% | 0.7min"
+    "time": "01:25:12",
+    "level": "E0",
+    "msg": "E0/OB imb=0.10 $1.00@0.10 | Will Trump pardon Elizabeth Holmes before 2027?"
   },
   {
-    "time": "00:44:15",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 90% +11.7% | 0.9min"
+    "time": "01:25:09",
+    "level": "E0",
+    "msg": "E0/OB imb=194.78 $1.00@0.07 | Will Trump pardon Antoine Massey before 2027?"
   },
   {
-    "time": "00:44:05",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 90% +11.7% | 1.0min"
+    "time": "01:25:06",
+    "level": "E0",
+    "msg": "E0/OB imb=2.66 $1.00@0.07 | Will Trump pardon Derek Chauvin before 2027?"
   },
   {
-    "time": "00:43:54",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 89% +12.4% | 1.2min"
+    "time": "01:25:03",
+    "level": "E0",
+    "msg": "E0/OB imb=0.52 $1.00@0.07 | Will Trump pardon Joe Exotic \"The Tiger King\" befo"
   },
   {
-    "time": "00:43:43",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 89% +12.4% | 1.4min"
+    "time": "01:24:57",
+    "level": "E0",
+    "msg": "E0/OB imb=13.69 $0.00@0.69 | Will Anthropic have the best AI model at the end o"
   },
   {
-    "time": "00:43:31",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 89% +12.4% | 1.6min"
+    "time": "01:24:53",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $0.00@0.47 | Will Trump pardon Daniel Penny before 2027?"
   },
   {
-    "time": "00:43:21",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 85% +17.6% | 1.8min"
+    "time": "01:24:50",
+    "level": "E0",
+    "msg": "E0/OB imb=8.88 $1.00@0.49 | Will Trump pardon Matt Gaetz before 2027?"
   },
   {
-    "time": "00:43:09",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.051% \u2192 Up @ 81% +23.5% | 2.0min"
+    "time": "01:24:47",
+    "level": "E0",
+    "msg": "E0/OB imb=3.14 $1.00@0.07 | Will Trump pardon Edward Snowden before 2027?"
   },
   {
-    "time": "00:42:58",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.031% \u2192 Up @ 80% +24.2% | 2.6min"
+    "time": "01:24:44",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $1.00@0.07 | Will Trump pardon Young Thug before 2027?"
   },
   {
-    "time": "00:39:22",
-    "level": "UPDN",
-    "msg": "UPDN/15m SOL: +0.081% \u2192 Up @ 90% +10.5% | 5.7min"
+    "time": "01:24:39",
+    "level": "E0",
+    "msg": "E0/OB imb=0.29 $1.00@0.06 | Will OpenAI have the top AI model at the end of Ju"
   },
   {
-    "time": "00:28:49",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.017% \u2192 Down @ 90% +10.5% | 1.2min"
+    "time": "01:24:37",
+    "level": "E0",
+    "msg": "E0/OB imb=3.27 $1.00@0.07 | Will Trump pardon Diddy before 2027?"
   },
   {
-    "time": "00:28:27",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.017% \u2192 Down @ 82% +22.7% | 2.1min"
+    "time": "01:24:37",
+    "level": "E0",
+    "msg": "E0/OB imb=0.36 $0.00@0.67 | Will Anthropic have the top AI model at the end of"
   },
   {
-    "time": "00:27:47",
-    "level": "UPDN",
-    "msg": "UPDN/15m SOL: -0.058% \u2192 Down @ 89% +12.4% | 2.8min"
+    "time": "01:24:34",
+    "level": "E0",
+    "msg": "E0/OB imb=3.94 $1.00@0.06 | Will Trump pardon Himself before 2027?"
   },
   {
-    "time": "00:10:54",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.039% \u2192 Down @ 84% +18.3% | 4.2min"
+    "time": "01:24:34",
+    "level": "E0",
+    "msg": "E0/OB imb=0.50 $1.00@0.22 | Will Google have the top AI model at the end of Ju"
   },
   {
-    "time": "00:04:09",
-    "level": "INFO",
-    "msg": "CLAIMED 4.99 shares | Solana Up or Down - April 24, 4:00PM-8:00PM ET"
+    "time": "01:24:32",
+    "level": "E0",
+    "msg": "E0/OB imb=2.99 $1.00@0.17 | Will Trump pardon Julian Assange before 2027?"
   },
   {
-    "time": "00:04:09",
-    "level": "INFO",
-    "msg": "REDEEMED 0x4d45eacee6526c... | tx=483a5a99c4b910ff... | gas=93918"
+    "time": "01:24:29",
+    "level": "E0",
+    "msg": "E0/OB imb=6.77 $1.00@0.47 | Will Trump pardon Roger Ver before 2027?"
   },
   {
-    "time": "00:01:42",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:26",
+    "level": "E0",
+    "msg": "E0/OB imb=1.78 $0.00@0.82 | Will the Republicans win the Florida Senate race i"
   },
   {
-    "time": "00:01:32",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:26",
+    "level": "E0",
+    "msg": "E0/OB imb=0.12 $1.00@0.23 | Will Trump pardon Steve Bannon before 2027?"
   },
   {
-    "time": "00:01:30",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:24",
+    "level": "E0",
+    "msg": "E0/OB imb=0.50 $1.00@0.17 | Will the Democrats win the Florida Senate race in "
   },
   {
-    "time": "00:01:22",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:23",
+    "level": "E0",
+    "msg": "E0/OB imb=3.64 $1.00@0.21 | Will Trump pardon Eric Adams before 2027?"
   },
   {
-    "time": "00:01:11",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:21",
+    "level": "E0",
+    "msg": "E0/OB imb=19.55 $0.00@0.93 | Will the Republicans win the Oklahoma Senate race "
   },
   {
-    "time": "00:01:00",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:19",
+    "level": "E0",
+    "msg": "E0/OB imb=0.14 $1.00@0.07 | Will the Democrats win the Oklahoma Senate race in"
   },
   {
-    "time": "00:00:50",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:16",
+    "level": "E0",
+    "msg": "E0/OB imb=10.82 $0.00@0.90 | Will the Republicans win the Mississippi Senate ra"
   },
   {
-    "time": "00:00:40",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:13",
+    "level": "E0",
+    "msg": "E0/OB imb=0.11 $1.00@0.11 | Will the Democrats win the Mississippi Senate race"
   },
   {
-    "time": "00:00:29",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:12",
+    "level": "E0",
+    "msg": "E0/OB imb=0.51 $1.00@0.20 | Sam Altman out as OpenAI CEO before 2027?"
   },
   {
-    "time": "00:00:19",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:10",
+    "level": "E0",
+    "msg": "E0/OB imb=3.73 $0.00@0.94 | Will the Republicans win the Wyoming Senate race i"
   },
   {
-    "time": "00:00:09",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +23.6% | 1065653814129547"
+    "time": "01:24:09",
+    "level": "E0",
+    "msg": "E0/OB imb=0.55 $1.00@0.12 | Brian Armstrong out as Coinbase CEO before 2027?"
   },
   {
-    "time": "23:59:57",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +22.4% | 1065653814129547"
+    "time": "01:24:08",
+    "level": "E0",
+    "msg": "E0/OB imb=0.15 $1.00@0.07 | Will the Democrats win the Wyoming Senate race in "
   },
   {
-    "time": "23:59:47",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +18.6% | 1065653814129547"
+    "time": "01:24:06",
+    "level": "E0",
+    "msg": "E0/OB imb=0.17 $1.00@0.09 | Andy Jassy out as Amazon CEO before 2027?"
   },
   {
-    "time": "23:59:37",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+    "time": "01:24:05",
+    "level": "E0",
+    "msg": "E0/OB imb=24.79 $0.00@0.93 | Will the Republicans win the West Virginia Senate "
   },
   {
-    "time": "23:59:26",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+    "time": "01:24:03",
+    "level": "E0",
+    "msg": "E0/OB imb=5.91 $1.00@0.09 | Dan Clancy out as Twitch CEO before 2027?"
   },
   {
-    "time": "23:59:26",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+    "time": "01:24:02",
+    "level": "E0",
+    "msg": "E0/OB imb=0.24 $1.00@0.06 | Will the Republicans win the Virginia Senate race "
   },
   {
-    "time": "23:59:16",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+    "time": "01:24:00",
+    "level": "E0",
+    "msg": "E0/OB imb=0.13 $1.00@0.08 | Sundar Pichai out as Google CEO before 2027?"
   },
   {
-    "time": "23:59:06",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +17.4% | 1065653814129547"
+    "time": "01:23:59",
+    "level": "E0",
+    "msg": "E0/OB imb=8.31 $0.00@0.93 | Will the Democrats win the Virginia Senate race in"
   },
   {
-    "time": "23:58:42",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/15m] BUY 5sh @ 0.805 ($4.03) | Solana Up or Down - April 24, 7:45PM-8:00PM ET | live"
+    "time": "01:23:57",
+    "level": "E0",
+    "msg": "E0/OB imb=0.41 $0.00@0.55 | Will the Republicans win the Texas Senate race in "
   },
   {
-    "time": "23:58:41",
-    "level": "UPDN",
-    "msg": "UPDN/15m SOL: -0.012% \u2192 Down @ 80% +24.2% | 1.4min"
+    "time": "01:23:50",
+    "level": "E0",
+    "msg": "E0/OB imb=20.02 $0.00@0.91 | Will the Republicans win the South Dakota Senate r"
   },
   {
-    "time": "23:48:59",
-    "level": "INFO",
-    "msg": "CLAIMED 4.89 shares | Bitcoin Up or Down - April 24, 7:30PM-7:45PM ET"
+    "time": "01:23:47",
+    "level": "E0",
+    "msg": "E0/OB imb=0.52 $1.00@0.08 | Will the Democrats win the South Dakota Senate rac"
   },
   {
-    "time": "23:48:59",
-    "level": "INFO",
-    "msg": "REDEEMED 0x96ecfeb095730b... | tx=d5c4e9d4967b4699... | gas=121730"
+    "time": "01:23:44",
+    "level": "E0",
+    "msg": "E0/OB imb=17.75 $0.00@0.81 | Will the Republicans win the South Carolina Senate"
   },
   {
-    "time": "23:46:46",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:42",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $1.00@0.20 | Will the Democrats win the South Carolina Senate r"
   },
   {
-    "time": "23:46:38",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:39",
+    "level": "E0",
+    "msg": "E0/OB imb=0.38 $1.00@0.05 | Will the Republicans win the Rhode Island Senate r"
   },
   {
-    "time": "23:46:29",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:37",
+    "level": "E0",
+    "msg": "E0/OB imb=11.86 $0.00@0.93 | Will the Democrats win the Rhode Island Senate rac"
   },
   {
-    "time": "23:46:20",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:34",
+    "level": "E0",
+    "msg": "E0/OB imb=0.13 $1.00@0.07 | Will the Republicans win the Oregon Senate race in"
   },
   {
-    "time": "23:46:12",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:32",
+    "level": "E0",
+    "msg": "E0/OB imb=16.15 $0.00@0.93 | Will the Democrats win the Oregon Senate race in 2"
   },
   {
-    "time": "23:46:03",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:29",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.15 | Will the Republicans win the North Carolina Senate"
   },
   {
-    "time": "23:45:55",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:25",
+    "level": "E0",
+    "msg": "E0/OB imb=8.16 $0.00@0.84 | Will the Democrats win the North Carolina Senate r"
   },
   {
-    "time": "23:45:46",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:19",
+    "level": "E0",
+    "msg": "E0/OB imb=16.03 $0.00@0.94 | Will the Democrats win the New Jersey Senate race "
   },
   {
-    "time": "23:45:37",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.8% | 1085869164425045"
+    "time": "01:23:17",
+    "level": "E0",
+    "msg": "E0/OB imb=1.66 $0.00@0.79 | Will the Steam Machine cost $700 or more at releas"
   },
   {
-    "time": "23:45:28",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+    "time": "01:23:16",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.17 | Will the Republicans win the New Hampshire Senate "
   },
   {
-    "time": "23:45:20",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+    "time": "01:23:14",
+    "level": "E0",
+    "msg": "E0/OB imb=102.31 $0.00@0.86 | Will Republicans lose a seat in the US Senate for "
   },
   {
-    "time": "23:45:11",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+    "time": "01:23:14",
+    "level": "E0",
+    "msg": "E0/OB imb=3.16 $0.00@0.82 | Will the Democrats win the New Hampshire Senate ra"
   },
   {
-    "time": "23:45:04",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+    "time": "01:23:11",
+    "level": "E0",
+    "msg": "E0/OB imb=0.36 $1.00@0.24 | Will an independent win the Montana Senate race in"
   },
   {
-    "time": "23:45:03",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +43.2% | 1085869164425045"
+    "time": "01:23:08",
+    "level": "E0",
+    "msg": "E0/OB imb=7.02 $0.00@0.74 | Will the Republicans win the Montana Senate race i"
   },
   {
-    "time": "23:44:55",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +41.7% | 1085869164425045"
+    "time": "01:23:04",
+    "level": "E0",
+    "msg": "E0/OB imb=0.18 $1.00@0.06 | Will the Republicans win the Minnesota Senate race"
   },
   {
-    "time": "23:44:46",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +41.7% | 1085869164425045"
+    "time": "01:23:02",
+    "level": "E0",
+    "msg": "E0/OB imb=9.53 $0.00@0.92 | Will the Democrats win the Minnesota Senate race i"
   },
   {
-    "time": "23:44:37",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +41.7% | 1085869164425045"
+    "time": "01:22:57",
+    "level": "E0",
+    "msg": "E0/OB imb=2.20 $0.00@0.74 | Will the Democrats win the Michigan Senate race in"
   },
   {
-    "time": "23:44:29",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +38.8% | 1085869164425045"
+    "time": "01:22:53",
+    "level": "E0",
+    "msg": "E0/OB imb=12.23 $0.00@0.94 | Will the Democrats win the Massachusetts Senate ra"
   },
   {
-    "time": "23:44:20",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +38.8% | 1085869164425045"
+    "time": "01:22:49",
+    "level": "E0",
+    "msg": "E0/OB imb=10.11 $0.00@0.88 | Will Republicans lose a seat in the House of Repre"
   },
   {
-    "time": "23:44:12",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +36.0% | 1085869164425045"
+    "time": "01:22:46",
+    "level": "E0",
+    "msg": "E0/OB imb=14.44 $0.00@0.93 | Will the Republicans win the Kentucky Senate race "
   },
   {
-    "time": "23:44:03",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+    "time": "01:22:43",
+    "level": "E0",
+    "msg": "E0/OB imb=0.35 $1.00@0.12 | U.S. Embassy in Damascus reopened by June 30, 2026"
   },
   {
-    "time": "23:43:55",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+    "time": "01:22:42",
+    "level": "E0",
+    "msg": "E0/OB imb=4.44 $0.00@0.80 | Will the Republicans win the Kansas Senate race in"
   },
   {
-    "time": "23:43:46",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +30.2% | 1085869164425045"
+    "time": "01:22:39",
+    "level": "E0",
+    "msg": "E0/OB imb=0.17 $1.00@0.17 | Will the Democrats win the Kansas Senate race in 2"
   },
   {
-    "time": "23:43:37",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +30.2% | 1085869164425045"
+    "time": "01:22:31",
+    "level": "E0",
+    "msg": "E0/OB imb=5.82 $1.00@0.19 | Will a new country buy Bitcoin by June 30, 2026?"
   },
   {
-    "time": "23:43:29",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +28.8% | 1085869164425045"
+    "time": "01:22:31",
+    "level": "E0",
+    "msg": "E0/OB imb=35.79 $0.00@0.91 | Will the Democrats win the Illinois Senate race in"
   },
   {
-    "time": "23:43:20",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +27.3% | 1085869164425045"
+    "time": "01:22:29",
+    "level": "E0",
+    "msg": "E0/OB imb=3.09 $1.00@0.17 | Will Ukraine agree to cede territory to Russia bef"
   },
   {
-    "time": "23:43:11",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +25.9% | 1085869164425045"
+    "time": "01:22:29",
+    "level": "E0",
+    "msg": "E0/OB imb=11.40 $0.00@0.91 | Will the Republicans win the Idaho Senate race in "
   },
   {
-    "time": "23:43:03",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +36.0% | 1085869164425045"
+    "time": "01:22:26",
+    "level": "E0",
+    "msg": "E0/OB imb=0.14 $1.00@0.07 | Will the Democrats win the Idaho Senate race in 20"
   },
   {
-    "time": "23:42:58",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+    "time": "01:22:23",
+    "level": "E0",
+    "msg": "E0/OB imb=0.20 $1.00@0.17 | Will the Republicans win the Georgia Senate race i"
   },
   {
-    "time": "23:42:54",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +33.1% | 1085869164425045"
+    "time": "01:22:19",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $1.00@0.07 | Will the Republicans win the Delaware Senate race "
   },
   {
-    "time": "23:42:45",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +25.9% | 1085869164425045"
+    "time": "01:22:16",
+    "level": "E0",
+    "msg": "E0/OB imb=3.42 $0.00@0.94 | Will the Democrats win the Delaware Senate race in"
   },
   {
-    "time": "23:42:35",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +25.9% | 1085869164425045"
+    "time": "01:22:12",
+    "level": "E0",
+    "msg": "E0/OB imb=4.66 $0.00@0.92 | Will the Democrats win the Colorado Senate race in"
   },
   {
-    "time": "23:42:26",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +8.6% | 1085869164425045"
+    "time": "01:22:10",
+    "level": "E0",
+    "msg": "E0/OB imb=0.57 $1.00@0.14 | Will inflation reach more than 6% in 2026?"
   },
   {
-    "time": "23:41:30",
-    "level": "INFO",
-    "msg": "ORDER [UPDN/15m] BUY 5sh @ 0.695 ($3.47) | Bitcoin Up or Down - April 24, 7:30PM-7:45PM ET | matched"
+    "time": "01:22:09",
+    "level": "E0",
+    "msg": "E0/OB imb=84.84 $0.00@0.94 | Will the Republicans win the Arkansas Senate race "
   },
   {
-    "time": "23:41:28",
-    "level": "UPDN",
-    "msg": "UPDN/15m BTC: +0.037% \u2192 Up @ 70% +43.9% | 4.0min"
+    "time": "01:22:07",
+    "level": "E0",
+    "msg": "E0/OB imb=5.10 $1.00@0.33 | Will inflation reach more than 5% in 2026?"
   },
   {
-    "time": "22:39:55",
-    "level": "EXIT",
-    "msg": "EXIT UPDN STOP -47.4% | 8338087064601701"
+    "time": "01:22:05",
+    "level": "E0",
+    "msg": "E0/OB imb=17.80 $0.00@0.94 | Will the Republicans win the Alabama Senate race i"
   },
   {
-    "time": "22:39:44",
-    "level": "EXIT",
-    "msg": "EXIT UPDN STOP -48.1% | 8338087064601701"
+    "time": "01:22:01",
+    "level": "E0",
+    "msg": "E0/OB imb=0.09 $1.00@0.06 | Will the Democrats win the Alabama Senate race in "
   },
   {
-    "time": "22:39:34",
-    "level": "EXIT",
-    "msg": "EXIT UPDN STOP -49.6% | 8338087064601701"
+    "time": "01:21:57",
+    "level": "E0",
+    "msg": "E0/OB imb=0.14 $1.00@0.20 | Will the Republicans win the Wisconsin governor ra"
   },
   {
-    "time": "22:39:24",
-    "level": "EXIT",
-    "msg": "EXIT UPDN STOP -50.4% | 8338087064601701"
+    "time": "01:21:54",
+    "level": "E0",
+    "msg": "E0/OB imb=6.13 $0.00@0.80 | Will the Democrats win the Wisconsin governor race"
   },
   {
-    "time": "22:39:13",
-    "level": "EXIT",
-    "msg": "EXIT UPDN STOP -49.6% | 8338087064601701"
+    "time": "01:21:52",
+    "level": "E0",
+    "msg": "E0/OB imb=6.85 $0.00@0.80 | Will the Republicans win the Vermont governor race"
   },
   {
-    "time": "22:33:50",
-    "level": "INFO",
-    "msg": "SELL [STOP] 5.0sh @ 0.340 | Dogecoin Up or Down - April 24, 4:00PM-8:00PM ET | live"
+    "time": "01:21:51",
+    "level": "E0",
+    "msg": "E0/OB imb=3.48 $1.00@0.12 | Negative GDP growth in 2026?"
   },
   {
-    "time": "22:33:49",
-    "level": "EXIT",
-    "msg": "EXIT UPDN STOP -44.0% | 5034411714803944"
+    "time": "01:21:50",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.19 | Will the Democrats win the Vermont governor race i"
   },
   {
-    "time": "22:28:32",
-    "level": "UPDN",
-    "msg": "UPDN/15m DOGE: +0.142% \u2192 Up @ 92% +9.3% | 2.0min"
+    "time": "01:21:47",
+    "level": "E0",
+    "msg": "E0/OB imb=2.38 $0.00@0.84 | Will the Republicans win the Texas governor race i"
   },
   {
-    "time": "22:27:19",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.038% \u2192 Down @ 88% +14.3% | 3.2min"
+    "time": "01:21:46",
+    "level": "E0",
+    "msg": "E0/OB imb=2.82 $1.00@0.06 | Will xAI release a dLLM by June 30?"
   },
   {
-    "time": "22:15:10",
-    "level": "UPDN",
-    "msg": "UPDN/4h ETH: -0.248% \u2192 Down @ 80% +25.8% | 104.9min"
+    "time": "01:21:45",
+    "level": "E0",
+    "msg": "E0/OB imb=0.09 $1.00@0.14 | Will the Democrats win the Texas governor race in "
   },
   {
-    "time": "22:13:19",
-    "level": "UPDN",
-    "msg": "UPDN/15m ETH: -0.103% \u2192 Down @ 68% +48.1% | 2.1min"
+    "time": "01:21:44",
+    "level": "E0",
+    "msg": "E0/OB imb=0.11 $1.00@0.05 | Will a dLLM be the top AI model before 2027?"
   },
   {
-    "time": "22:12:51",
-    "level": "UPDN",
-    "msg": "UPDN/15m SOL: -0.081% \u2192 Down @ 72% +39.9% | 2.7min"
+    "time": "01:21:42",
+    "level": "E0",
+    "msg": "E0/OB imb=4.96 $0.00@0.81 | Will the Republicans win the Tennessee governor ra"
   },
   {
-    "time": "22:01:42",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +16.9% | 7649795846949926"
+    "time": "01:21:40",
+    "level": "E0",
+    "msg": "E0/OB imb=0.29 $1.00@0.06 | Will the Democrats win the Tennessee governor race"
   },
   {
-    "time": "22:01:30",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +16.9% | 7649795846949926"
+    "time": "01:21:37",
+    "level": "E0",
+    "msg": "E0/OB imb=8.01 $0.00@0.94 | Will the Republicans win the South Dakota governor"
   },
   {
-    "time": "22:01:17",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +16.4% | 7649795846949926"
+    "time": "01:21:35",
+    "level": "E0",
+    "msg": "E0/OB imb=0.26 $1.00@0.06 | Will the Democrats win the South Dakota governor r"
   },
   {
-    "time": "22:01:06",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +16.4% | 7649795846949926"
+    "time": "01:21:32",
+    "level": "E0",
+    "msg": "E0/OB imb=8.89 $0.00@0.92 | Will the Republicans win the South Carolina govern"
   },
   {
-    "time": "22:00:54",
-    "level": "EXIT",
-    "msg": "EXIT UPDN 75\u00a2 TARGET +16.4% | 7649795846949926"
+    "time": "01:21:30",
+    "level": "E0",
+    "msg": "E0/OB imb=0.12 $1.00@0.08 | Will the Democrats win the South Carolina governor"
+  },
+  {
+    "time": "01:21:25",
+    "level": "E0",
+    "msg": "E0/OB imb=15.36 $0.00@0.94 | Will the Democrats win the Rhode Island governor r"
+  },
+  {
+    "time": "01:21:22",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.06 | Will the Republicans win the Pennsylvania governor"
+  },
+  {
+    "time": "01:21:20",
+    "level": "E0",
+    "msg": "E0/OB imb=28.23 $0.00@0.92 | Will the Democrats win the Pennsylvania governor r"
+  },
+  {
+    "time": "01:21:18",
+    "level": "E0",
+    "msg": "E0/OB imb=0.12 $1.00@0.12 | Will the Republicans win the Oregon governor race "
+  },
+  {
+    "time": "01:21:15",
+    "level": "E0",
+    "msg": "E0/OB imb=2.37 $0.00@0.86 | Will the Democrats win the Oregon governor race in"
+  },
+  {
+    "time": "01:21:13",
+    "level": "E0",
+    "msg": "E0/OB imb=16.87 $0.00@0.92 | Will the Republicans win the Oklahoma governor rac"
+  },
+  {
+    "time": "01:21:11",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.08 | Will the Democrats win the Oklahoma governor race "
+  },
+  {
+    "time": "01:21:04",
+    "level": "E0",
+    "msg": "E0/OB imb=0.18 $1.00@0.10 | Will the Republicans win the New York governor rac"
+  },
+  {
+    "time": "01:21:03",
+    "level": "E0",
+    "msg": "E0/OB imb=3.07 $0.00@0.91 | Will the Democrats win the New York governor race "
+  },
+  {
+    "time": "01:21:00",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.10 | Will the Republicans win the New Mexico governor r"
+  },
+  {
+    "time": "01:20:57",
+    "level": "E0",
+    "msg": "E0/OB imb=1.87 $0.00@0.88 | Will the Democrats win the New Mexico governor rac"
+  },
+  {
+    "time": "01:20:54",
+    "level": "E0",
+    "msg": "E0/OB imb=2.71 $0.00@0.76 | Will the Republicans win the New Hampshire governo"
+  },
+  {
+    "time": "01:20:51",
+    "level": "E0",
+    "msg": "E0/OB imb=0.40 $1.00@0.23 | Will the Democrats win the New Hampshire governor "
+  },
+  {
+    "time": "01:20:49",
+    "level": "E0",
+    "msg": "E0/OB imb=0.62 $1.00@0.41 | Will the Republicans win the Nevada governor race "
+  },
+  {
+    "time": "01:20:46",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $0.00@0.56 | Will the Democrats win the Nevada governor race in"
+  },
+  {
+    "time": "01:20:43",
+    "level": "E0",
+    "msg": "E0/OB imb=1.81 $0.00@0.86 | Will the Republicans win the Nebraska governor rac"
+  },
+  {
+    "time": "01:20:41",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.13 | Will the Democrats win the Nebraska governor race "
+  },
+  {
+    "time": "01:20:37",
+    "level": "E0",
+    "msg": "E0/OB imb=17.06 $0.00@0.94 | Will the Democrats win the Minnesota governor race"
+  },
+  {
+    "time": "01:20:35",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.14 | Will an independent win the Michigan governor race"
+  },
+  {
+    "time": "01:20:32",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.17 | Will the Republicans win the Michigan governor rac"
+  },
+  {
+    "time": "01:20:30",
+    "level": "E0",
+    "msg": "E0/OB imb=2.53 $0.00@0.70 | Will the Democrats win the Michigan governor race "
+  },
+  {
+    "time": "01:20:25",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.06 | Will the Republicans win the Maryland governor rac"
+  },
+  {
+    "time": "01:20:23",
+    "level": "E0",
+    "msg": "E0/OB imb=7.71 $0.00@0.94 | Will the Democrats win the Maryland governor race "
+  },
+  {
+    "time": "01:20:20",
+    "level": "E0",
+    "msg": "E0/OB imb=0.08 $1.00@0.12 | Will the Republicans win the Maine governor race i"
+  },
+  {
+    "time": "01:20:17",
+    "level": "E0",
+    "msg": "E0/OB imb=5.57 $0.00@0.89 | Will the Democrats win the Maine governor race in "
+  },
+  {
+    "time": "01:20:15",
+    "level": "E0",
+    "msg": "E0/OB imb=52.54 $0.00@0.63 | Will the Republicans win the Kansas governor race "
+  },
+  {
+    "time": "01:20:13",
+    "level": "E0",
+    "msg": "E0/OB imb=0.41 $1.00@0.29 | Will the Democrats win the Kansas governor race in"
+  },
+  {
+    "time": "01:20:11",
+    "level": "E0",
+    "msg": "E0/OB imb=0.52 $1.00@0.30 | Will the Republicans win the Iowa governor race in"
+  },
+  {
+    "time": "01:20:08",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $0.00@0.65 | Will the Democrats win the Iowa governor race in 2"
+  },
+  {
+    "time": "01:20:06",
+    "level": "E0",
+    "msg": "E0/OB imb=0.10 $1.00@0.07 | Will the Republicans win the Illinois governor rac"
+  },
+  {
+    "time": "01:20:03",
+    "level": "E0",
+    "msg": "E0/OB imb=10.46 $0.00@0.93 | Will the Democrats win the Illinois governor race "
+  },
+  {
+    "time": "01:20:01",
+    "level": "E0",
+    "msg": "E0/OB imb=30.04 $0.00@0.94 | Will the Republicans win the Idaho governor race i"
+  },
+  {
+    "time": "01:19:57",
+    "level": "E0",
+    "msg": "E0/OB imb=0.22 $1.00@0.07 | Will the Republicans win the Hawaii governor race "
+  },
+  {
+    "time": "01:19:55",
+    "level": "E0",
+    "msg": "E0/OB imb=28.66 $0.00@0.91 | Will the Democrats win the Hawaii governor race in"
+  },
+  {
+    "time": "01:19:55",
+    "level": "ARB",
+    "msg": "E2/ARB YES@0.445+NO@0.540 edge=$0.015 | Will Alexandre Pantoja become UFC champion in"
+  },
+  {
+    "time": "01:19:52",
+    "level": "E0",
+    "msg": "E0/OB imb=0.59 $1.00@0.38 | Will the Republicans win the Georgia governor race"
+  },
+  {
+    "time": "01:19:46",
+    "level": "E0",
+    "msg": "E0/OB imb=6.67 $0.00@0.80 | Will the Republicans win the Florida governor race"
+  },
+  {
+    "time": "01:19:44",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $1.00@0.17 | Will the Democrats win the Florida governor race i"
+  },
+  {
+    "time": "01:19:41",
+    "level": "E0",
+    "msg": "E0/OB imb=0.21 $1.00@0.06 | Will the Republicans win the Connecticut governor "
+  },
+  {
+    "time": "01:19:38",
+    "level": "E0",
+    "msg": "E0/OB imb=12.39 $0.00@0.93 | Will the Democrats win the Connecticut governor ra"
+  },
+  {
+    "time": "01:19:35",
+    "level": "E0",
+    "msg": "E0/OB imb=0.21 $1.00@0.08 | Will the Republicans win the Colorado governor rac"
+  },
+  {
+    "time": "01:19:32",
+    "level": "E0",
+    "msg": "E0/OB imb=3.76 $0.00@0.92 | Will the Democrats win the Colorado governor race "
+  },
+  {
+    "time": "01:19:30",
+    "level": "E0",
+    "msg": "E0/OB imb=9.54 $1.00@0.11 | Will a US ally get a nuke before 2027?"
+  },
+  {
+    "time": "01:19:29",
+    "level": "E0",
+    "msg": "E0/OB imb=2.67 $0.00@0.94 | Will the Republicans win the Arkansas governor rac"
+  },
+  {
+    "time": "01:19:27",
+    "level": "E0",
+    "msg": "E0/OB imb=0.42 $1.00@0.05 | Will the Democrats win the Arkansas governor race "
+  },
+  {
+    "time": "01:19:24",
+    "level": "E0",
+    "msg": "E0/OB imb=5.52 $0.00@0.93 | Will the Republicans win the Alabama governor race"
+  },
+  {
+    "time": "01:19:22",
+    "level": "E0",
+    "msg": "E0/OB imb=0.18 $1.00@0.07 | Will the Democrats win the Alabama governor race i"
+  },
+  {
+    "time": "01:19:18",
+    "level": "E0",
+    "msg": "E0/OB imb=0.51 $1.00@0.24 | Will the Republicans win the Arizona governor race"
+  },
+  {
+    "time": "01:19:13",
+    "level": "ARB",
+    "msg": "E2/ARB YES@0.125+NO@0.865 edge=$0.010 | Will Andy Beshear announce a Presidential run"
+  },
+  {
+    "time": "01:19:13",
+    "level": "E0",
+    "msg": "E0/OB imb=0.00 $1.00@0.29 | Will the Vegas Golden Knights win the Western Conf"
+  },
+  {
+    "time": "01:19:11",
+    "level": "E0",
+    "msg": "E0/OB imb=0.61 $0.00@0.71 | Will the Colorado Avalanche win the Western Confer"
+  },
+  {
+    "time": "01:19:06",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.24 | Will the Montreal Canadiens win the Eastern Confer"
+  },
+  {
+    "time": "01:19:04",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.23 | Will another AI-generated song reach number 1 on a"
+  },
+  {
+    "time": "01:19:03",
+    "level": "E0",
+    "msg": "E0/OB imb=0.00 $1.00@0.05 | Will the Buffalo Sabres win the Eastern Conference"
+  },
+  {
+    "time": "01:19:00",
+    "level": "E0",
+    "msg": "E0/OB imb=0.09 $1.00@0.17 | Will Nithya Raman win the 2026 Los Angeles mayoral"
+  },
+  {
+    "time": "01:18:54",
+    "level": "E0",
+    "msg": "E0/OB imb=0.05 $1.00@0.24 | Will Spencer Pratt win the 2026 Los Angeles mayora"
+  },
+  {
+    "time": "01:18:41",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.32 | Will Tom Steyer win the California Governor Electi"
+  },
+  {
+    "time": "01:18:27",
+    "level": "E0",
+    "msg": "E0/OB imb=2.07 $1.00@0.20 | China x Philippines military clash before 2027?"
+  },
+  {
+    "time": "01:18:24",
+    "level": "E0",
+    "msg": "E0/OB imb=0.07 $0.00@0.51 | Will Xavier Becerra win the California Governor El"
+  },
+  {
+    "time": "01:18:22",
+    "level": "E0",
+    "msg": "E0/OB imb=0.08 $1.00@0.09 | Will Steve Hilton win the California Governor Elec"
+  },
+  {
+    "time": "01:18:16",
+    "level": "E0",
+    "msg": "E0/OB imb=0.04 $1.00@0.24 | US recognizes Russian sovereignty over Ukraine bef"
+  },
+  {
+    "time": "01:18:13",
+    "level": "E0",
+    "msg": "E0/OB imb=6.18 $1.00@0.09 | Iran Nuke before 2027?"
+  },
+  {
+    "time": "01:18:10",
+    "level": "E0",
+    "msg": "E0/OB imb=5.42 $0.00@0.92 | Aziz Akhannouch out as Morocco Prime Minister by D"
+  },
+  {
+    "time": "01:18:10",
+    "level": "E0",
+    "msg": "E0/OB imb=2.13 $1.00@0.12 | Modi out by December 31, 2026?"
+  },
+  {
+    "time": "01:18:07",
+    "level": "E0",
+    "msg": "E0/OB imb=2.15 $1.00@0.07 | Will Russia rejoin the G7 before 2027?"
+  },
+  {
+    "time": "01:18:06",
+    "level": "E0",
+    "msg": "E0/OB imb=0.27 $0.00@0.91 | Will Trump and Putin not meet?"
+  },
+  {
+    "time": "01:18:02",
+    "level": "E0",
+    "msg": "E0/OB imb=20.09 $0.00@0.76 | Will Russia capture Kostyantynivka by December 31,"
+  },
+  {
+    "time": "01:17:59",
+    "level": "E0",
+    "msg": "E0/OB imb=0.20 $1.00@0.11 | Ukraine election held by December 31, 2026?"
+  },
+  {
+    "time": "01:17:56",
+    "level": "E0",
+    "msg": "E0/OB imb=0.39 $1.00@0.27 | Will India strike Pakistan by December 31, 2026?"
+  },
+  {
+    "time": "01:17:52",
+    "level": "E0",
+    "msg": "E0/OB imb=0.21 $1.00@0.13 | Major U.S. bank bailout before 2027?"
+  },
+  {
+    "time": "01:17:50",
+    "level": "E0",
+    "msg": "E0/OB imb=0.39 $1.00@0.06 | Opensea FDV above $3B one day after launch?"
+  },
+  {
+    "time": "01:17:49",
+    "level": "E0",
+    "msg": "E0/OB imb=0.54 $1.00@0.17 | Israel and Indonesia normalize relations by Decemb"
+  },
+  {
+    "time": "01:17:47",
+    "level": "E0",
+    "msg": "E0/OB imb=0.24 $1.00@0.23 | Opensea FDV above $1B one day after launch?"
+  },
+  {
+    "time": "01:17:42",
+    "level": "E0",
+    "msg": "E0/OB imb=0.17 $1.00@0.14 | Israel and Syria normalize relations by December 3"
+  },
+  {
+    "time": "01:17:29",
+    "level": "E0",
+    "msg": "E0/OB imb=0.04 $1.00@0.06 | Will 2 Fed rate cuts happen in 2026?"
+  },
+  {
+    "time": "01:17:27",
+    "level": "E0",
+    "msg": "E0/OB imb=0.04 $1.00@0.15 | Will 1 Fed rate cut happen in 2026?"
+  },
+  {
+    "time": "01:17:25",
+    "level": "E0",
+    "msg": "E0/OB imb=0.19 $0.00@0.68 | Will no Fed rate cuts happen in 2026?"
+  },
+  {
+    "time": "01:17:22",
+    "level": "E0",
+    "msg": "E0/OB imb=1.78 $1.00@0.09 | Will Apple release a MacBook with cellular connect"
+  },
+  {
+    "time": "01:17:21",
+    "level": "E0",
+    "msg": "E0/OB imb=8.32 $0.00@0.58 | Will the 10-year Treasury yield dip below 3.9% bef"
+  },
+  {
+    "time": "01:17:18",
+    "level": "E0",
+    "msg": "E0/OB imb=0.47 $0.00@0.48 | Will the 10-year Treasury yield dip below 3.8% bef"
+  },
+  {
+    "time": "01:17:15",
+    "level": "E0",
+    "msg": "E0/OB imb=0.03 $1.00@0.26 | Will the 10-year Treasury yield dip below 3.7% bef"
+  },
+  {
+    "time": "01:17:12",
+    "level": "E0",
+    "msg": "E0/OB imb=0.01 $1.00@0.20 | Will the 10-year Treasury yield dip below 3.6% bef"
+  },
+  {
+    "time": "01:17:11",
+    "level": "E0",
+    "msg": "E0/OB imb=3.07 $1.00@0.23 | US recession by end of 2026?"
+  },
+  {
+    "time": "01:17:07",
+    "level": "E0",
+    "msg": "E0/OB imb=954.15 $0.00@0.91 | Will the 10-year Treasury yield dip below 2.0% bef"
+  },
+  {
+    "time": "01:17:02",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $1.00@0.12 | Will the 10-year Treasury yield dip below 3.0% bef"
+  },
+  {
+    "time": "01:16:59",
+    "level": "E0",
+    "msg": "E0/OB imb=0.04 $0.00@0.48 | Will the 10-year Treasury yield dip below 3.5% bef"
+  },
+  {
+    "time": "01:16:51",
+    "level": "E0",
+    "msg": "E0/OB imb=0.50 $1.00@0.07 | Will the 10-year Treasury yield hit 5.5% before 20"
+  },
+  {
+    "time": "01:16:50",
+    "level": "E0",
+    "msg": "E0/OB imb=0.07 $1.00@0.06 | Will Michael Olise win the 2026 Ballon d'Or?"
+  },
+  {
+    "time": "01:16:48",
+    "level": "E0",
+    "msg": "E0/OB imb=0.15 $1.00@0.09 | Will the 10-year Treasury yield hit 5.2% before 20"
+  },
+  {
+    "time": "01:16:45",
+    "level": "E0",
+    "msg": "E0/OB imb=0.15 $1.00@0.23 | Will the 10-year Treasury yield hit 5.0% before 20"
+  },
+  {
+    "time": "01:16:42",
+    "level": "E0",
+    "msg": "E0/OB imb=0.50 $1.00@0.34 | Will the 10-year Treasury yield hit 4.8% before 20"
+  },
+  {
+    "time": "01:16:41",
+    "level": "E0",
+    "msg": "E0/OB imb=0.15 $1.00@0.09 | Will Lamine Yamal win the 2026 Ballon d'Or?"
+  },
+  {
+    "time": "01:16:39",
+    "level": "E0",
+    "msg": "E0/OB imb=2.02 $0.00@0.79 | Will the 10-year Treasury yield hit 4.6% before 20"
+  },
+  {
+    "time": "01:16:32",
+    "level": "E0",
+    "msg": "E0/OB imb=0.02 $1.00@0.09 | Will Kylian Mbapp\u00e9 win the 2026 Ballon d'Or?"
+  },
+  {
+    "time": "01:16:31",
+    "level": "E0",
+    "msg": "E0/OB imb=5.03 $1.00@0.54 | Will SZA release a new song in 2026?"
+  },
+  {
+    "time": "01:16:21",
+    "level": "E0",
+    "msg": "E0/OB imb=3.52 $0.00@0.75 | Will Discord not IPO by June 30, 2026?"
+  },
+  {
+    "time": "01:16:18",
+    "level": "ARB",
+    "msg": "E2/ARB YES@0.450+NO@0.500 edge=$0.050 | Trump suspends U.S. entry for more countries "
+  },
+  {
+    "time": "01:16:18",
+    "level": "E0",
+    "msg": "E0/OB imb=3.04 $0.00@0.67 | Will Lil Uzi Vert release a new song in 2026?"
+  },
+  {
+    "time": "01:16:15",
+    "level": "E0",
+    "msg": "E0/OB imb=0.06 $1.00@0.23 | Will Frank Ocean release a new song in 2026?"
+  },
+  {
+    "time": "01:16:14",
+    "level": "E0",
+    "msg": "E0/OB imb=8.83 $1.00@0.07 | Will Discord\u2019s market cap be less than $15B at mar"
+  }
+] mar"
   }
 ]
